@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
+// Pin the workspace root so a lockfile elsewhere in the tree can't move it.
 const nextConfig: NextConfig = {
-  /* config options here */
+  turbopack: { root: __dirname },
 };
 
 export default nextConfig;
