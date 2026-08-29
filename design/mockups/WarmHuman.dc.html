@@ -1,0 +1,316 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Figtree:wght@400;500;600;700&display=swap">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: #f2e9db;
+      font-family: 'Figtree', system-ui, sans-serif;
+      color: #2a2320;
+      -webkit-font-smoothing: antialiased;
+    }
+    .page { background: #fbf6ee; width: 1440px; }
+    h1,h2,h3,h4 { font-family: 'Newsreader', Georgia, serif; margin: 0; letter-spacing: -0.01em; font-weight: 500; }
+    p { margin: 0; }
+    a { color: #c05f3e; text-decoration: none; }
+    a:hover { color: #9c4a2e; }
+    .wrap { max-width: 1160px; margin: 0 auto; padding: 0 48px; }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 9px;
+      background: #c05f3e; color: #fff; font-weight: 600; font-size: 15px;
+      padding: 15px 26px; border-radius: 40px; font-family: 'Figtree', sans-serif;
+    }
+    .btn-primary:hover { background: #a84e30; color: #fff; }
+    .btn-ghost {
+      display: inline-flex; align-items: center; gap: 8px;
+      color: #2a2320; font-weight: 600; font-size: 15px;
+      padding: 15px 24px; border-radius: 40px; border: 1.5px solid #d8cbb8;
+    }
+    .btn-ghost:hover { color: #2a2320; border-color: #c05f3e; }
+    .eyebrow { font-size: 14px; font-weight: 600; letter-spacing: 0.02em; color: #c05f3e; font-family: 'Figtree'; }
+    .muted { color: #6f6258; }
+    .card { background: #fffdf9; border: 1px solid #ece0cd; border-radius: 20px; }
+    .sec-label { font-size: 14px; font-weight: 600; color: #b08a5e; font-family: 'Figtree'; letter-spacing: 0.02em; }
+  </style>
+</helmet>
+
+<div class="page">
+
+  <!-- NAV -->
+  <div style="background: rgba(251,246,238,0.9);">
+    <div class="wrap" style="display: flex; align-items: center; justify-content: space-between; height: 80px;">
+      <div style="display: flex; align-items: center; gap: 11px;">
+        <div style="width: 36px; height: 36px; border-radius: 50%; background: #c05f3e; display: flex; align-items: center; justify-content: center;">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.5" y2="16.5"></line></svg>
+        </div>
+        <span style="font-family: 'Newsreader', serif; font-weight: 600; font-size: 21px;">Searchbar Studio</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 34px;">
+        <a href="#" style="color:#4a4038; font-weight:500; font-size:15px;">Services</a>
+        <a href="#" style="color:#4a4038; font-weight:500; font-size:15px;">Work</a>
+        <a href="#" style="color:#4a4038; font-weight:500; font-size:15px;">Care plans</a>
+        <a href="#" style="color:#4a4038; font-weight:500; font-size:15px;">About</a>
+        <a href="#" class="btn-primary">Let's chat</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <div class="wrap" style="display: grid; grid-template-columns: 1.08fr 0.92fr; gap: 60px; align-items: center; padding-top: 76px; padding-bottom: 88px;">
+    <div>
+      <div class="eyebrow" style="margin-bottom: 22px;">◦ A friendly, one-person web studio</div>
+      <h1 style="font-size: 66px; line-height: 1.06; font-weight: 500;">Let's build you a website you're <em style="font-style: italic; color:#c05f3e;">proud</em> of.</h1>
+      <p class="muted" style="font-size: 20px; line-height: 1.6; margin-top: 26px; max-width: 500px; font-family:'Figtree';">Hi, I'm [Your Name], the person behind Searchbar Studio. I design, build, and look after websites for small businesses, so you can get back to running yours.</p>
+      <div style="display: flex; gap: 14px; margin-top: 36px;">
+        <a href="#" class="btn-primary" style="padding: 17px 30px; font-size: 16px;">Grab a free 20-min chat</a>
+        <a href="#" class="btn-ghost" style="padding: 17px 26px; font-size: 16px;">See my work</a>
+      </div>
+      <div style="display: flex; align-items: center; gap: 12px; margin-top: 30px;">
+        <div style="display:flex;">
+          <span style="width:32px;height:32px;border-radius:50%;background:#e8b04a;border:2px solid #fbf6ee;"></span>
+          <span style="width:32px;height:32px;border-radius:50%;background:#7fa77f;border:2px solid #fbf6ee;margin-left:-10px;"></span>
+          <span style="width:32px;height:32px;border-radius:50%;background:#c05f3e;border:2px solid #fbf6ee;margin-left:-10px;"></span>
+        </div>
+        <span class="muted" style="font-size: 15px;">Loved by [12+] local business owners</span>
+      </div>
+    </div>
+
+    <!-- warm framed visual -->
+    <div style="position: relative;">
+      <div style="aspect-ratio: 4/5; border-radius: 24px; background: linear-gradient(160deg,#e9c98a,#d98a5e); overflow: hidden; box-shadow: 0 26px 50px -26px rgba(120,70,40,0.45);">
+        <div style="position:absolute; inset: 26px; border-radius: 16px; background:#fffdf9; padding: 22px;">
+          <div style="height: 120px; border-radius: 12px; background: linear-gradient(135deg,#c05f3e,#e08a5e); display:flex; align-items:flex-end; padding: 18px;">
+            <div>
+              <div style="width: 130px; height: 12px; border-radius: 5px; background: rgba(255,255,255,0.92);"></div>
+              <div style="width: 90px; height: 9px; border-radius: 5px; background: rgba(255,255,255,0.6); margin-top: 9px;"></div>
+            </div>
+          </div>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px;">
+            <div style="height: 62px; border-radius: 10px; background:#f4ece0;"></div>
+            <div style="height: 62px; border-radius: 10px; background:#f4ece0;"></div>
+          </div>
+          <div style="height: 10px; width: 85%; border-radius: 5px; background:#f0e6d8; margin-top: 16px;"></div>
+          <div style="height: 10px; width: 70%; border-radius: 5px; background:#f0e6d8; margin-top: 9px;"></div>
+          <div style="height: 10px; width: 78%; border-radius: 5px; background:#f0e6d8; margin-top: 9px;"></div>
+        </div>
+      </div>
+      <div style="position:absolute; bottom: -18px; left: -18px; background:#fffdf9; border:1px solid #ece0cd; border-radius: 16px; padding: 14px 18px; box-shadow: 0 12px 24px -12px rgba(120,70,40,0.3); display:flex; align-items:center; gap:10px;">
+        <div style="width:38px;height:38px;border-radius:50%;background:#eaf1ea;display:flex;align-items:center;justify-content:center;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5f8a5f" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg>
+        </div>
+        <div>
+          <div style="font-family:'Figtree'; font-weight: 700; font-size: 14px;">Site's live &amp; cared for</div>
+          <div class="muted" style="font-size: 12px;">You don't lift a finger</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRUST / TESTIMONIAL -->
+  <div style="background: #f5ecdd;">
+    <div class="wrap" style="padding-top: 64px; padding-bottom: 64px; text-align: center;">
+      <div style="color:#c05f3e; font-size: 22px; letter-spacing: 3px;">★ ★ ★ ★ ★</div>
+      <p style="font-family:'Newsreader', serif; font-style: italic; font-size: 30px; line-height: 1.4; max-width: 820px; margin: 22px auto 0; font-weight: 400;">&ldquo;[Your Name] made the whole thing painless. My site looks beautiful, and I never have to touch it. Worth every penny.&rdquo;</p>
+      <div style="margin-top: 24px;">
+        <div style="font-family:'Figtree'; font-weight: 700; font-size: 15px;">[Client Name]</div>
+        <div class="muted" style="font-size: 14px;">[Their business], [Your Area]</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SERVICES -->
+  <div class="wrap" style="padding-top: 92px; padding-bottom: 36px;">
+    <div class="sec-label">What I help with</div>
+    <h2 style="font-size: 44px; font-weight: 500; margin-top: 14px; max-width: 620px;">A whole website, looked after by one friendly human.</h2>
+  </div>
+  <div class="wrap" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px; padding-bottom: 92px;">
+    <div class="card" style="padding: 32px; display:flex; gap: 22px; align-items: flex-start;">
+      <div style="width: 52px; height: 52px; border-radius: 14px; background: #fbe7dd; display:flex; align-items:center; justify-content:center; flex-shrink: 0;">
+        <svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="#c05f3e" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path><path d="M2 2l7.586 7.586"></path><circle cx="11" cy="11" r="2"></circle></svg>
+      </div>
+      <div>
+        <h3 style="font-size: 22px; font-weight: 500;">Design &amp; build</h3>
+        <p class="muted" style="font-size: 15px; line-height: 1.6; margin-top: 10px; font-family:'Figtree';">A site that feels like you, built by hand to fit your business. No cookie-cutter templates.</p>
+      </div>
+    </div>
+    <div class="card" style="padding: 32px; display:flex; gap: 22px; align-items: flex-start;">
+      <div style="width: 52px; height: 52px; border-radius: 14px; background: #fbe7dd; display:flex; align-items:center; justify-content:center; flex-shrink: 0;">
+        <svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="#c05f3e" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+      </div>
+      <div>
+        <h3 style="font-size: 22px; font-weight: 500;">Hosting &amp; upkeep</h3>
+        <p class="muted" style="font-size: 15px; line-height: 1.6; margin-top: 10px; font-family:'Figtree';">Fast hosting, updates, backups, and security, all quietly handled in the background.</p>
+      </div>
+    </div>
+    <div class="card" style="padding: 32px; display:flex; gap: 22px; align-items: flex-start;">
+      <div style="width: 52px; height: 52px; border-radius: 14px; background: #fbe7dd; display:flex; align-items:center; justify-content:center; flex-shrink: 0;">
+        <svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="#c05f3e" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.5" y2="16.5"></line></svg>
+      </div>
+      <div>
+        <h3 style="font-size: 22px; font-weight: 500;">Getting found</h3>
+        <p class="muted" style="font-size: 15px; line-height: 1.6; margin-top: 10px; font-family:'Figtree';">SEO basics and Google setup so the right customers can actually find you.</p>
+      </div>
+    </div>
+    <div class="card" style="padding: 32px; display:flex; gap: 22px; align-items: flex-start;">
+      <div style="width: 52px; height: 52px; border-radius: 14px; background: #fbe7dd; display:flex; align-items:center; justify-content:center; flex-shrink: 0;">
+        <svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="#c05f3e" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+      </div>
+      <div>
+        <h3 style="font-size: 22px; font-weight: 500;">Changes, anytime</h3>
+        <p class="muted" style="font-size: 15px; line-height: 1.6; margin-top: 10px; font-family:'Figtree';">Just send me a message. New hours, new photos, a new page, consider it done.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARE PLAN -->
+  <div style="background: #2f2622;">
+    <div class="wrap" style="display: grid; grid-template-columns: 1fr 0.85fr; gap: 60px; align-items: center; padding-top: 84px; padding-bottom: 84px;">
+      <div>
+        <div class="eyebrow" style="color:#e59a76;">The care plan</div>
+        <h2 style="font-size: 46px; font-weight: 500; color: #fdf7ef; margin-top: 16px; line-height: 1.12;">I build it once, then I stick around.</h2>
+        <p style="color:#c7b8ab; font-size: 18px; line-height: 1.65; margin-top: 20px; max-width: 470px; font-family:'Figtree';">Most people build your site and disappear. Not me. Your monthly plan keeps everything fast, safe, and up to date, and means I'm always just a message away.</p>
+        <div style="display: flex; flex-direction: column; gap: 14px; margin-top: 28px;">
+          <div style="display:flex; align-items:center; gap: 12px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e59a76" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg><span style="color:#e7ddd2; font-size: 16px; font-family:'Figtree';">Hosting, security &amp; daily backups</span></div>
+          <div style="display:flex; align-items:center; gap: 12px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e59a76" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg><span style="color:#e7ddd2; font-size: 16px; font-family:'Figtree';">Unlimited little content edits</span></div>
+          <div style="display:flex; align-items:center; gap: 12px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e59a76" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg><span style="color:#e7ddd2; font-size: 16px; font-family:'Figtree';">Your own cozy dashboard for billing</span></div>
+        </div>
+      </div>
+      <div style="background: #fdf7ef; border-radius: 24px; padding: 38px;">
+        <div class="sec-label" style="color:#b08a5e;">Care Plan</div>
+        <div style="display: flex; align-items: baseline; gap: 6px; margin-top: 12px;">
+          <span style="font-family:'Newsreader'; font-weight: 600; font-size: 60px;">$50</span>
+          <span class="muted" style="font-size: 18px; font-family:'Figtree';">/ month</span>
+        </div>
+        <p class="muted" style="font-size: 15px; margin-top: 6px; font-family:'Figtree';">After your one-time build. Cancel anytime.</p>
+        <div style="height:1px; background:#ece0cd; margin: 26px 0;"></div>
+        <div style="display:flex; flex-direction: column; gap: 14px; font-family:'Figtree';">
+          <div style="display:flex; align-items:center; gap: 10px; font-size: 15px;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#c05f3e" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg> Managed hosting &amp; SSL</div>
+          <div style="display:flex; align-items:center; gap: 10px; font-size: 15px;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#c05f3e" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg> Updates, backups &amp; monitoring</div>
+          <div style="display:flex; align-items:center; gap: 10px; font-size: 15px;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#c05f3e" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg> Edits within a business day</div>
+          <div style="display:flex; align-items:center; gap: 10px; font-size: 15px;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#c05f3e" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg> Easy auto-pay, one invoice</div>
+        </div>
+        <a href="#" class="btn-primary" style="width: 100%; justify-content: center; margin-top: 28px; padding: 16px;">Start with a free chat</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- WORK -->
+  <div class="wrap" style="padding-top: 92px;">
+    <div style="display:flex; align-items: flex-end; justify-content: space-between;">
+      <div>
+        <div class="sec-label">A few favorites</div>
+        <h2 style="font-size: 44px; font-weight: 500; margin-top: 14px;">Sites I've loved building.</h2>
+      </div>
+      <a href="#" style="font-weight: 600; font-size: 15px; font-family:'Figtree';">See all projects →</a>
+    </div>
+  </div>
+  <div class="wrap" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; padding-top: 36px; padding-bottom: 92px;">
+    <div class="card" style="overflow: hidden;">
+      <div style="height: 210px; background: linear-gradient(150deg,#e8b04a,#f0cd82);"></div>
+      <div style="padding: 24px;">
+        <div class="muted" style="font-size: 13px; font-weight: 600; font-family:'Figtree';">Live musician</div>
+        <h3 style="font-size: 22px; font-weight: 500; margin-top: 6px;">[Project name]</h3>
+        <p class="muted" style="font-size: 14px; margin-top: 8px; font-family:'Figtree';">Booking site with dates, videos, and an inquiry form.</p>
+      </div>
+    </div>
+    <div class="card" style="overflow: hidden;">
+      <div style="height: 210px; background: linear-gradient(150deg,#7fa77f,#a9c8a4);"></div>
+      <div style="padding: 24px;">
+        <div class="muted" style="font-size: 13px; font-weight: 600; font-family:'Figtree';">Local shop</div>
+        <h3 style="font-size: 22px; font-weight: 500; margin-top: 6px;">[Project name]</h3>
+        <p class="muted" style="font-size: 14px; margin-top: 8px; font-family:'Figtree';">Storefront with online ordering and pickup.</p>
+      </div>
+    </div>
+    <div class="card" style="overflow: hidden;">
+      <div style="height: 210px; background: linear-gradient(150deg,#d98a5e,#e8ab84);"></div>
+      <div style="padding: 24px;">
+        <div class="muted" style="font-size: 13px; font-weight: 600; font-family:'Figtree';">Service business</div>
+        <h3 style="font-size: 22px; font-weight: 500; margin-top: 6px;">[Project name]</h3>
+        <p class="muted" style="font-size: 14px; margin-top: 8px; font-family:'Figtree';">Lead-gen site with quote requests and reviews.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <div style="background: #f5ecdd;">
+    <div class="wrap" style="display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 56px; align-items: center; padding-top: 84px; padding-bottom: 84px;">
+      <div style="aspect-ratio: 1/1.1; border-radius: 24px; background: linear-gradient(160deg,#e9c98a,#d98a5e); display:flex; align-items:center; justify-content:center;">
+        <span style="color:#fff; font-size: 14px; font-family:'Figtree';">[Your photo]</span>
+      </div>
+      <div>
+        <div class="sec-label">Hi there</div>
+        <h2 style="font-size: 42px; font-weight: 500; margin-top: 14px; line-height: 1.15;">I'm [Your Name], and I build websites for real people.</h2>
+        <p class="muted" style="font-size: 18px; line-height: 1.65; margin-top: 20px; font-family:'Figtree';">Searchbar Studio is just me, which means you work with the actual person building your site from start to finish. No account managers, no confusing jargon, no getting passed around. Just a website you love and someone who genuinely cares that it keeps working.</p>
+        <a href="#" class="btn-ghost" style="margin-top: 28px;">A bit more about me</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROCESS -->
+  <div class="wrap" style="padding-top: 92px; padding-bottom: 36px;">
+    <div class="sec-label">How it works</div>
+    <h2 style="font-size: 44px; font-weight: 500; margin-top: 14px;">Simple from hello to live.</h2>
+  </div>
+  <div class="wrap" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; padding-bottom: 92px;">
+    <div class="card" style="padding: 28px;">
+      <div style="width: 40px; height: 40px; border-radius: 50%; background:#fbe7dd; color:#c05f3e; font-family:'Newsreader'; font-weight:600; font-size: 18px; display:flex; align-items:center; justify-content:center;">1</div>
+      <h3 style="font-size: 21px; font-weight: 500; margin-top: 16px;">A friendly call</h3>
+      <p class="muted" style="font-size: 15px; line-height: 1.6; margin-top: 8px; font-family:'Figtree';">We chat about your business and what you need. No pressure at all.</p>
+    </div>
+    <div class="card" style="padding: 28px;">
+      <div style="width: 40px; height: 40px; border-radius: 50%; background:#fbe7dd; color:#c05f3e; font-family:'Newsreader'; font-weight:600; font-size: 18px; display:flex; align-items:center; justify-content:center;">2</div>
+      <h3 style="font-size: 21px; font-weight: 500; margin-top: 16px;">A clear plan</h3>
+      <p class="muted" style="font-size: 15px; line-height: 1.6; margin-top: 8px; font-family:'Figtree';">A simple proposal with a fixed price. You say go before anything starts.</p>
+    </div>
+    <div class="card" style="padding: 28px;">
+      <div style="width: 40px; height: 40px; border-radius: 50%; background:#fbe7dd; color:#c05f3e; font-family:'Newsreader'; font-weight:600; font-size: 18px; display:flex; align-items:center; justify-content:center;">3</div>
+      <h3 style="font-size: 21px; font-weight: 500; margin-top: 16px;">We build it</h3>
+      <p class="muted" style="font-size: 15px; line-height: 1.6; margin-top: 8px; font-family:'Figtree';">I design and build, and we shape it together until it feels right.</p>
+    </div>
+    <div class="card" style="padding: 28px;">
+      <div style="width: 40px; height: 40px; border-radius: 50%; background:#fbe7dd; color:#c05f3e; font-family:'Newsreader'; font-weight:600; font-size: 18px; display:flex; align-items:center; justify-content:center;">4</div>
+      <h3 style="font-size: 21px; font-weight: 500; margin-top: 16px;">Live &amp; cared for</h3>
+      <p class="muted" style="font-size: 15px; line-height: 1.6; margin-top: 8px; font-family:'Figtree';">We go live and I look after it, so you can focus on your business.</p>
+    </div>
+  </div>
+
+  <!-- FINAL CTA -->
+  <div class="wrap" style="padding-bottom: 92px;">
+    <div style="background: linear-gradient(140deg,#c05f3e,#e0996a); border-radius: 28px; padding: 76px 64px; text-align: center;">
+      <h2 style="font-size: 50px; font-weight: 500; color: #fff; line-height: 1.1;">Let's build something<br>you'll be proud of.</h2>
+      <p style="color: #ffe8dc; font-size: 19px; margin-top: 18px; font-family:'Figtree';">Grab a free 20-minute chat. We'll talk it through, and I'll tell you honestly what it'd take.</p>
+      <a href="#" style="display:inline-flex; align-items:center; gap: 10px; background:#fffdf9; color:#a84e30; font-weight: 700; font-size: 17px; padding: 18px 36px; border-radius: 40px; margin-top: 32px; font-family:'Figtree';">Book your free chat →</a>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div style="background: #2f2622;">
+    <div class="wrap" style="display: flex; justify-content: space-between; align-items: center; padding-top: 40px; padding-bottom: 40px;">
+      <div style="display: flex; align-items: center; gap: 11px;">
+        <div style="width: 32px; height: 32px; border-radius: 50%; background: #c05f3e; display: flex; align-items: center; justify-content: center;">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.5" y2="16.5"></line></svg>
+        </div>
+        <span style="font-family: 'Newsreader', serif; font-weight: 600; font-size: 18px; color:#fdf7ef;">Searchbar Studio</span>
+      </div>
+      <div style="display: flex; gap: 30px; font-family:'Figtree';">
+        <a href="#" style="color:#bfb1a4; font-size: 14px;">hello@searchbarstudio.com</a>
+        <a href="#" style="color:#bfb1a4; font-size: 14px;">Instagram</a>
+        <a href="#" style="color:#bfb1a4; font-size: 14px;">Client login</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+</body>
+</html>

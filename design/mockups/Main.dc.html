@@ -1,0 +1,512 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: #efe7db;
+      font-family: 'Manrope', system-ui, sans-serif;
+      color: #241d16;
+      -webkit-font-smoothing: antialiased;
+    }
+    .page { background: #faf6f0; width: 1440px; }
+    h1,h2,h3,h4 { font-family: 'Newsreader', Georgia, serif; margin: 0; font-weight: 500; letter-spacing: -0.01em; }
+    p { margin: 0; }
+    a { color: #c1592f; text-decoration: none; }
+    a:hover { color: #a4471f; }
+    .wrap { max-width: 1180px; margin: 0 auto; padding: 0 48px; }
+    .muted { color: #6f6357; }
+    .card { background: #fffdf9; border: 1px solid #ece2d4; border-radius: 18px; }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 9px;
+      background: #c1592f; color: #fff; font-weight: 600; font-size: 15px;
+      padding: 15px 26px; border-radius: 12px; font-family: 'Manrope', sans-serif; cursor: pointer; border: none;
+    }
+    .btn-primary:hover { background: #a4471f; color: #fff; }
+    .btn-ghost {
+      display: inline-flex; align-items: center; gap: 8px;
+      color: #241d16; font-weight: 600; font-size: 15px;
+      padding: 15px 24px; border-radius: 12px; border: 1.5px solid #ddd0be; cursor: pointer; background: transparent;
+    }
+    .btn-ghost:hover { color: #241d16; border-color: #c1592f; }
+    .pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #fffdf9; border: 1px solid #e7dccb; border-radius: 40px;
+      padding: 7px 15px 7px 12px; font-family: 'Manrope'; font-size: 13px; font-weight: 600;
+      color: #7a6c5c; letter-spacing: 0.01em;
+    }
+    .caret { display: inline-block; width: 2px; height: 1.05em; background: #c1592f; margin-left: 2px; vertical-align: -2px; animation: blink 1.1s steps(1) infinite; }
+    @keyframes blink { 50% { opacity: 0; } }
+    .proj { cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease; }
+    .proj:hover { transform: translateY(-4px); box-shadow: 0 18px 34px -22px rgba(120,70,40,0.4); }
+    .field {
+      width: 100%; border: 1.5px solid #e2d6c5; border-radius: 11px; background: #fffdf9;
+      padding: 13px 15px; font-family: 'Manrope'; font-size: 15px; color: #241d16; margin-top: 8px;
+    }
+    .field::placeholder { color: #a99a88; }
+    .flabel { font-family: 'Manrope'; font-size: 13px; font-weight: 600; color: #6f6357; }
+  </style>
+</helmet>
+
+<div class="page">
+
+  <!-- NAV -->
+  <div style="border-bottom: 1px solid #ece2d4; background: rgba(250,246,240,0.92);">
+    <div class="wrap" style="display: flex; align-items: center; justify-content: space-between; height: 78px;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <div style="width: 35px; height: 35px; border-radius: 10px; background: #c1592f; display: flex; align-items: center; justify-content: center;">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.5" y2="16.5"></line></svg>
+        </div>
+        <span style="font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 18px; letter-spacing:-0.02em;">Searchbar<span style="color:#c1592f;">Studio</span></span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 34px;">
+        <a href="#" style="color:#4a4038; font-weight:500; font-size:15px;">Services</a>
+        <a href="#" style="color:#4a4038; font-weight:500; font-size:15px;">Work</a>
+        <a href="#" style="color:#4a4038; font-weight:500; font-size:15px;">Care plans</a>
+        <a href="#" style="color:#4a4038; font-weight:500; font-size:15px;">About</a>
+        <a href="#contact" class="btn-primary">Get in touch</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- HERO (centered, search-bar signature; eyebrow removed) -->
+  <div style="position: relative; overflow: hidden;">
+    <div style="position: absolute; top: 50%; left: 50%; width: 2600px; height: 2600px; transform: translate(-50%, -50%) rotate(45deg); pointer-events: none; background-image: url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Cg stroke='%23d8c1a6' stroke-width='1.3' stroke-linecap='round' opacity='0.16'%3E%3Cline x1='4' y1='6' x2='20' y2='6'/%3E%3Cline x1='4' y1='12' x2='20' y2='12'/%3E%3Cline x1='4' y1='18' x2='20' y2='18'/%3E%3Cline x1='30' y1='4' x2='30' y2='20'/%3E%3Cline x1='36' y1='4' x2='36' y2='20'/%3E%3Cline x1='42' y1='4' x2='42' y2='20'/%3E%3Cline x1='6' y1='28' x2='6' y2='44'/%3E%3Cline x1='12' y1='28' x2='12' y2='44'/%3E%3Cline x1='18' y1='28' x2='18' y2='44'/%3E%3Cline x1='28' y1='30' x2='44' y2='30'/%3E%3Cline x1='28' y1='36' x2='44' y2='36'/%3E%3Cline x1='28' y1='42' x2='44' y2='42'/%3E%3C/g%3E%3C/svg%3E&quot;); background-size: 54px 54px; background-position: center;"></div>
+    <div style="position: absolute; inset: 0; pointer-events: none; background: radial-gradient(1040px 560px at 50% 48%, rgba(250,246,240,0.97), rgba(250,246,240,0.97) 34%, rgba(250,246,240,0) 76%);"></div>
+    <div class="wrap" style="position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; padding-top: 92px; padding-bottom: 92px;">
+    <h1 style="font-size: 68px; line-height: 1.04; font-weight: 500; max-width: 900px;">The website your business has been <em style="font-style: italic; color:#c1592f;">searching</em> for.</h1>
+    <p class="muted" style="font-size: 20px; line-height: 1.55; margin-top: 24px; max-width: 620px;">I design, build, and look after modern websites for small businesses. You get a site you're proud of, and you never have to think about keeping it running.</p>
+
+    <!-- signature search bar -->
+    <div style="width: 100%; max-width: 680px; margin-top: 40px; display: flex; align-items: center; gap: 10px; background: #fffdf9; border: 1.5px solid #e7dccb; border-radius: 18px; padding: 10px 10px 10px 22px; box-shadow: 0 20px 40px -24px rgba(120,70,40,0.35);">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#a99a88" stroke-width="2.2" stroke-linecap="round" style="flex-shrink:0;"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.5" y2="16.5"></line></svg>
+      <span style="flex: 1; text-align: left; font-family: 'IBM Plex Mono', monospace; font-size: 18px; color: #3a3229;">a web person who actually sticks around<span class="caret"></span></span>
+      <a href="#contact" class="btn-primary" style="padding: 13px 24px; border-radius: 12px;">Search</a>
+    </div>
+
+    <div style="display: flex; gap: 14px; margin-top: 34px;">
+      <a href="#contact" class="btn-primary" style="padding: 16px 30px; font-size: 16px;">Get a free quote
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg>
+      </a>
+      <a href="#work" class="btn-ghost" style="padding: 16px 26px; font-size: 16px;">See recent work</a>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 12px; margin-top: 30px;">
+      <div style="display:flex;">
+        <span style="width:32px;height:32px;border-radius:50%;background:#e8b04a;border:2px solid #faf6f0;"></span>
+        <span style="width:32px;height:32px;border-radius:50%;background:#7fa77f;border:2px solid #faf6f0;margin-left:-10px;"></span>
+        <span style="width:32px;height:32px;border-radius:50%;background:#c1592f;border:2px solid #faf6f0;margin-left:-10px;"></span>
+      </div>
+      <span class="muted" style="font-size: 15px;">Loved by local business owners across [Your Area]</span>
+    </div>
+    </div>
+  </div>
+
+  <!-- TRUST STRIP (day-one-true metrics) -->
+  <div style="border-top: 1px solid #ece2d4; border-bottom: 1px solid #ece2d4; background: #fffdf9;">
+    <div class="wrap" style="display: flex; align-items: center; justify-content: space-between; padding-top: 38px; padding-bottom: 38px;">
+      <span class="muted" style="font-size: 15px; max-width: 220px;">The kind of work you can point at proudly.</span>
+      <div style="display: flex; gap: 60px;">
+        <div>
+          <div style="font-family:'Newsreader'; font-weight: 600; font-size: 36px;">100%</div>
+          <div class="muted" style="font-size: 14px; margin-top: 2px;">custom-built, no templates</div>
+        </div>
+        <div>
+          <div style="font-family:'Newsreader'; font-weight: 600; font-size: 36px;">&lt;24<span style="font-size:22px;">hr</span></div>
+          <div class="muted" style="font-size: 14px; margin-top: 2px;">to reply, always</div>
+        </div>
+        <div>
+          <div style="font-family:'Newsreader'; font-weight: 600; font-size: 36px;">1</div>
+          <div class="muted" style="font-size: 14px; margin-top: 2px;">person, start to finish</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SERVICES -->
+  <div class="wrap" style="padding-top: 96px; padding-bottom: 40px;">
+    <div class="pill">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#c1592f" stroke-width="2.6" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.5" y2="16.5"></line></svg>
+      What I do
+    </div>
+    <h2 style="font-size: 44px; font-weight: 500; margin-top: 18px; max-width: 660px;">Everything your website needs, handled by one person.</h2>
+  </div>
+  <div class="wrap" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; padding-bottom: 96px;">
+    <div class="card" style="padding: 28px;">
+      <div style="width: 48px; height: 48px; border-radius: 12px; background: #f7e7de; display:flex; align-items:center; justify-content:center;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#c1592f" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path><path d="M2 2l7.586 7.586"></path><circle cx="11" cy="11" r="2"></circle></svg>
+      </div>
+      <h3 style="font-size: 21px; font-weight: 500; margin-top: 20px;">Design &amp; build</h3>
+      <p class="muted" style="font-size: 15px; line-height: 1.55; margin-top: 10px;">A custom site that looks the part and loads fast, built to fit your business, not a template.</p>
+    </div>
+    <div class="card" style="padding: 28px;">
+      <div style="width: 48px; height: 48px; border-radius: 12px; background: #f7e7de; display:flex; align-items:center; justify-content:center;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#c1592f" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+      </div>
+      <h3 style="font-size: 21px; font-weight: 500; margin-top: 20px;">Hosting &amp; upkeep</h3>
+      <p class="muted" style="font-size: 15px; line-height: 1.55; margin-top: 10px;">Fast, secure hosting plus updates, backups, and monitoring, all handled in the background.</p>
+    </div>
+    <div class="card" style="padding: 28px;">
+      <div style="width: 48px; height: 48px; border-radius: 12px; background: #f7e7de; display:flex; align-items:center; justify-content:center;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#c1592f" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.5" y2="16.5"></line></svg>
+      </div>
+      <h3 style="font-size: 21px; font-weight: 500; margin-top: 20px;">Getting found</h3>
+      <p class="muted" style="font-size: 15px; line-height: 1.55; margin-top: 10px;">SEO basics done right, plus Google setup, so the right customers can actually find you.</p>
+    </div>
+    <div class="card" style="padding: 28px;">
+      <div style="width: 48px; height: 48px; border-radius: 12px; background: #f7e7de; display:flex; align-items:center; justify-content:center;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#c1592f" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+      </div>
+      <h3 style="font-size: 21px; font-weight: 500; margin-top: 20px;">Yours to update</h3>
+      <p class="muted" style="font-size: 15px; line-height: 1.55; margin-top: 10px;">Change your own text and photos anytime through a simple dashboard. Or hand it to me, your call.</p>
+    </div>
+  </div>
+
+  <!-- CARE PLAN (no prices) -->
+  <div style="background: radial-gradient(circle at 90% 16%, transparent 88px, rgba(230,183,159,0.10) 90px, rgba(230,183,159,0.10) 92px, transparent 94px), radial-gradient(circle at 90% 16%, transparent 148px, rgba(230,183,159,0.07) 150px, rgba(230,183,159,0.07) 152px, transparent 154px), #2a2117;">
+    <div class="wrap" style="display: grid; grid-template-columns: 1fr 0.9fr; gap: 60px; align-items: center; padding-top: 88px; padding-bottom: 88px;">
+      <div>
+        <div class="pill" style="background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.14); color:#e6b79f;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#e6b79f" stroke-width="2.6" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.5" y2="16.5"></line></svg>
+          The care plan
+        </div>
+        <h2 style="font-size: 46px; font-weight: 500; color: #fbf5ee; margin-top: 18px; line-height: 1.1;">Build it once. Kept running, forever.</h2>
+        <p style="color:#c3b4a5; font-size: 18px; line-height: 1.6; margin-top: 20px; max-width: 470px;">Most people build your site and disappear. I stick around. A simple monthly plan keeps everything fast, secure, and up to date, and means I'm one message away whenever you need something.</p>
+        <div style="display: flex; flex-direction: column; gap: 14px; margin-top: 28px;">
+          <div style="display:flex; align-items:center; gap: 12px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e6b79f" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg><span style="color:#e5dacd; font-size: 16px;">Hosting, security &amp; daily backups</span></div>
+          <div style="display:flex; align-items:center; gap: 12px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e6b79f" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg><span style="color:#e5dacd; font-size: 16px;">Edits handled for you, from your support hours</span></div>
+          <div style="display:flex; align-items:center; gap: 12px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e6b79f" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg><span style="color:#e5dacd; font-size: 16px;">Your own dashboard for billing &amp; requests</span></div>
+        </div>
+      </div>
+      <div style="background: #fbf5ee; border-radius: 22px; padding: 38px;">
+        <h3 style="font-size: 26px; font-weight: 500;">Simple monthly plans</h3>
+        <p class="muted" style="font-size: 15px; margin-top: 8px;">Priced to fit your site and how hands-on you want me. No lock-in, cancel anytime.</p>
+        <div style="height:1px; background:#ece2d4; margin: 24px 0;"></div>
+        <div style="display:flex; flex-direction: column; gap: 14px;">
+          <div style="display:flex; align-items:center; gap: 10px; font-size: 15px;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#c1592f" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg> Managed hosting &amp; SSL</div>
+          <div style="display:flex; align-items:center; gap: 10px; font-size: 15px;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#c1592f" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg> Updates, backups &amp; monitoring</div>
+          <div style="display:flex; align-items:center; gap: 10px; font-size: 15px;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#c1592f" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg> Support hours built in</div>
+          <div style="display:flex; align-items:center; gap: 10px; font-size: 15px;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#c1592f" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg> One simple invoice, on auto-pay</div>
+        </div>
+        <a href="#contact" class="btn-primary" style="width: 100%; justify-content: center; margin-top: 28px; padding: 15px;">Get a quote</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- WORK (click a card to open a modal) -->
+  <div id="work" class="wrap" style="padding-top: 96px;">
+    <div class="pill">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#c1592f" stroke-width="2.6" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.5" y2="16.5"></line></svg>
+      Recent work
+    </div>
+    <h2 style="font-size: 44px; font-weight: 500; margin-top: 18px;">A few sites I've built.</h2>
+    <p class="muted" style="font-size: 16px; margin-top: 10px;">Click any project to see the story behind it.</p>
+  </div>
+  <div class="wrap" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; padding-top: 36px; padding-bottom: 96px;">
+    <sc-for list="{{projects}}" as="p" hint-placeholder-count="3">
+      <div class="card proj" style="overflow: hidden;" onClick="{{p.open}}">
+        <div style="height: 205px; background: {{p.grad}};"></div>
+        <div style="padding: 22px;">
+          <div class="muted" style="font-size: 13px; font-weight: 600; font-family:'Manrope';">{{p.tag}}</div>
+          <h3 style="font-size: 21px; font-weight: 500; margin-top: 6px;">{{p.name}}</h3>
+          <p class="muted" style="font-size: 14px; margin-top: 8px;">{{p.blurb}}</p>
+          <div style="display:flex; align-items:center; gap:6px; margin-top: 14px; color:#c1592f; font-weight:600; font-size:14px; font-family:'Manrope';">
+            View project
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg>
+          </div>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+
+  <!-- ABOUT -->
+  <div style="background: radial-gradient(560px 360px at 100% 0%, rgba(217,138,94,0.16), transparent 66%), #f5ecdd; border-top: 1px solid #ece2d4;">
+    <div class="wrap" style="display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 56px; align-items: center; padding-top: 88px; padding-bottom: 88px;">
+      <div style="aspect-ratio: 1/1.05; border-radius: 20px; background: linear-gradient(160deg,#e9c98a,#d98a5e); display:flex; align-items:center; justify-content:center;">
+        <span style="color:#fff; font-size: 14px; font-family:'Manrope';">[Your photo]</span>
+      </div>
+      <div>
+        <div class="pill">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#c1592f" stroke-width="2.6" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.5" y2="16.5"></line></svg>
+          About
+        </div>
+        <h2 style="font-size: 40px; font-weight: 500; margin-top: 18px; line-height: 1.15;">Hi, I'm [Your Name]. I build websites for people, not committees.</h2>
+        <p class="muted" style="font-size: 18px; line-height: 1.6; margin-top: 20px;">SearchbarStudio is a one-person studio, which means you work directly with the person building your site, start to finish. No account managers, no hand-offs, no jargon. Just a site that does its job, and someone who genuinely cares that it keeps doing it. And because I'm a senior full-stack developer, if your project ever needs more than a website, I can build that too.</p>
+        <a href="#contact" class="btn-ghost" style="margin-top: 28px;">Get in touch</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROCESS -->
+  <div class="wrap" style="padding-top: 96px; padding-bottom: 40px;">
+    <div class="pill">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#c1592f" stroke-width="2.6" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.5" y2="16.5"></line></svg>
+      How it works
+    </div>
+    <h2 style="font-size: 44px; font-weight: 500; margin-top: 18px;">Four steps, no surprises.</h2>
+  </div>
+  <div class="wrap" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; padding-bottom: 96px;">
+    <div>
+      <div style="width: 44px; height: 44px; border-radius: 50%; background:#f7e7de; color:#c1592f; font-family:'Newsreader'; font-weight:600; font-size: 20px; display:flex; align-items:center; justify-content:center;">1</div>
+      <h3 style="font-size: 21px; font-weight: 500; margin-top: 16px;">Say hello</h3>
+      <p class="muted" style="font-size: 15px; line-height: 1.55; margin-top: 8px;">Send a message with a bit about your business and what you need.</p>
+    </div>
+    <div>
+      <div style="width: 44px; height: 44px; border-radius: 50%; background:#f7e7de; color:#c1592f; font-family:'Newsreader'; font-weight:600; font-size: 20px; display:flex; align-items:center; justify-content:center;">2</div>
+      <h3 style="font-size: 21px; font-weight: 500; margin-top: 16px;">Clear plan</h3>
+      <p class="muted" style="font-size: 15px; line-height: 1.55; margin-top: 8px;">I reply with a simple proposal and a fixed build price. You approve before I start.</p>
+    </div>
+    <div>
+      <div style="width: 44px; height: 44px; border-radius: 50%; background:#f7e7de; color:#c1592f; font-family:'Newsreader'; font-weight:600; font-size: 20px; display:flex; align-items:center; justify-content:center;">3</div>
+      <h3 style="font-size: 21px; font-weight: 500; margin-top: 16px;">Build &amp; review</h3>
+      <p class="muted" style="font-size: 15px; line-height: 1.55; margin-top: 8px;">I design and build your site, and we shape it together until it's right.</p>
+    </div>
+    <div>
+      <div style="width: 44px; height: 44px; border-radius: 50%; background:#f7e7de; color:#c1592f; font-family:'Newsreader'; font-weight:600; font-size: 20px; display:flex; align-items:center; justify-content:center;">4</div>
+      <h3 style="font-size: 21px; font-weight: 500; margin-top: 16px;">Live &amp; cared for</h3>
+      <p class="muted" style="font-size: 15px; line-height: 1.55; margin-top: 8px;">We go live, and your care plan takes over. I keep it running, you run your business.</p>
+    </div>
+  </div>
+
+  <!-- BEYOND WEBSITES (capability, secondary) -->
+  <div style="background-color: #fffdf9; background-image: repeating-linear-gradient(45deg, rgba(193,89,47,0.06) 0, rgba(193,89,47,0.06) 1.2px, transparent 1.2px, transparent 13px); border-top: 1px solid #ece2d4; border-bottom: 1px solid #ece2d4;">
+    <div class="wrap" style="display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; padding-top: 84px; padding-bottom: 84px;">
+      <div>
+        <div class="pill">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#c1592f" stroke-width="2.6" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.5" y2="16.5"></line></svg>
+          Beyond websites
+        </div>
+        <h2 style="font-size: 42px; font-weight: 500; margin-top: 18px; line-height: 1.12;">Need something more custom? I can build that.</h2>
+        <p class="muted" style="font-size: 18px; line-height: 1.6; margin-top: 20px; max-width: 460px;">Websites are what I do most, but I'm a senior full-stack developer by trade. When a business needs more than a brochure site, I can build it, and look after it the same way.</p>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 16px;">
+        <div class="card" style="padding: 24px; display: flex; gap: 18px; align-items: center;">
+          <div style="width: 46px; height: 46px; border-radius: 12px; background: #f7e7de; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+            <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="#c1592f" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+          </div>
+          <div>
+            <h3 style="font-size: 19px; font-weight: 500;">Web apps</h3>
+            <p class="muted" style="font-size: 14px; line-height: 1.5; margin-top: 4px;">Booking systems, dashboards, member portals, custom tools.</p>
+          </div>
+        </div>
+        <div class="card" style="padding: 24px; display: flex; gap: 18px; align-items: center;">
+          <div style="width: 46px; height: 46px; border-radius: 12px; background: #f7e7de; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+            <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="#c1592f" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="3"></rect><line x1="10" y1="18" x2="14" y2="18"></line></svg>
+          </div>
+          <div>
+            <h3 style="font-size: 19px; font-weight: 500;">Mobile apps</h3>
+            <p class="muted" style="font-size: 14px; line-height: 1.5; margin-top: 4px;">iOS and Android apps to put your business in your customers' pocket.</p>
+          </div>
+        </div>
+        <div class="card" style="padding: 24px; display: flex; gap: 18px; align-items: center;">
+          <div style="width: 46px; height: 46px; border-radius: 12px; background: #f7e7de; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+            <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="#c1592f" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
+          </div>
+          <div>
+            <h3 style="font-size: 19px; font-weight: 500;">Custom features &amp; integrations</h3>
+            <p class="muted" style="font-size: 14px; line-height: 1.5; margin-top: 4px;">Payments, automations, and hooking your site up to the tools you use.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTACT (email-first, no calls required) -->
+  <div id="contact" class="wrap" style="padding-bottom: 96px;">
+    <div style="background: radial-gradient(circle at 94% 84%, transparent 72px, rgba(255,255,255,0.14) 74px, rgba(255,255,255,0.14) 76px, transparent 78px), radial-gradient(circle at 94% 84%, transparent 116px, rgba(255,255,255,0.09) 118px, rgba(255,255,255,0.09) 120px, transparent 122px), linear-gradient(135deg,#c1592f,#e0996a); border-radius: 26px; padding: 60px; display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start; overflow: hidden;">
+      <div>
+        <h2 style="font-size: 46px; font-weight: 500; color: #fff; line-height: 1.1;">Let's build something you're proud of.</h2>
+        <p style="color: #ffe6da; font-size: 18px; margin-top: 18px; line-height: 1.55;">Tell me a little about your business and what you're after. I read every message and reply within a day, usually sooner.</p>
+        <div style="display:flex; flex-direction: column; gap: 16px; margin-top: 32px;">
+          <div style="display:flex; align-items:center; gap: 12px;">
+            <div style="width:40px;height:40px;border-radius:11px;background:rgba(255,255,255,0.16);display:flex;align-items:center;justify-content:center;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="M22 7l-10 6L2 7"></path></svg>
+            </div>
+            <div>
+              <div style="color:#ffe6da; font-size: 13px; font-family:'Manrope';">Email</div>
+              <div style="color:#fff; font-size: 16px; font-weight: 600; font-family:'Manrope';">hello@searchbarstudio.com</div>
+            </div>
+          </div>
+          <div style="display:flex; align-items:center; gap: 12px;">
+            <div style="width:40px;height:40px;border-radius:11px;background:rgba(255,255,255,0.16);display:flex;align-items:center;justify-content:center;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.5" cy="6.5" r="1.2" fill="#fff" stroke="none"></circle></svg>
+            </div>
+            <div>
+              <div style="color:#ffe6da; font-size: 13px; font-family:'Manrope';">Instagram</div>
+              <div style="color:#fff; font-size: 16px; font-weight: 600; font-family:'Manrope';">@searchbarstudio</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="background: #fffdf9; border-radius: 18px; padding: 30px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+          <div>
+            <span class="flabel">Your name</span>
+            <input class="field" type="text" placeholder="Jane Smith">
+          </div>
+          <div>
+            <span class="flabel">Email</span>
+            <input class="field" type="email" placeholder="jane@yourbusiness.com">
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px;">
+          <div>
+            <span class="flabel">What do you need?</span>
+            <select class="field">
+              <option value="" disabled selected hidden>Select one</option>
+              <option>New website</option>
+              <option>Website redesign</option>
+              <option>Web app</option>
+              <option>Mobile app</option>
+              <option>Care for an existing site</option>
+              <option>Not sure yet</option>
+            </select>
+          </div>
+          <div>
+            <span class="flabel">Timeline</span>
+            <select class="field">
+              <option value="" disabled selected hidden>Select one</option>
+              <option>Just exploring</option>
+              <option>In the next 1-3 months</option>
+              <option>As soon as possible</option>
+            </select>
+          </div>
+        </div>
+        <div style="margin-top: 16px;">
+          <span class="flabel">Your current site, or one you like <span style="font-weight: 500; color: #a99a88;">(optional)</span></span>
+          <input class="field" type="text" placeholder="yourbusiness.com, or a site whose style you love">
+        </div>
+        <div style="margin-top: 16px;">
+          <span class="flabel">How did you hear about me? <span style="font-weight: 500; color: #a99a88;">(optional)</span></span>
+          <select class="field">
+            <option value="" disabled selected hidden>Select one</option>
+            <option>A friend or past client</option>
+            <option>Google search</option>
+            <option>Instagram</option>
+            <option>Somewhere else</option>
+          </select>
+        </div>
+        <div style="margin-top: 16px;">
+          <span class="flabel">A little about your project</span>
+          <textarea class="field" rows="3" placeholder="I run a small [type of business] and need a website that..."></textarea>
+        </div>
+        <button class="btn-primary" style="width: 100%; justify-content: center; margin-top: 20px; padding: 15px; font-size: 16px;">Send message</button>
+        <p class="muted" style="font-size: 13px; text-align: center; margin-top: 12px;">No spam, no pressure. Just a reply within a day.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div style="background: #2a2117;">
+    <div class="wrap" style="display: flex; justify-content: space-between; align-items: center; padding-top: 40px; padding-bottom: 40px;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <div style="width: 31px; height: 31px; border-radius: 8px; background: #c1592f; display: flex; align-items: center; justify-content: center;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.5" y2="16.5"></line></svg>
+        </div>
+        <span style="font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 16px; color:#fbf5ee; letter-spacing:-0.02em;">SearchbarStudio</span>
+      </div>
+      <div style="display: flex; gap: 30px; font-family:'Manrope';">
+        <a href="#" style="color:#b6a898; font-size: 14px;">hello@searchbarstudio.com</a>
+        <a href="#" style="color:#b6a898; font-size: 14px;">Instagram</a>
+        <a href="#" style="color:#b6a898; font-size: 14px;">Client login</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROJECT MODAL -->
+  <sc-if value="{{modalOpen}}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{closeModal}}" style="position: fixed; inset: 0; background: rgba(28,20,12,0.55); display: flex; align-items: center; justify-content: center; padding: 40px; z-index: 50;">
+      <div onClick="{{stop}}" class="card" style="width: 100%; max-width: 720px; overflow: hidden; position: relative; box-shadow: 0 40px 80px -30px rgba(20,12,6,0.6);">
+        <div style="height: 240px; background: {{current.grad}}; position: relative;">
+          <div onClick="{{closeModal}}" style="position: absolute; top: 16px; right: 16px; width: 38px; height: 38px; border-radius: 50%; background: rgba(255,255,255,0.9); display:flex; align-items:center; justify-content:center; cursor: pointer;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#241d16" stroke-width="2.4" stroke-linecap="round"><path d="M18 6L6 18"></path><path d="M6 6l12 12"></path></svg>
+          </div>
+        </div>
+        <div style="padding: 36px;">
+          <div class="muted" style="font-size: 13px; font-weight: 600; font-family:'Manrope';">{{current.tag}}</div>
+          <h3 style="font-size: 30px; font-weight: 500; margin-top: 6px;">{{current.name}}</h3>
+          <p class="muted" style="font-size: 16px; line-height: 1.6; margin-top: 14px;">{{current.detail}}</p>
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 26px;">
+            <div>
+              <div class="flabel">The ask</div>
+              <div style="font-size: 15px; margin-top: 6px; font-family:'Manrope';">{{current.ask}}</div>
+            </div>
+            <div>
+              <div class="flabel">What I built</div>
+              <div style="font-size: 15px; margin-top: 6px; font-family:'Manrope';">{{current.built}}</div>
+            </div>
+            <div>
+              <div class="flabel">The result</div>
+              <div style="font-size: 15px; margin-top: 6px; font-family:'Manrope';">{{current.result}}</div>
+            </div>
+          </div>
+          <a href="#" class="btn-ghost" style="margin-top: 28px;">Visit the live site
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"></path><path d="M8 7h9v9"></path></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { open: null };
+  }
+  renderVals() {
+    const projects = [
+      {
+        id: 'p1', tag: 'Live musician', name: '[Project name]',
+        blurb: 'Booking site with dates, videos, and an inquiry form.',
+        grad: 'linear-gradient(150deg,#e8b04a,#f0cd82)',
+        detail: 'A clean, photo-forward site for a working musician, built to turn a curious visitor into a booking.',
+        ask: 'Look professional and take bookings.',
+        built: 'A one-page site with dates, videos, and a simple inquiry form.',
+        result: 'Fewer back-and-forth DMs, more booked gigs.'
+      },
+      {
+        id: 'p2', tag: 'Local shop', name: '[Project name]',
+        blurb: 'Storefront with online ordering and pickup.',
+        grad: 'linear-gradient(150deg,#7fa77f,#a9c8a4)',
+        detail: 'A friendly storefront that lets regulars order ahead without a phone call.',
+        ask: 'Sell online without a clunky system.',
+        built: 'A simple shop with online ordering and local pickup.',
+        result: 'Orders roll in outside of open hours.'
+      },
+      {
+        id: 'p3', tag: 'Service business', name: '[Project name]',
+        blurb: 'Lead-gen site with quote requests and reviews.',
+        grad: 'linear-gradient(150deg,#d98a5e,#e8ab84)',
+        detail: 'A trust-building site for a local service business, designed to bring in qualified quote requests.',
+        ask: 'Get found and get more quote requests.',
+        built: 'A fast site with clear services, reviews, and a quote form.',
+        result: 'A steady stream of new enquiries.'
+      }
+    ];
+    const items = projects.map((p) => ({ ...p, open: () => this.setState({ open: p }) }));
+    const current = this.state.open;
+    return {
+      projects: items,
+      modalOpen: !!current,
+      current: current || {},
+      closeModal: () => this.setState({ open: null }),
+      stop: (e) => { if (e && e.stopPropagation) e.stopPropagation(); }
+    };
+  }
+}
+</script>
+</body>
+</html>

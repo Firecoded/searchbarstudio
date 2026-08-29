@@ -1,0 +1,6 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "title": "SearchbarStudio — Homepage", "x": 0, "y": 0, "w": 1440, "h": 5350, "is_interactive": true }
+  ],
+  "launch": { "view": "canvas" }
+}

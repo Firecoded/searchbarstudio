@@ -1,0 +1,414 @@
+<title>SearchbarStudio Architecture</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    --ground: #faf6f0;
+    --surface: #fffdf9;
+    --surface-2: #f5ecdd;
+    --ink: #241d16;
+    --muted: #6f6357;
+    --faint: #9a8c7b;
+    --accent: #c1592f;
+    --accent-soft: #f3e3d9;
+    --accent-ink: #ffffff;
+    --border: #e9ddcc;
+    --border-strong: #d8cbb8;
+    --mono-bg: #f1e7d7;
+    --good: #5f7d52;
+    --good-soft: #e8eede;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #211b15;
+      --surface: #2a231c;
+      --surface-2: #322a21;
+      --ink: #f3ece1;
+      --muted: #bcae9e;
+      --faint: #8a7c6b;
+      --accent: #e59268;
+      --accent-soft: #3a2b23;
+      --accent-ink: #241d16;
+      --border: #3a3127;
+      --border-strong: #4a3f33;
+      --mono-bg: #342b21;
+      --good: #a6c091;
+      --good-soft: #2b3325;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #211b15;
+    --surface: #2a231c;
+    --surface-2: #322a21;
+    --ink: #f3ece1;
+    --muted: #bcae9e;
+    --faint: #8a7c6b;
+    --accent: #e59268;
+    --accent-soft: #3a2b23;
+    --accent-ink: #241d16;
+    --border: #3a3127;
+    --border-strong: #4a3f33;
+    --mono-bg: #342b21;
+    --good: #a6c091;
+    --good-soft: #2b3325;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: 'Manrope', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.6;
+  }
+  .doc { max-width: 860px; margin: 0 auto; padding: 0 28px 120px; }
+
+  h1, h2, h3 { font-family: 'Newsreader', Georgia, serif; font-weight: 500; letter-spacing: -0.01em; margin: 0; text-wrap: balance; }
+  p { margin: 0; }
+  a { color: var(--accent); text-decoration: none; border-bottom: 1px solid color-mix(in oklab, var(--accent) 35%, transparent); }
+  a:hover { border-bottom-color: var(--accent); }
+  code, .mono { font-family: 'IBM Plex Mono', ui-monospace, monospace; }
+
+  .kicker {
+    font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 500;
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);
+  }
+  .lead { color: var(--muted); }
+
+  /* Header */
+  header { padding: 64px 0 40px; }
+  .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 40px; }
+  .brand .mark { width: 32px; height: 32px; border-radius: 9px; background: var(--accent); display: flex; align-items: center; justify-content: center; }
+  .brand .name { font-weight: 800; font-size: 16px; letter-spacing: -0.02em; }
+  .brand .name span { color: var(--accent); }
+  header h1 { font-size: clamp(34px, 6vw, 52px); line-height: 1.05; }
+  header .lead { font-size: 19px; margin-top: 18px; max-width: 60ch; }
+  .meta { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 26px; font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; color: var(--faint); }
+  .meta span { display: inline-flex; align-items: center; gap: 7px; }
+  .meta b { color: var(--muted); font-weight: 500; }
+
+  section { padding-top: 56px; }
+  .sec-head { margin-bottom: 22px; }
+  .sec-head h2 { font-size: 28px; margin-top: 8px; }
+
+  /* Two halves */
+  .halves { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .half { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 26px; }
+  .half .tag { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); }
+  .half h3 { font-size: 21px; margin-top: 8px; }
+  .half p { color: var(--muted); font-size: 15px; margin-top: 10px; }
+
+  /* Spec rows (the stack) */
+  .rows { border-top: 1px solid var(--border); }
+  .row { display: grid; grid-template-columns: 150px 1fr; gap: 24px; padding: 22px 0; border-bottom: 1px solid var(--border); align-items: baseline; }
+  .row .label { font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); padding-top: 3px; }
+  .row .pick { font-size: 19px; font-weight: 700; font-family: 'Manrope'; letter-spacing: -0.01em; }
+  .row .pick .sub { font-weight: 500; color: var(--muted); font-size: 15px; }
+  .row .why { color: var(--muted); font-size: 15px; margin-top: 7px; }
+  .row .note { margin-top: 11px; font-size: 13.5px; color: var(--ink); background: var(--accent-soft); border-radius: 9px; padding: 9px 13px; display: inline-block; }
+
+  .chip { font-family: 'IBM Plex Mono', monospace; font-size: 12px; background: var(--mono-bg); color: var(--accent); padding: 3px 9px; border-radius: 6px; white-space: nowrap; }
+
+  /* Numbered flow */
+  .flow { display: flex; flex-direction: column; gap: 2px; counter-reset: step; }
+  .step { display: grid; grid-template-columns: 40px 1fr; gap: 18px; padding: 16px 0; border-bottom: 1px solid var(--border); align-items: baseline; }
+  .step:last-child { border-bottom: none; }
+  .step .n { counter-increment: step; font-family: 'Newsreader', serif; font-size: 22px; color: var(--accent); }
+  .step .n::before { content: counter(step); }
+  .step h3 { font-size: 17px; font-weight: 600; font-family: 'Manrope'; }
+  .step p { color: var(--muted); font-size: 14.5px; margin-top: 4px; }
+
+  /* Phase cards */
+  .phase { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 26px; margin-bottom: 16px; }
+  .phase-head { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+  .phase-head h3 { font-size: 20px; }
+  .pill { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; padding: 4px 10px; border-radius: 20px; }
+  .pill.now { background: var(--accent); color: var(--accent-ink); }
+  .pill.later { background: var(--good-soft); color: var(--good); border: 1px solid color-mix(in oklab, var(--good) 30%, transparent); }
+  .phase ul { margin: 0; padding-left: 20px; color: var(--muted); font-size: 15px; }
+  .phase li { margin: 6px 0; }
+  .phase li b { color: var(--ink); font-weight: 600; }
+
+  /* Data model */
+  .tables { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .tbl { background: var(--surface); border: 1px solid var(--border); border-radius: 13px; overflow: hidden; }
+  .tbl .tname { font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 500; color: var(--accent); padding: 12px 15px; border-bottom: 1px solid var(--border); background: var(--surface-2); }
+  .tbl .field { font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; color: var(--muted); padding: 7px 15px; }
+  .tbl .field:not(:last-child) { border-bottom: 1px solid var(--border); }
+
+  /* Cost table */
+  table.cost { width: 100%; border-collapse: collapse; font-size: 15px; }
+  table.cost th, table.cost td { text-align: left; padding: 13px 4px; border-bottom: 1px solid var(--border); }
+  table.cost th { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); font-weight: 500; }
+  table.cost td.amt { text-align: right; font-family: 'IBM Plex Mono', monospace; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  table.cost tr td:first-child { font-weight: 600; }
+  table.cost .free { color: var(--good); }
+
+  .callout { background: var(--surface-2); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: 10px; padding: 18px 20px; font-size: 15px; color: var(--muted); }
+  .callout b { color: var(--ink); }
+
+  .note-list { list-style: none; margin: 0; padding: 0; }
+  .note-list li { padding: 14px 0; border-bottom: 1px solid var(--border); font-size: 15px; color: var(--muted); }
+  .note-list li:last-child { border-bottom: none; }
+  .note-list b { color: var(--ink); font-weight: 600; }
+
+  footer { margin-top: 72px; padding-top: 28px; border-top: 1px solid var(--border-strong); font-size: 14px; color: var(--faint); }
+
+  @media (max-width: 680px) {
+    .halves, .tables { grid-template-columns: 1fr; }
+    .row { grid-template-columns: 1fr; gap: 6px; }
+    .row .label { padding-top: 0; }
+  }
+</style>
+
+<div class="doc">
+
+  <header>
+    <div class="brand">
+      <div class="mark">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.5" y2="16.5"></line></svg>
+      </div>
+      <div class="name">Searchbar<span>Studio</span></div>
+    </div>
+    <div class="kicker">Technical Reference</div>
+    <h1>Architecture &amp; stack</h1>
+    <p class="lead">Everything we settled on for the SearchbarStudio site, the public marketing front end and the client portal behind it, in one place so nothing gets re-litigated at build time.</p>
+    <div class="meta">
+      <span><b>Updated</b> Aug 2026</span>
+      <span><b>Frontend</b> Next.js on Vercel</span>
+      <span><b>Status</b> ready to build</span>
+    </div>
+  </header>
+
+  <!-- TWO HALVES -->
+  <section>
+    <div class="sec-head">
+      <div class="kicker">The shape of it</div>
+      <h2>Two products, one domain</h2>
+    </div>
+    <div class="halves">
+      <div class="half">
+        <div class="tag">Public</div>
+        <h3>Marketing site</h3>
+        <p>The "hire me" front end. Hero, services, care-plan pitch, work, about, contact. Its whole job is to get a qualified message into your inbox. This is the mockup we designed.</p>
+      </div>
+      <div class="half">
+        <div class="tag">Private</div>
+        <h3>Client portal &amp; back office</h3>
+        <p>Your admin plus client logins, invites, and billing status. The thing that gets you <em>paid</em>. Built on the same auth and database, shipped in a later phase.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- THE STACK -->
+  <section>
+    <div class="sec-head">
+      <div class="kicker">The stack</div>
+      <h2>What runs it, and why</h2>
+    </div>
+    <div class="rows">
+
+      <div class="row">
+        <div class="label">Framework</div>
+        <div>
+          <div class="pick">Next.js <span class="sub">on Vercel</span></div>
+          <div class="why">One framework for the marketing site and the app, clean path for both the front end and the Stripe/auth server bits.</div>
+          <div class="note">Vercel's free Hobby tier is technically non-commercial. Once you're charging clients, move to <b>Pro (~$20/mo)</b> or a cheap VPS. Not a day-one problem.</div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="label">Auth</div>
+        <div>
+          <div class="pick">Better Auth</div>
+          <div class="why">Email + password with a reset flow (you chose this over magic links, password managers make it frictionless). You own the data, no per-user pricing. Magic links stay available as a plugin later.</div>
+          <div class="note">Its <span class="chip">admin</span> and <span class="chip">organization</span> plugins cover "manage users." Invites = a one-time "set your password" link, same mechanism as a reset token.</div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="label">Database</div>
+        <div>
+          <div class="pick">Neon <span class="sub">serverless Postgres</span></div>
+          <div class="why">Free tier is plenty (0.5&nbsp;GB holds thousands of clients). Chosen over Supabase because Supabase's free tier fully pauses after ~7 days idle, Neon just briefly cold-starts.</div>
+          <div class="note">Compute sleeps after 5&nbsp;min idle and wakes in ~0.5s. Hide it with a warm-up ping when the login page loads. Kill it entirely later with Neon's always-on (~$19/mo) if it ever bugs you.</div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="label">Email</div>
+        <div>
+          <div class="pick">Resend</div>
+          <div class="why">Transactional email for invites, password resets, and contact-form submissions. Free tier (3k/mo) is far more than you'll send. Best Next.js DX (React email templates).</div>
+          <div class="note">One setup task: verify your domain (DNS records) so mail lands in inboxes, not spam.</div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="label">Payments</div>
+        <div>
+          <div class="pick">Stripe <span class="sub">Billing / Subscriptions</span></div>
+          <div class="why">Hosted checkout + hosted billing portal do the entire recurring-money job: store the card, charge monthly forever, retry failures, email receipts, let clients update their card.</div>
+          <div class="note"><b>No card data ever touches your code.</b> Your app only reads subscription status from Stripe and displays it ("Active, next charge Sept&nbsp;28").</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- AUTH MODEL -->
+  <section>
+    <div class="sec-head">
+      <div class="kicker">Accounts</div>
+      <h2>Who logs in</h2>
+    </div>
+    <ul class="note-list">
+      <li><b>Admin (you).</b> The only admin. Manage clients, send invites, kick off subscriptions, read billing status.</li>
+      <li><b>Clients.</b> Regular users. Get an invite email &rarr; set a password &rarr; land on their own dashboard (project, invoices, subscription status).</li>
+      <li><b>Invite flow.</b> You enter a client's email; they get a one-time link to set their password. No temp passwords, no manual account creation.</li>
+    </ul>
+  </section>
+
+  <!-- BILLING FLOW -->
+  <section>
+    <div class="sec-head">
+      <div class="kicker">The money path</div>
+      <h2>How a $/month client gets set up</h2>
+    </div>
+    <div class="flow">
+      <div class="step"><div class="n"></div><div><h3>Build ships</h3><p>Site is done, time to start the recurring plan.</p></div></div>
+      <div class="step"><div class="n"></div><div><h3>Create the subscription</h3><p>In your admin (or the Stripe dashboard early on), create the customer + monthly subscription and send the link.</p></div></div>
+      <div class="step"><div class="n"></div><div><h3>Client subscribes</h3><p>They open Stripe's hosted checkout, enter their card once, and confirm. Stripe stores it and charges immediately.</p></div></div>
+      <div class="step"><div class="n"></div><div><h3>It runs itself</h3><p>Stripe charges every month forever, emails receipts, and handles failed-card retries and card updates through its billing portal.</p></div></div>
+      <div class="step"><div class="n"></div><div><h3>Your app just reflects it</h3><p>The dashboard reads status from Stripe and shows "Active, next charge on [date]." You never build billing logic.</p></div></div>
+    </div>
+  </section>
+
+  <!-- PHASES -->
+  <section>
+    <div class="sec-head">
+      <div class="kicker">Build order</div>
+      <h2>Ship in two phases</h2>
+    </div>
+    <div class="phase">
+      <div class="phase-head"><h3>Version A</h3><span class="pill now">Build first</span></div>
+      <ul>
+        <li><b>Marketing site</b> (the mockup, turned real) + <b>your admin</b> + <b>Stripe subscriptions.</b></li>
+        <li>You build your own auth login from day one anyway, so "login" exists regardless.</li>
+        <li>Lets you charge real clients in days, managing them from the Stripe dashboard at first.</li>
+      </ul>
+    </div>
+    <div class="phase">
+      <div class="phase-head"><h3>Version B</h3><span class="pill later">Grow into it</span></div>
+      <ul>
+        <li><b>Client-facing dashboards</b> + polished invite flow, added when a client would actually use one.</li>
+        <li>Because the auth was built in Version A, adding clients is a small step, not a rebuild.</li>
+        <li>Becomes the home for upsells: "request a change," add-ons, self-serve.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- DATA MODEL -->
+  <section>
+    <div class="sec-head">
+      <div class="kicker">Rough shape</div>
+      <h2>Data model sketch</h2>
+    </div>
+    <div class="tables">
+      <div class="tbl">
+        <div class="tname">users</div>
+        <div class="field">id</div>
+        <div class="field">email</div>
+        <div class="field">role · admin|client</div>
+        <div class="field">password_hash</div>
+        <div class="field">created_at</div>
+      </div>
+      <div class="tbl">
+        <div class="tname">projects</div>
+        <div class="field">id</div>
+        <div class="field">client_id &rarr; users</div>
+        <div class="field">name · site_url</div>
+        <div class="field">status</div>
+        <div class="field">stripe_customer_id</div>
+      </div>
+      <div class="tbl">
+        <div class="tname">subscription*</div>
+        <div class="field">read from Stripe</div>
+        <div class="field">status</div>
+        <div class="field">current_period_end</div>
+        <div class="field">plan / price</div>
+        <div class="field">cache locally, optional</div>
+      </div>
+    </div>
+    <p class="lead" style="font-size:13.5px; margin-top:14px;">*Subscriptions live in Stripe, not your DB. Auth tables (sessions, verification tokens) are created by Better Auth. This is a sketch, not a schema.</p>
+  </section>
+
+  <!-- COSTS -->
+  <section>
+    <div class="sec-head">
+      <div class="kicker">Running costs</div>
+      <h2>What it costs to keep the lights on</h2>
+    </div>
+    <table class="cost">
+      <thead><tr><th>Service</th><th>Role</th><th class="amt">Cost</th></tr></thead>
+      <tbody>
+        <tr><td>Domain</td><td class="lead" style="color:var(--muted)">searchbarstudio.com</td><td class="amt">~$12/yr</td></tr>
+        <tr><td>Neon</td><td class="lead" style="color:var(--muted)">Database</td><td class="amt free">$0</td></tr>
+        <tr><td>Resend</td><td class="lead" style="color:var(--muted)">Email</td><td class="amt free">$0</td></tr>
+        <tr><td>Stripe</td><td class="lead" style="color:var(--muted)">Per charge</td><td class="amt">~2.9% + 30¢</td></tr>
+        <tr><td>Vercel</td><td class="lead" style="color:var(--muted)">Hosting</td><td class="amt">$0 &rarr; $20/mo</td></tr>
+      </tbody>
+    </table>
+    <div class="callout" style="margin-top:20px;">Real fixed cost to start is basically <b>just the domain (~$12/yr)</b>, until you're big enough that a $20/mo line is a rounding error. Prices drift, verify at signup.</div>
+  </section>
+
+  <!-- CLIENT SITES -->
+  <section>
+    <div class="sec-head">
+      <div class="kicker">Delivery, not your own stack</div>
+      <h2>How you build client sites</h2>
+    </div>
+    <div class="callout" style="margin-bottom:18px;">Keep this separate from everything above: <b>your own site</b> is Next.js. The <b>sites you build for clients</b> are a per-project delivery choice, often WordPress so they can self-edit, sometimes custom.</div>
+    <ul class="note-list">
+      <li><b>Hybrid editing posture.</b> Deliver sites clients <em>can</em> edit themselves (a dashboard / WordPress), and offer done-for-you edits through the care plan's support hours.</li>
+      <li><b>Why it works for you.</b> Self-edit makes the "change this text" email optional, and when they do send it, it's billed against support hours. You're never the free-edits guy.</li>
+      <li><b>Care-plan value</b> leans on hosting, security, and maintenance (things clients can't DIY), plus optional edit labor.</li>
+    </ul>
+  </section>
+
+  <!-- BUSINESS RECAP -->
+  <section>
+    <div class="sec-head">
+      <div class="kicker">Off the site, for reference</div>
+      <h2>Positioning &amp; pricing (internal)</h2>
+    </div>
+    <ul class="note-list">
+      <li><b>No prices on the site.</b> No figures, no "starting at" ranges. Pure book/contact CTA, the quality of the site is the qualifier. Pricing is handled in outreach.</li>
+      <li><b>Build fee</b> scales with complexity (rough ballpark $500–$2,000), 50% deposit up front, balance on launch. Recurring starts at launch.</li>
+      <li><b>Recurring tiers</b> by support hours + maintenance level (not traffic). Base ~1&nbsp;hr/mo of edits; over that is hourly. New features = scoped mini-quotes, not free edits.</li>
+      <li><b>Founding-client discounts</b> early to build the portfolio; ask for testimonials + referrals in exchange. Word-of-mouth is the main channel.</li>
+      <li><b>Positioning:</b> websites are the homepage; web/mobile/custom apps are framed as depth ("Beyond websites"), not a competing menu, because you're a senior full-stack dev.</li>
+    </ul>
+  </section>
+
+  <!-- NEXT -->
+  <section>
+    <div class="sec-head">
+      <div class="kicker">Still open</div>
+      <h2>Decisions parked for build time</h2>
+    </div>
+    <ul class="note-list">
+      <li><b>Contact form wiring.</b> Form submissions → email via Resend, or a form service (Formspree). Resend is already in the stack.</li>
+      <li><b>Number of care-plan tiers</b> and roughly what each includes (likely 2–3: lean / standard / active).</li>
+      <li><b>Your hourly rate</b> for overage and add-ons, everything else references it.</li>
+      <li><b>Mobile layout</b> for the marketing site, and swapping the <span class="chip">[placeholders]</span> for real content, photos, and projects.</li>
+    </ul>
+  </section>
+
+  <footer>
+    SearchbarStudio · internal architecture reference. The live homepage mockup is the companion to this doc.
+  </footer>
+
+</div>
