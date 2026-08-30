@@ -24,9 +24,10 @@ Two products living in one Next.js app:
 ## Where we are
 
 The **marketing site is done**, the **auth foundation is live** (you can log in,
-reset a password), the **admin dashboard** lists accounts, and the **contact
-form** delivers to the inbox. The client portal and billing are still ahead.
-Roughly: **Phases 1 and 2 complete, Phase 3 next.**
+reset a password), the **admin dashboard** lists accounts and invites clients,
+the **invite flow** and **client dashboard** work, and the **contact form**
+delivers to the inbox. Billing is still ahead. Roughly: **Phases 1 through 3
+complete, Phase 4 (Stripe) next.**
 
 ---
 
@@ -56,12 +57,13 @@ projects._
 - [x] Real **admin dashboard**: see clients, manage users
 - [x] Wire the **contact form** to email submissions via Resend
 
-### Phase 3 — Client portal
+### Phase 3 — Client portal ✅ Done
 
-- [ ] **Invite flow**: admin adds a client → one-time set-password email → client
+- [x] **Invite flow**: admin adds a client → one-time set-password email → client
       sets their password → lands on their dashboard
-- [ ] **Client dashboard**: their project, status, and a place to request changes
-- [ ] Roles polish (admin vs client gating throughout)
+- [x] **Client dashboard**: their project, status, and a place to request changes
+      (placeholder content for now)
+- [x] Roles polish (admin vs client gating throughout)
 
 ### Phase 4 — Billing (Stripe)
 

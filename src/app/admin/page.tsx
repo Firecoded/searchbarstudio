@@ -1,10 +1,11 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { asc } from "drizzle-orm";
+import { asc, eq } from "drizzle-orm";
 import { auth } from "@/lib/auth";
 import { db } from "@/db";
-import { user } from "@/db/schema";
+import { user, account } from "@/db/schema";
 import { SignOut } from "@/components/sign-out";
+import { InviteForm } from "@/components/admin/invite-form";
 
 const dateFmt = new Intl.DateTimeFormat("en-US", {
   month: "short",
@@ -31,6 +32,13 @@ export default async function AdminPage() {
     .from(user)
     .orderBy(asc(user.createdAt));
 
+  // A client with no credential account was invited but hasn't set a password.
+  const credentials = await db
+    .select({ userId: account.userId })
+    .from(account)
+    .where(eq(account.providerId, "credential"));
+  const activated = new Set(credentials.map((c) => c.userId));
+
   const clients = people.filter((p) => p.role === "client");
   const team = people.filter((p) => p.role === "admin");
 
@@ -49,6 +57,10 @@ export default async function AdminPage() {
       <div className="mt-9 grid grid-cols-2 gap-4 sm:max-w-[380px]">
         <Stat label="Clients" value={clients.length} />
         <Stat label="Team" value={team.length} />
+      </div>
+
+      <div className="mt-8">
+        <InviteForm />
       </div>
 
       <section className="mt-11">
@@ -76,7 +88,10 @@ export default async function AdminPage() {
                     <td className="px-5 py-3.5 font-medium">{p.name}</td>
                     <td className="px-5 py-3.5 text-muted">{p.email}</td>
                     <td className="px-5 py-3.5">
-                      <RoleBadge role={p.role} />
+                      <RoleBadge
+                        role={p.role}
+                        pending={p.role === "client" && !activated.has(p.id)}
+                      />
                     </td>
                     <td className="px-5 py-3.5 text-muted">
                       {dateFmt.format(p.createdAt)}
@@ -101,15 +116,26 @@ function Stat({ label, value }: { label: string; value: number }) {
   );
 }
 
-function RoleBadge({ role }: { role: string | null }) {
+function RoleBadge({
+  role,
+  pending,
+}: {
+  role: string | null;
+  pending?: boolean;
+}) {
   const isAdmin = role === "admin";
   return (
-    <span
-      className={`inline-block rounded-full px-2.5 py-1 text-[12px] font-semibold ${
-        isAdmin ? "bg-accent-soft text-accent" : "bg-sand text-muted"
-      }`}
-    >
-      {role ?? "client"}
+    <span className="inline-flex items-center gap-2">
+      <span
+        className={`inline-block rounded-full px-2.5 py-1 text-[12px] font-semibold ${
+          isAdmin ? "bg-accent-soft text-accent" : "bg-sand text-muted"
+        }`}
+      >
+        {role ?? "client"}
+      </span>
+      {pending && (
+        <span className="text-[12px] font-medium text-faint">Invited</span>
+      )}
     </span>
   );
 }

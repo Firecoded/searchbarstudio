@@ -1,6 +1,9 @@
 "use server";
 
+import { and, eq, gt } from "drizzle-orm";
 import { sendEmail } from "@/lib/email";
+import { db } from "@/db";
+import { user, verification } from "@/db/schema";
 
 const CONTACT_TO = process.env.CONTACT_TO ?? "searchbarstudio@gmail.com";
 
@@ -77,4 +80,25 @@ export async function submitContact(
   }
 
   return { ok: true };
+}
+
+// Resolves a set-password/invite token to the email it belongs to, so the
+// set-password page can sign the client in after they choose a password. The
+// token holder is the invited person, so returning their own email is safe.
+// This does not consume the token; Better Auth's reset endpoint does that.
+export async function resolveSetPasswordEmail(
+  token: string,
+): Promise<string | null> {
+  if (!token) return null;
+  const row = await db.query.verification.findFirst({
+    where: and(
+      eq(verification.identifier, `reset-password:${token}`),
+      gt(verification.expiresAt, new Date()),
+    ),
+  });
+  if (!row) return null;
+  const owner = await db.query.user.findFirst({
+    where: eq(user.id, row.value),
+  });
+  return owner?.email ?? null;
 }

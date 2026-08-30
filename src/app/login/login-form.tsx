@@ -7,7 +7,7 @@ import { authClient } from "@/lib/auth-client";
 export function LoginForm() {
   const router = useRouter();
   const params = useSearchParams();
-  const next = params.get("next") ?? "/admin";
+  const next = params.get("next");
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -18,13 +18,14 @@ export function LoginForm() {
     e.preventDefault();
     setError(null);
     setPending(true);
-    const { error } = await authClient.signIn.email({ email, password });
+    const { data, error } = await authClient.signIn.email({ email, password });
     setPending(false);
     if (error) {
       setError(error.message ?? "Something went wrong.");
       return;
     }
-    router.push(next);
+    const isAdmin = (data?.user as { role?: string } | undefined)?.role === "admin";
+    router.push(next ?? (isAdmin ? "/admin" : "/dashboard"));
   }
 
   return (
