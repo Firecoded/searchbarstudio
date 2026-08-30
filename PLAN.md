@@ -23,9 +23,10 @@ Two products living in one Next.js app:
 
 ## Where we are
 
-The **marketing site is done** and the **auth foundation is live** (you can log
-in). The client portal and billing are still ahead. Roughly: **Phase 1 complete,
-Phase 2 in progress.**
+The **marketing site is done**, the **auth foundation is live** (you can log in,
+reset a password), the **admin dashboard** lists accounts, and the **contact
+form** delivers to the inbox. The client portal and billing are still ahead.
+Roughly: **Phases 1 and 2 complete, Phase 3 next.**
 
 ---
 
@@ -40,10 +41,10 @@ Phase 2 in progress.**
 - [x] Scroll-reveal + hero load-in animations
 - [x] Copy pass on the hero and sections
 
-_Still placeholder (swap in when ready): your name, photo, area, real projects,
-and the contact form isn't wired to send yet._
+_Still placeholder (swap in when ready): your name, photo, area, and real
+projects._
 
-### Phase 2 — Auth & back office 🔨 In progress
+### Phase 2 — Auth & back office ✅ Done
 
 - [x] Better Auth + Drizzle + Neon wired; schema pushed
 - [x] Login page (`/login`) and route protection for `/admin`, `/dashboard`
@@ -52,8 +53,8 @@ and the contact form isn't wired to send yet._
 - [x] "Log in" links in the nav (desktop + mobile) and footer
 - [x] **Forgot-password** page (`/forgot-password`) — request a reset
 - [x] **Reset-password** page (`/reset-password`) — where the email link lands
-- [ ] Real **admin dashboard** (currently a placeholder): see clients, manage users
-- [ ] Wire the **contact form** to email submissions via Resend
+- [x] Real **admin dashboard**: see clients, manage users
+- [x] Wire the **contact form** to email submissions via Resend
 
 ### Phase 3 — Client portal
 
@@ -73,7 +74,10 @@ and the contact form isn't wired to send yet._
 
 - [ ] Replace all `[placeholder]` content with the real thing
 - [ ] Deploy (Vercel Pro or a small VPS), point the domain, production env vars
-- [ ] Two-way client email (forwarding or a real mailbox for `hello@`)
+- [ ] Branded two-way client email for `hello@`. Plan: a free-tier mailbox
+      (Zoho or similar) that forwards inbound to the personal Gmail, plus Gmail
+      "Send mail as" so replies go out from `hello@searchbarstudio.com`. Gmail
+      stays the day-to-day inbox; the branded address is the in-between.
 - [ ] Final responsive + accessibility polish
 
 ---
