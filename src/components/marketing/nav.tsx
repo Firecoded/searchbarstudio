@@ -37,6 +37,12 @@ export function Nav() {
               {l.label}
             </a>
           ))}
+          <a
+            href="/login"
+            className="text-[15px] font-medium text-[#4a4038] hover:text-accent"
+          >
+            Log in
+          </a>
           <a href="#contact" className={btnPrimary}>
             Get in touch
           </a>
@@ -66,6 +72,13 @@ export function Nav() {
                 {l.label}
               </a>
             ))}
+            <a
+              href="/login"
+              onClick={close}
+              className="py-3 text-[17px] font-medium text-ink"
+            >
+              Log in
+            </a>
             <a
               href="#contact"
               onClick={close}

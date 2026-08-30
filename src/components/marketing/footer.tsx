@@ -4,7 +4,7 @@ import { Logo } from "./logo";
 const links = [
   { label: "hello@searchbarstudio.com", href: "mailto:hello@searchbarstudio.com" },
   { label: "Instagram", href: "#" },
-  { label: "Client login", href: "#" },
+  { label: "Client login", href: "/login" },
 ];
 
 export function Footer() {
