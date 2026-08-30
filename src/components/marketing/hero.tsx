@@ -20,7 +20,7 @@ export function Hero() {
             "radial-gradient(1040px 560px at 50% 48%, rgba(250,246,240,0.97), rgba(250,246,240,0.97) 34%, rgba(250,246,240,0) 76%)",
         }}
       />
-      <Container className="relative flex flex-col items-center py-16 text-center sm:py-24 lg:py-[92px]">
+      <Container className="hero-rise relative flex flex-col items-center py-16 text-center sm:py-24 lg:py-[92px]">
         <h1 className="max-w-[900px] text-balance font-serif text-[40px] font-medium leading-[1.06] tracking-[-0.01em] sm:text-[54px] lg:text-[68px] lg:leading-[1.04]">
           The website your business has been{" "}
           <em className="italic text-accent">searching</em> for.

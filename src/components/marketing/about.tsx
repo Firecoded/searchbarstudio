@@ -1,4 +1,5 @@
 import { Container, Pill, btnGhost } from "./ui";
+import { Reveal } from "./reveal";
 
 const blob =
   "radial-gradient(560px 360px at 100% 0%, rgba(217,138,94,0.16), transparent 66%), #f5ecdd";
@@ -10,7 +11,11 @@ export function About() {
       className="scroll-mt-20 border-t border-border"
       style={{ background: blob }}
     >
-      <Container className="grid grid-cols-1 items-center gap-10 py-16 sm:py-[88px] lg:grid-cols-[0.8fr_1.2fr] lg:gap-14">
+      <Container className="py-16 sm:py-[88px]">
+        <Reveal
+          stagger
+          className="grid grid-cols-1 items-center gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-14"
+        >
         <div
           className="flex aspect-[1/1.05] items-center justify-center rounded-[20px] text-[14px] text-white"
           style={{ background: "linear-gradient(160deg,#e9c98a,#d98a5e)" }}
@@ -34,6 +39,7 @@ export function About() {
             Get in touch
           </a>
         </div>
+        </Reveal>
       </Container>
     </section>
   );

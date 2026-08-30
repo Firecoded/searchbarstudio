@@ -1,4 +1,5 @@
 import { Container, Pill, btnPrimary } from "./ui";
+import { Reveal } from "./reveal";
 import { Check } from "./icons";
 
 const promises = [
@@ -20,7 +21,11 @@ const rings =
 export function CarePlan() {
   return (
     <section id="care" className="scroll-mt-20 bg-espresso" style={{ background: rings }}>
-      <Container className="grid grid-cols-1 items-center gap-12 py-16 sm:py-[88px] lg:grid-cols-[1fr_0.9fr] lg:gap-[60px]">
+      <Container className="py-16 sm:py-[88px]">
+        <Reveal
+          stagger
+          className="grid grid-cols-1 items-center gap-12 lg:grid-cols-[1fr_0.9fr] lg:gap-[60px]"
+        >
         <div>
           <Pill tone="dark">The care plan</Pill>
           <h2 className="mt-[18px] font-serif text-[32px] font-medium leading-[1.1] text-[#fbf5ee] sm:text-[40px] lg:text-[46px]">
@@ -60,6 +65,7 @@ export function CarePlan() {
             Get a quote
           </a>
         </div>
+        </Reveal>
       </Container>
     </section>
   );

@@ -1,4 +1,5 @@
 import { Container } from "./ui";
+import { Reveal } from "./reveal";
 import { Mail, Instagram } from "./icons";
 
 const fieldClass =
@@ -12,7 +13,7 @@ export function Contact() {
   return (
     <section id="contact" className="scroll-mt-20">
       <Container className="pb-16 sm:pb-24">
-        <div
+        <Reveal
           className="grid grid-cols-1 items-start gap-10 overflow-hidden rounded-[26px] p-6 sm:p-10 lg:grid-cols-2 lg:gap-14 lg:p-[60px]"
           style={{ background: rings }}
         >
@@ -69,7 +70,7 @@ export function Contact() {
               <div>
                 <span className={labelClass}>What do you need?</span>
                 <select className={fieldClass} defaultValue="">
-                  <option value="" disabled hidden>
+                  <option value="" disabled>
                     Select one
                   </option>
                   <option>New website</option>
@@ -83,7 +84,7 @@ export function Contact() {
               <div>
                 <span className={labelClass}>Timeline</span>
                 <select className={fieldClass} defaultValue="">
-                  <option value="" disabled hidden>
+                  <option value="" disabled>
                     Select one
                   </option>
                   <option>Just exploring</option>
@@ -109,7 +110,7 @@ export function Contact() {
                 <span className="font-medium text-[#a99a88]">(optional)</span>
               </span>
               <select className={fieldClass} defaultValue="">
-                <option value="" disabled hidden>
+                <option value="" disabled>
                   Select one
                 </option>
                 <option>A friend or past client</option>
@@ -136,7 +137,7 @@ export function Contact() {
               No spam, no pressure. Just a reply within a day.
             </p>
           </form>
-        </div>
+        </Reveal>
       </Container>
     </section>
   );

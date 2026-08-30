@@ -24,7 +24,7 @@ export function Nav() {
           className="flex items-center"
           onClick={close}
         >
-          <Logo className="text-[20px] sm:text-[24px] lg:text-[28px]" />
+          <Logo className="h-8 sm:h-9 lg:h-10" />
         </a>
 
         <nav className="hidden items-center gap-8 md:flex">
