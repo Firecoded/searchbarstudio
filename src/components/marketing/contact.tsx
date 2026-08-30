@@ -11,13 +11,13 @@ const rings =
 export function Contact() {
   return (
     <section id="contact" className="scroll-mt-20">
-      <Container className="pb-24">
+      <Container className="pb-16 sm:pb-24">
         <div
-          className="grid grid-cols-1 items-start gap-14 overflow-hidden rounded-[26px] p-[60px] lg:grid-cols-2"
+          className="grid grid-cols-1 items-start gap-10 overflow-hidden rounded-[26px] p-6 sm:p-10 lg:grid-cols-2 lg:gap-14 lg:p-[60px]"
           style={{ background: rings }}
         >
           <div>
-            <h2 className="font-serif text-[46px] font-medium leading-[1.1] text-white">
+            <h2 className="font-serif text-[30px] font-medium leading-[1.1] text-white sm:text-[38px] lg:text-[46px]">
               Let&rsquo;s build something you&rsquo;re proud of.
             </h2>
             <p className="mt-[18px] text-[18px] leading-[1.55] text-[#ffe6da]">
@@ -25,13 +25,13 @@ export function Contact() {
               read every message and reply within a day, usually sooner.
             </p>
             <div className="mt-8 flex flex-col gap-4">
-              <div className="flex items-center gap-3">
-                <span className="flex h-10 w-10 items-center justify-center rounded-[11px] bg-white/[0.16]">
+              <div className="flex min-w-0 items-center gap-3">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[11px] bg-white/[0.16]">
                   <Mail size={20} className="text-white" />
                 </span>
-                <div>
+                <div className="min-w-0">
                   <div className="text-[13px] text-[#ffe6da]">Email</div>
-                  <div className="text-base font-semibold text-white">
+                  <div className="break-all text-base font-semibold text-white">
                     hello@searchbarstudio.com
                   </div>
                 </div>

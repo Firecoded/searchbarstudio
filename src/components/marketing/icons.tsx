@@ -58,6 +58,14 @@ export const Close = (p: IconProps) => (
   </Svg>
 );
 
+export const Menu = (p: IconProps) => (
+  <Svg {...p} strokeWidth={p.strokeWidth ?? 2.2}>
+    <line x1="3" y1="6" x2="21" y2="6" />
+    <line x1="3" y1="12" x2="21" y2="12" />
+    <line x1="3" y1="18" x2="21" y2="18" />
+  </Svg>
+);
+
 export const DesignRuler = (p: IconProps) => (
   <Svg {...p} strokeWidth={p.strokeWidth ?? 1.9}>
     <path d="M12 19l7-7 3 3-7 7-3-3z" />

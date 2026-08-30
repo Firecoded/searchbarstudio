@@ -20,14 +20,14 @@ const steps = [
 
 export function Process() {
   return (
-    <section className="pt-24">
+    <section className="pt-16 sm:pt-24">
       <Container>
         <Pill>How it works</Pill>
-        <h2 className="mt-[18px] font-serif text-[44px] font-medium">
+        <h2 className="mt-[18px] font-serif text-[30px] font-medium sm:text-[38px] lg:text-[44px]">
           Three steps, no surprises.
         </h2>
       </Container>
-      <Container className="mt-9 grid grid-cols-1 gap-5 pb-24 sm:grid-cols-3">
+      <Container className="mt-9 grid grid-cols-1 gap-5 pb-16 sm:grid-cols-3 sm:pb-24">
         {steps.map((s) => (
           <div key={s.n}>
             <div className="flex h-11 w-11 items-center justify-center rounded-full bg-accent-soft font-serif text-[20px] font-semibold text-accent">

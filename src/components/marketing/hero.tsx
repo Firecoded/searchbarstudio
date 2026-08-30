@@ -20,34 +20,33 @@ export function Hero() {
             "radial-gradient(1040px 560px at 50% 48%, rgba(250,246,240,0.97), rgba(250,246,240,0.97) 34%, rgba(250,246,240,0) 76%)",
         }}
       />
-      <Container className="relative flex flex-col items-center py-[92px] text-center">
-        <h1 className="max-w-[900px] text-balance font-serif text-[68px] font-medium leading-[1.04] tracking-[-0.01em]">
+      <Container className="relative flex flex-col items-center py-16 text-center sm:py-24 lg:py-[92px]">
+        <h1 className="max-w-[900px] text-balance font-serif text-[40px] font-medium leading-[1.06] tracking-[-0.01em] sm:text-[54px] lg:text-[68px] lg:leading-[1.04]">
           The website your business has been{" "}
           <em className="italic text-accent">searching</em> for.
         </h1>
-        <p className="mt-6 max-w-[620px] text-[20px] leading-[1.55] text-muted">
-          I design, build, and look after modern websites for small businesses.
-          You get a site you&rsquo;re proud of, and you never have to think about
-          keeping it running.
+        <p className="mt-5 max-w-[700px] text-balance text-[17px] leading-[1.55] text-muted sm:mt-6 sm:text-[20px]">
+          Great websites, made easy and affordable. I design, build, and maintain
+          your site, so you never have to think about it again.
         </p>
 
-        <div className="mt-10 flex w-full max-w-[680px] items-center gap-2.5 rounded-[18px] border-[1.5px] border-border-soft bg-paper py-2.5 pl-[22px] pr-2.5 shadow-[0_20px_40px_-24px_rgba(120,70,40,0.35)]">
+        <div className="mt-8 flex w-full max-w-[680px] items-center gap-2.5 rounded-[18px] border-[1.5px] border-border-soft bg-paper py-2.5 pl-4 pr-2.5 shadow-[0_20px_40px_-24px_rgba(120,70,40,0.35)] sm:mt-10 sm:pl-[22px]">
           <Search size={22} strokeWidth={2.2} className="shrink-0 text-[#a99a88]" />
-          <span className="flex-1 text-left font-mono text-[18px] text-[#3a3229]">
-            a web person who actually sticks around
+          <span className="min-w-0 flex-1 truncate text-left font-mono text-[14px] text-[#3a3229] sm:text-[16px] lg:text-[18px]">
+            a beautiful website, made simple
             <span className="ml-0.5 inline-block h-[1.05em] w-0.5 translate-y-[2px] animate-caret bg-accent align-[-2px]" />
           </span>
-          <a href="#contact" className={`${btnPrimary} px-6 py-3.5`}>
+          <a href="#contact" className={`${btnPrimary} shrink-0 px-4 py-3 sm:px-6 sm:py-3.5`}>
             Search
           </a>
         </div>
 
-        <div className="mt-9 flex gap-3.5">
-          <a href="#contact" className={`${btnPrimary} px-[30px] py-4 text-base`}>
+        <div className="mt-8 flex w-full flex-col gap-3 sm:mt-9 sm:w-auto sm:flex-row sm:gap-3.5">
+          <a href="#contact" className={`${btnPrimary} justify-center px-[30px] py-4 text-base`}>
             Get a free quote
             <ArrowRight size={16} />
           </a>
-          <a href="#work" className={`${btnGhost} px-[26px] py-4 text-base`}>
+          <a href="#work" className={`${btnGhost} justify-center px-[26px] py-4 text-base`}>
             See recent work
           </a>
         </div>

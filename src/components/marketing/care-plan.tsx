@@ -20,10 +20,10 @@ const rings =
 export function CarePlan() {
   return (
     <section id="care" className="scroll-mt-20 bg-espresso" style={{ background: rings }}>
-      <Container className="grid grid-cols-1 items-center gap-[60px] py-[88px] lg:grid-cols-[1fr_0.9fr]">
+      <Container className="grid grid-cols-1 items-center gap-12 py-16 sm:py-[88px] lg:grid-cols-[1fr_0.9fr] lg:gap-[60px]">
         <div>
           <Pill tone="dark">The care plan</Pill>
-          <h2 className="mt-[18px] font-serif text-[46px] font-medium leading-[1.1] text-[#fbf5ee]">
+          <h2 className="mt-[18px] font-serif text-[32px] font-medium leading-[1.1] text-[#fbf5ee] sm:text-[40px] lg:text-[46px]">
             Build it once. Kept running, forever.
           </h2>
           <p className="mt-5 max-w-[470px] text-[18px] leading-[1.6] text-[#c3b4a5]">

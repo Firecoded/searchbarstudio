@@ -54,10 +54,10 @@ export function Work() {
   const [open, setOpen] = useState<Project | null>(null);
 
   return (
-    <section id="work" className="scroll-mt-20 pt-24">
+    <section id="work" className="scroll-mt-20 pt-16 sm:pt-24">
       <Container>
         <Pill>Recent work</Pill>
-        <h2 className="mt-[18px] font-serif text-[44px] font-medium">
+        <h2 className="mt-[18px] font-serif text-[30px] font-medium sm:text-[38px] lg:text-[44px]">
           A few sites I&rsquo;ve built.
         </h2>
         <p className="mt-2.5 text-base text-muted">
@@ -65,7 +65,7 @@ export function Work() {
         </p>
       </Container>
 
-      <Container className="mt-9 grid grid-cols-1 gap-[22px] pb-24 sm:grid-cols-2 lg:grid-cols-3">
+      <Container className="mt-9 grid grid-cols-1 gap-[22px] pb-16 sm:grid-cols-2 sm:pb-24 lg:grid-cols-3">
         {projects.map((p) => (
           <button
             key={p.name + p.tag}
