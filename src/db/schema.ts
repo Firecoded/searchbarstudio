@@ -1,5 +1,12 @@
 import { relations } from "drizzle-orm";
-import { pgTable, text, timestamp, boolean, index } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  text,
+  timestamp,
+  boolean,
+  integer,
+  index,
+} from "drizzle-orm/pg-core";
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -75,9 +82,37 @@ export const verification = pgTable(
   (table) => [index("verification_identifier_idx").on(table.identifier)],
 );
 
-export const userRelations = relations(user, ({ many }) => ({
+// One row per client mirroring their Stripe billing state. Stripe stays the
+// source of truth; webhooks keep status and currentPeriodEnd in sync. Amounts
+// are stored in cents for display only.
+export const clientBilling = pgTable("client_billing", {
+  id: text("id").primaryKey(),
+  userId: text("user_id")
+    .notNull()
+    .unique()
+    .references(() => user.id, { onDelete: "cascade" }),
+  stripeCustomerId: text("stripe_customer_id"),
+  stripeSubscriptionId: text("stripe_subscription_id"),
+  status: text("status").notNull().default("none"),
+  checkoutUrl: text("checkout_url"),
+  planName: text("plan_name"),
+  buildAmount: integer("build_amount"),
+  monthlyAmount: integer("monthly_amount"),
+  currentPeriodEnd: timestamp("current_period_end"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .$onUpdate(() => /* @__PURE__ */ new Date())
+    .notNull(),
+});
+
+export const userRelations = relations(user, ({ many, one }) => ({
   sessions: many(session),
   accounts: many(account),
+  billing: one(clientBilling, {
+    fields: [user.id],
+    references: [clientBilling.userId],
+  }),
 }));
 
 export const sessionRelations = relations(session, ({ one }) => ({

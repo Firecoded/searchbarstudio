@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useEffect, useRef } from "react";
-import { inviteClient, type InviteState } from "@/app/admin/actions";
+import { inviteClient, type InviteState } from "@/lib/admin-actions";
 
 const fieldClass =
   "mt-2 w-full rounded-xl border-[1.5px] border-[#e2d6c5] bg-ground px-4 py-2.5 text-[15px] focus:border-accent focus:outline-none";

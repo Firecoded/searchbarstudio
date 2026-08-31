@@ -25,9 +25,10 @@ Two products living in one Next.js app:
 
 The **marketing site is done**, the **auth foundation is live** (you can log in,
 reset a password), the **admin dashboard** lists accounts and invites clients,
-the **invite flow** and **client dashboard** work, and the **contact form**
-delivers to the inbox. Billing is still ahead. Roughly: **Phases 1 through 3
-complete, Phase 4 (Stripe) next.**
+the **invite flow** and **client dashboard** work, the **contact form** delivers
+to the inbox, and **Stripe billing** is wired (admin sends a combined build +
+monthly invoice, client pays via hosted Checkout, webhook flips status to
+Active). Roughly: **Phases 1 through 4 complete; remaining work is launch prep.**
 
 ---
 
@@ -65,12 +66,14 @@ projects._
       (placeholder content for now)
 - [x] Roles polish (admin vs client gating throughout)
 
-### Phase 4 — Billing (Stripe)
+### Phase 4 — Billing (Stripe) ✅ Done
 
-- [ ] Stripe subscriptions: hosted checkout + hosted billing portal (no card data
-      in our code)
-- [ ] Show subscription status in the client dashboard ("Active, next charge …")
-- [ ] Kick off a subscription from the admin when a client comes on
+- [x] Stripe subscriptions: hosted checkout + hosted billing portal (no card data
+      in our code). One Checkout combines the one-time build fee (first invoice
+      only) with the recurring monthly plan; terms consent collected at checkout;
+      webhook syncs status.
+- [x] Show subscription status in the client dashboard ("Active, next charge …")
+- [x] Kick off a subscription from the admin when a client comes on
 
 ### Later / launch
 

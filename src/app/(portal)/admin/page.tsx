@@ -1,10 +1,9 @@
-import { headers } from "next/headers";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { asc, eq } from "drizzle-orm";
-import { auth } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 import { db } from "@/db";
 import { user, account } from "@/db/schema";
-import { SignOut } from "@/components/sign-out";
 import { InviteForm } from "@/components/admin/invite-form";
 
 const dateFmt = new Intl.DateTimeFormat("en-US", {
@@ -14,12 +13,11 @@ const dateFmt = new Intl.DateTimeFormat("en-US", {
 });
 
 export default async function AdminPage() {
-  const session = await auth.api.getSession({ headers: await headers() });
+  const session = await getSession();
 
-  // The proxy only checks for a session cookie; role gating lives here so a
-  // client account can't reach the admin view.
-  if (!session) redirect("/login?next=/admin");
-  if (session.user.role !== "admin") redirect("/");
+  // The layout guarantees a session; role-gate the admin view so a client
+  // account can't reach it.
+  if (session?.user.role !== "admin") redirect("/dashboard");
 
   const people = await db
     .select({
@@ -43,18 +41,8 @@ export default async function AdminPage() {
   const team = people.filter((p) => p.role === "admin");
 
   return (
-    <main className="mx-auto max-w-[900px] px-6 py-14">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="font-serif text-[30px] font-medium">Admin</h1>
-          <p className="mt-1 text-[15px] text-muted">
-            Signed in as {session.user.email}
-          </p>
-        </div>
-        <SignOut />
-      </div>
-
-      <div className="mt-9 grid grid-cols-2 gap-4 sm:max-w-[380px]">
+    <>
+      <div className="grid grid-cols-2 gap-4 sm:max-w-[380px]">
         <Stat label="Clients" value={clients.length} />
         <Stat label="Team" value={team.length} />
       </div>
@@ -85,7 +73,18 @@ export default async function AdminPage() {
                     key={p.id}
                     className="border-b border-border-soft last:border-0"
                   >
-                    <td className="px-5 py-3.5 font-medium">{p.name}</td>
+                    <td className="px-5 py-3.5 font-medium">
+                      {p.role === "client" ? (
+                        <Link
+                          href={`/admin/clients/${p.id}`}
+                          className="text-accent hover:text-accent-hover"
+                        >
+                          {p.name}
+                        </Link>
+                      ) : (
+                        p.name
+                      )}
+                    </td>
                     <td className="px-5 py-3.5 text-muted">{p.email}</td>
                     <td className="px-5 py-3.5">
                       <RoleBadge
@@ -103,7 +102,7 @@ export default async function AdminPage() {
           </div>
         )}
       </section>
-    </main>
+    </>
   );
 }
 
