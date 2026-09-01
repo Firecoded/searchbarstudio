@@ -8,6 +8,7 @@ export async function sendEmail(opts: {
   to: string;
   subject: string;
   html: string;
+  text?: string;
   replyTo?: string;
 }) {
   const resend = new Resend(process.env.RESEND_API_KEY);

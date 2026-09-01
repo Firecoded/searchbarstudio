@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/session";
 import { ChangePasswordForm } from "@/components/portal/change-password-form";
+import { PageHeader } from "@/components/portal/page-header";
 
 export default async function SettingsPage() {
   const session = await getSession();
@@ -8,6 +9,7 @@ export default async function SettingsPage() {
 
   return (
     <>
+      <PageHeader title="Settings" />
       <section className="rounded-2xl border border-border bg-paper p-6">
         <h2 className="font-serif text-[20px] font-medium">Account</h2>
         <dl className="mt-4 space-y-2 text-[15px]">

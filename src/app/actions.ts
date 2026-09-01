@@ -4,6 +4,8 @@ import { and, eq, gt } from "drizzle-orm";
 import { sendEmail } from "@/lib/email";
 import { db } from "@/db";
 import { user, verification } from "@/db/schema";
+import { createInvoiceCheckoutSecret } from "@/lib/invoice";
+import { createPayCheckoutSecret } from "@/lib/pay";
 
 const CONTACT_TO = process.env.CONTACT_TO ?? "searchbarstudio@gmail.com";
 
@@ -101,4 +103,20 @@ export async function resolveSetPasswordEmail(
     where: eq(user.id, row.value),
   });
   return owner?.email ?? null;
+}
+
+// Called from the branded invoice page to spin up the embedded Checkout for an
+// outstanding invoice. Token-gated; safe to call unauthenticated.
+export async function startInvoiceCheckout(
+  token: string,
+): Promise<string | null> {
+  return createInvoiceCheckoutSecret(token);
+}
+
+// Called from the branded /pay/[token] page to spin up the embedded Checkout
+// for an outstanding charge or plan invoice. Token-gated; safe unauthenticated.
+export async function startPayCheckout(
+  token: string,
+): Promise<string | null> {
+  return createPayCheckoutSecret(token);
 }

@@ -1,9 +1,10 @@
 import { redirect } from "next/navigation";
-import { eq } from "drizzle-orm";
+import { and, eq, desc } from "drizzle-orm";
 import { getSession } from "@/lib/session";
 import { db } from "@/db";
-import { clientBilling } from "@/db/schema";
+import { clientBilling, charge } from "@/db/schema";
 import { openBillingPortal } from "@/lib/dashboard-actions";
+import { PageHeader } from "@/components/portal/page-header";
 
 const money = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -30,6 +31,11 @@ export default async function DashboardPage({
   const billing = await db.query.clientBilling.findFirst({
     where: eq(clientBilling.userId, session.user.id),
   });
+  const unpaidCharges = await db
+    .select()
+    .from(charge)
+    .where(and(eq(charge.userId, session.user.id), eq(charge.status, "pending")))
+    .orderBy(desc(charge.createdAt));
 
   const isActive = billing?.status === "active";
   const isCanceling = billing?.status === "canceling";
@@ -38,6 +44,7 @@ export default async function DashboardPage({
 
   return (
     <>
+      <PageHeader title="Home" />
       {billingFlag === "success" && (
         <p className="mt-6 rounded-lg bg-sand px-4 py-3 text-[14px] text-ink">
           Payment received, thank you. Your plan is being activated.
@@ -76,6 +83,28 @@ export default async function DashboardPage({
           </a>
         </section>
       )}
+
+      {unpaidCharges.map((c) => (
+        <section
+          key={c.id}
+          className="mt-5 rounded-2xl border border-border bg-paper p-6"
+        >
+          <h2 className="font-serif text-[20px] font-medium">
+            {c.description || "One-time charge"}
+          </h2>
+          <p className="mt-2 text-[15px] text-muted">
+            {money.format(c.amount / 100)} due.
+          </p>
+          {c.checkoutUrl && (
+            <a
+              href={c.checkoutUrl}
+              className="mt-4 inline-block rounded-xl bg-accent px-6 py-3 text-[15px] font-semibold text-accent-ink transition-colors hover:bg-accent-hover"
+            >
+              Review and pay
+            </a>
+          )}
+        </section>
+      ))}
 
       {(isActive || isCanceling) && (
         <section className="mt-5 rounded-2xl border border-border bg-paper p-6">

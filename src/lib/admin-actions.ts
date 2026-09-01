@@ -6,9 +6,17 @@ import { revalidatePath } from "next/cache";
 import { and, eq } from "drizzle-orm";
 import { auth } from "@/lib/auth";
 import { db } from "@/db";
-import { user, account, verification, clientBilling } from "@/db/schema";
-import type Stripe from "stripe";
+import {
+  user,
+  account,
+  verification,
+  clientBilling,
+  pendingInvoice,
+  charge,
+} from "@/db/schema";
 import { sendEmail } from "@/lib/email";
+import { renderBrandedEmail } from "@/lib/branded-email";
+import { inviteEmail, invoiceEmail, billingEmail } from "@/lib/email-content";
 import { stripe } from "@/lib/stripe";
 import { periodBounds, syncSubscriptionToDb } from "@/lib/billing";
 
@@ -25,23 +33,6 @@ export type InviteState = { ok: boolean; error?: string; invited?: string };
 async function requireAdmin() {
   const session = await auth.api.getSession({ headers: await headers() });
   return session?.user.role === "admin";
-}
-
-function inviteEmail(name: string, url: string) {
-  return `
-    <div style="font-family:system-ui,sans-serif;color:#241d16;max-width:520px">
-      <p>Hi ${name},</p>
-      <p>You've been set up with a client account at SearchbarStudio. Set your
-      password to get into your dashboard.</p>
-      <p style="margin:24px 0">
-        <a href="${url}" style="background:#c1592f;color:#fff;text-decoration:none;padding:12px 22px;border-radius:10px;font-weight:600;display:inline-block">
-          Set your password
-        </a>
-      </p>
-      <p style="color:#6f6357;font-size:14px">This link is good for 7 days. If it
-      expires, ask me to send a new one.</p>
-    </div>
-  `;
 }
 
 export async function inviteClient(
@@ -100,11 +91,9 @@ export async function inviteClient(
 
   const url = `${APP_URL}/set-password?token=${token}`;
   try {
-    await sendEmail({
-      to: email,
-      subject: "You're invited to SearchbarStudio",
-      html: inviteEmail(name, url),
-    });
+    const invite = inviteEmail(name, url);
+    const { html, text } = await renderBrandedEmail(invite.props);
+    await sendEmail({ to: email, subject: invite.subject, html, text });
   } catch {
     return {
       ok: false,
@@ -124,28 +113,9 @@ function dollarsToCents(value: string): number | null {
   return Math.round(n * 100);
 }
 
-function billingEmail(name: string, url: string) {
-  return `
-    <div style="font-family:system-ui,sans-serif;color:#241d16;max-width:520px">
-      <p>Hi ${name},</p>
-      <p>Your invoice is ready. Review the details and pay securely through
-      Stripe. Setting this up authorizes the monthly care plan, and you can
-      cancel or update your card any time from your dashboard.</p>
-      <p style="margin:24px 0">
-        <a href="${url}" style="background:#c1592f;color:#fff;text-decoration:none;padding:12px 22px;border-radius:10px;font-weight:600;display:inline-block">
-          Review and pay
-        </a>
-      </p>
-      <p style="color:#6f6357;font-size:14px">You can also find this in your
-      dashboard.</p>
-    </div>
-  `;
-}
-
-// Admin sends a client one Checkout link covering the one-time build fee (billed
-// on the first invoice only) plus the recurring monthly plan. Completing it
-// authorizes recurring billing and records terms consent through Stripe.
-export async function setupBilling(
+// Starts a recurring care plan, optionally with an upfront charge billed on the
+// first invoice. Completing the Checkout authorizes recurring billing.
+export async function startPlan(
   _prev: BillingState,
   formData: FormData,
 ): Promise<BillingState> {
@@ -157,17 +127,22 @@ export async function setupBilling(
   const planName =
     (formData.get("planName") as string)?.trim() || "Monthly care plan";
   const buildDetails = (formData.get("buildDetails") as string)?.trim() ?? "";
-  const monthlyCents = dollarsToCents(
-    (formData.get("monthlyAmount") as string) ?? "",
-  );
+  const monthlyRaw = (formData.get("monthlyAmount") as string)?.trim() ?? "";
   const buildRaw = (formData.get("buildAmount") as string)?.trim() ?? "";
-  const buildCents = buildRaw ? dollarsToCents(buildRaw) : 0;
+  const monthlyCents = monthlyRaw ? dollarsToCents(monthlyRaw) : null;
+  const buildCents = buildRaw ? dollarsToCents(buildRaw) : null;
 
-  if (!monthlyCents || monthlyCents < 50) {
-    return { ok: false, error: "Enter a monthly amount of at least $0.50." };
+  if (monthlyCents === null) {
+    return { ok: false, error: "Enter a monthly amount for the plan." };
   }
-  if (buildCents === null) {
-    return { ok: false, error: "The build amount isn't a valid number." };
+  if (monthlyCents < 50) {
+    return { ok: false, error: "The monthly amount must be at least $0.50." };
+  }
+  if (buildRaw && buildCents === null) {
+    return { ok: false, error: "The upfront charge isn't a valid number." };
+  }
+  if (buildCents !== null && buildCents < 50) {
+    return { ok: false, error: "The upfront charge must be at least $0.50." };
   }
 
   const client = await db.query.user.findFirst({
@@ -180,13 +155,17 @@ export async function setupBilling(
   const existing = await db.query.clientBilling.findFirst({
     where: eq(clientBilling.userId, clientId),
   });
-  if (existing?.status === "active") {
-    return { ok: false, error: "This client already has active billing." };
+  if (existing?.status === "active" || existing?.status === "canceling") {
+    return {
+      ok: false,
+      error: "This client already has a plan. Cancel it first to start a new one.",
+    };
   }
 
-  // Reuse the client's Stripe customer across attempts so we don't orphan one.
-  let customerId = existing?.stripeCustomerId ?? null;
+  const token = randomBytes(24).toString("base64url");
   try {
+    // Reuse the client's Stripe customer across attempts so we don't orphan one.
+    let customerId = existing?.stripeCustomerId ?? null;
     if (!customerId) {
       const customer = await stripe.customers.create({
         email: client.email,
@@ -196,56 +175,10 @@ export async function setupBilling(
       customerId = customer.id;
     }
 
-    const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = [
-      {
-        price_data: {
-          currency: "usd",
-          unit_amount: monthlyCents,
-          recurring: { interval: "month" },
-          product_data: { name: planName },
-        },
-        quantity: 1,
-      },
-    ];
-    if (buildCents && buildCents > 0) {
-      lineItems.push({
-        price_data: {
-          currency: "usd",
-          unit_amount: buildCents,
-          product_data: {
-            name: "Website build",
-            ...(buildDetails ? { description: buildDetails } : {}),
-          },
-        },
-        quantity: 1,
-      });
-    }
+    const payUrl = `/pay/${token}`;
 
-    const baseParams: Stripe.Checkout.SessionCreateParams = {
-      mode: "subscription",
-      customer: customerId,
-      line_items: lineItems,
-      subscription_data: { metadata: { userId: clientId } },
-      metadata: { userId: clientId },
-      success_url: `${APP_URL}/dashboard?billing=success`,
-      cancel_url: `${APP_URL}/dashboard?billing=cancelled`,
-    };
-
-    // Ask Stripe to collect terms-of-service consent. Stripe rejects this until
-    // a Terms of Service URL is set in the Dashboard, so fall back without it;
-    // the consent checkbox turns on automatically once that URL is configured.
-    let session;
-    try {
-      session = await stripe.checkout.sessions.create({
-        ...baseParams,
-        consent_collection: { terms_of_service: "required" },
-      });
-    } catch (e) {
-      const message = e instanceof Error ? e.message.toLowerCase() : "";
-      if (!message.includes("terms of service")) throw e;
-      session = await stripe.checkout.sessions.create(baseParams);
-    }
-
+    // Record the outstanding plan invoice; the branded /pay/[token] page mints
+    // the embedded Checkout session when the client opens it.
     await db
       .insert(clientBilling)
       .values({
@@ -253,9 +186,11 @@ export async function setupBilling(
         userId: clientId,
         stripeCustomerId: customerId,
         status: "pending",
-        checkoutUrl: session.url,
+        token,
+        checkoutUrl: payUrl,
         planName,
-        buildAmount: buildCents || null,
+        buildAmount: buildCents,
+        buildDetails: buildDetails || null,
         monthlyAmount: monthlyCents,
       })
       .onConflictDoUpdate({
@@ -263,26 +198,109 @@ export async function setupBilling(
         set: {
           stripeCustomerId: customerId,
           status: "pending",
-          checkoutUrl: session.url,
+          token,
+          checkoutUrl: payUrl,
           planName,
-          buildAmount: buildCents || null,
+          buildAmount: buildCents,
+          buildDetails: buildDetails || null,
           monthlyAmount: monthlyCents,
         },
       });
 
-    await sendEmail({
-      to: client.email,
-      subject: "Your SearchbarStudio invoice",
-      html: billingEmail(client.name, session.url!),
-    });
+    const email = billingEmail(client.name, `${APP_URL}${payUrl}`);
+    const { html, text } = await renderBrandedEmail(email.props);
+    await sendEmail({ to: client.email, subject: email.subject, html, text });
   } catch {
     return {
       ok: false,
-      error: "Couldn't set up billing with Stripe. Check the amounts and try again.",
+      error: "Couldn't start the plan. Check the amounts and try again.",
     };
   }
 
-  revalidatePath(`/admin/clients/${clientId}`);
+  revalidatePath(`/clients/${clientId}`);
+  revalidatePath("/dashboard");
+  return { ok: true, sent: true };
+}
+
+export type ChargeState = { ok: boolean; error?: string; sent?: boolean };
+
+// Sends a one-time charge to an existing client, independent of any plan. It's a
+// plain payment tracked as a `charge` row that the webhook flips to paid.
+export async function sendCharge(
+  _prev: ChargeState,
+  formData: FormData,
+): Promise<ChargeState> {
+  if (!(await requireAdmin())) {
+    return { ok: false, error: "Not authorized." };
+  }
+
+  const clientId = (formData.get("clientId") as string)?.trim() ?? "";
+  const description = (formData.get("description") as string)?.trim() ?? "";
+  const amountRaw = (formData.get("amount") as string)?.trim() ?? "";
+  const amountCents = amountRaw ? dollarsToCents(amountRaw) : null;
+
+  if (!amountCents || amountCents < 50) {
+    return { ok: false, error: "Enter an amount of at least $0.50." };
+  }
+
+  const client = await db.query.user.findFirst({ where: eq(user.id, clientId) });
+  if (!client || client.role !== "client") {
+    return { ok: false, error: "That client no longer exists." };
+  }
+
+  const existing = await db.query.clientBilling.findFirst({
+    where: eq(clientBilling.userId, clientId),
+  });
+
+  try {
+    let customerId = existing?.stripeCustomerId ?? null;
+    if (!customerId) {
+      const customer = await stripe.customers.create({
+        email: client.email,
+        name: client.name,
+        metadata: { userId: clientId },
+      });
+      customerId = customer.id;
+    }
+
+    const chargeId = randomUUID();
+    const token = randomBytes(24).toString("base64url");
+    const payUrl = `/pay/${token}`;
+
+    // The branded /pay/[token] page mints the embedded Checkout when opened.
+    await db.insert(charge).values({
+      id: chargeId,
+      userId: clientId,
+      amount: amountCents,
+      description: description || null,
+      status: "pending",
+      token,
+      checkoutUrl: payUrl,
+    });
+
+    // Remember the Stripe customer so future charges and plans reuse it.
+    if (!existing) {
+      await db.insert(clientBilling).values({
+        id: randomUUID(),
+        userId: clientId,
+        stripeCustomerId: customerId,
+        status: "none",
+      });
+    } else if (!existing.stripeCustomerId) {
+      await db
+        .update(clientBilling)
+        .set({ stripeCustomerId: customerId })
+        .where(eq(clientBilling.userId, clientId));
+    }
+
+    const email = billingEmail(client.name, `${APP_URL}${payUrl}`);
+    const { html, text } = await renderBrandedEmail(email.props);
+    await sendEmail({ to: client.email, subject: email.subject, html, text });
+  } catch {
+    return { ok: false, error: "Couldn't send the charge. Try again." };
+  }
+
+  revalidatePath(`/clients/${clientId}`);
   revalidatePath("/dashboard");
   return { ok: true, sent: true };
 }
@@ -328,7 +346,7 @@ export async function cancelPlan(
       .update(clientBilling)
       .set({ status: devStatus })
       .where(eq(clientBilling.userId, clientId));
-    revalidatePath(`/admin/clients/${clientId}`);
+    revalidatePath(`/clients/${clientId}`);
     revalidatePath("/dashboard");
     return { ok: true };
   }
@@ -379,7 +397,7 @@ export async function cancelPlan(
     return { ok: false, error: "Couldn't update the plan with Stripe." };
   }
 
-  revalidatePath(`/admin/clients/${clientId}`);
+  revalidatePath(`/clients/${clientId}`);
   revalidatePath("/dashboard");
   return { ok: true };
 }
@@ -448,7 +466,84 @@ export async function devSetBillingState(
       });
   }
 
-  revalidatePath(`/admin/clients/${clientId}`);
+  revalidatePath(`/clients/${clientId}`);
   revalidatePath("/dashboard");
   return { ok: true };
+}
+
+export type InvoiceState = { ok: boolean; error?: string; sent?: string };
+
+// Invoices someone who isn't a client yet. Creates a Stripe customer and a
+// pending-invoice record, then emails a link to a branded invoice page where
+// they pay; their account is created after payment.
+export async function createPendingInvoice(
+  _prev: InvoiceState,
+  formData: FormData,
+): Promise<InvoiceState> {
+  if (!(await requireAdmin())) {
+    return { ok: false, error: "Not authorized." };
+  }
+
+  const name = (formData.get("name") as string)?.trim() ?? "";
+  const email = ((formData.get("email") as string)?.trim() ?? "").toLowerCase();
+  const planName =
+    (formData.get("planName") as string)?.trim() || "Monthly care plan";
+  const buildDetails = (formData.get("buildDetails") as string)?.trim() ?? "";
+  const monthlyCents = dollarsToCents(
+    (formData.get("monthlyAmount") as string) ?? "",
+  );
+  const buildRaw = (formData.get("buildAmount") as string)?.trim() ?? "";
+  const buildCents = buildRaw ? dollarsToCents(buildRaw) : 0;
+
+  if (!name) return { ok: false, error: "Please add a name." };
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return { ok: false, error: "Please enter a valid email address." };
+  }
+  if (!monthlyCents || monthlyCents < 50) {
+    return { ok: false, error: "Enter a monthly amount of at least $0.50." };
+  }
+  if (buildCents === null) {
+    return { ok: false, error: "The build amount isn't a valid number." };
+  }
+
+  const existingClient = await db.query.user.findFirst({
+    where: eq(user.email, email),
+  });
+  if (existingClient) {
+    return {
+      ok: false,
+      error: "That email already has an account. Bill them from their client page.",
+    };
+  }
+
+  const token = randomBytes(24).toString("base64url");
+  try {
+    const customer = await stripe.customers.create({
+      email,
+      name,
+      metadata: { pendingInvoiceToken: token },
+    });
+    await db.insert(pendingInvoice).values({
+      id: randomUUID(),
+      token,
+      name,
+      email,
+      stripeCustomerId: customer.id,
+      planName,
+      buildAmount: buildCents || null,
+      monthlyAmount: monthlyCents,
+      buildDetails: buildDetails || null,
+    });
+    const invoice = invoiceEmail(name, `${APP_URL}/invoice/${token}`);
+    const { html, text } = await renderBrandedEmail(invoice.props);
+    await sendEmail({ to: email, subject: invoice.subject, html, text });
+  } catch {
+    return {
+      ok: false,
+      error: "Couldn't create the invoice. Check the details and try again.",
+    };
+  }
+
+  revalidatePath("/admin");
+  return { ok: true, sent: email };
 }

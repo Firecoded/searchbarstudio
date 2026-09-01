@@ -1,104 +1,189 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { asc, eq } from "drizzle-orm";
+import { eq, inArray } from "drizzle-orm";
 import { getSession } from "@/lib/session";
 import { db } from "@/db";
-import { user, account } from "@/db/schema";
-import { InviteForm } from "@/components/admin/invite-form";
+import { user, account, clientBilling, charge, pendingInvoice } from "@/db/schema";
+import { PageHeader } from "@/components/portal/page-header";
 
-const dateFmt = new Intl.DateTimeFormat("en-US", {
-  month: "short",
-  day: "numeric",
-  year: "numeric",
+const money = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
 });
 
-export default async function AdminPage() {
-  const session = await getSession();
+function fmt(cents: number) {
+  return money.format(cents / 100);
+}
 
-  // The layout guarantees a session; role-gate the admin view so a client
-  // account can't reach it.
+type Attention = {
+  id: string;
+  label: string;
+  detail: string;
+  href?: string;
+  payHref?: string;
+};
+
+export default async function AdminDashboardPage() {
+  const session = await getSession();
   if (session?.user.role !== "admin") redirect("/dashboard");
 
-  const people = await db
+  // Active plans → active-client count + MRR.
+  const activePlans = await db
     .select({
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      createdAt: user.createdAt,
+      monthlyAmount: clientBilling.monthlyAmount,
     })
-    .from(user)
-    .orderBy(asc(user.createdAt));
+    .from(clientBilling)
+    .where(inArray(clientBilling.status, ["active", "canceling"]));
+  const activeCount = activePlans.length;
+  const mrr = activePlans.reduce((sum, p) => sum + (p.monthlyAmount ?? 0), 0);
 
-  // A client with no credential account was invited but hasn't set a password.
+  // Unpaid one-time charges.
+  const unpaidCharges = await db
+    .select({
+      id: charge.id,
+      amount: charge.amount,
+      description: charge.description,
+      userId: charge.userId,
+      clientName: user.name,
+    })
+    .from(charge)
+    .innerJoin(user, eq(user.id, charge.userId))
+    .where(eq(charge.status, "pending"));
+
+  // Plan invoices sent but not yet paid.
+  const pendingPlans = await db
+    .select({
+      userId: clientBilling.userId,
+      monthlyAmount: clientBilling.monthlyAmount,
+      buildAmount: clientBilling.buildAmount,
+      clientName: user.name,
+    })
+    .from(clientBilling)
+    .innerJoin(user, eq(user.id, clientBilling.userId))
+    .where(eq(clientBilling.status, "pending"));
+
+  // Invoices to people who aren't clients yet, still unpaid.
+  const pendingInvoices = await db
+    .select({
+      id: pendingInvoice.id,
+      token: pendingInvoice.token,
+      name: pendingInvoice.name,
+      monthlyAmount: pendingInvoice.monthlyAmount,
+      buildAmount: pendingInvoice.buildAmount,
+    })
+    .from(pendingInvoice)
+    .where(eq(pendingInvoice.status, "pending"));
+
+  // Invited clients who haven't set a password yet.
+  const clientUsers = await db
+    .select({ id: user.id, name: user.name, email: user.email })
+    .from(user)
+    .where(eq(user.role, "client"));
   const credentials = await db
     .select({ userId: account.userId })
     .from(account)
     .where(eq(account.providerId, "credential"));
   const activated = new Set(credentials.map((c) => c.userId));
+  const invited = clientUsers.filter((c) => !activated.has(c.id));
 
-  const clients = people.filter((p) => p.role === "client");
-  const team = people.filter((p) => p.role === "admin");
+  const outstanding =
+    unpaidCharges.reduce((s, c) => s + c.amount, 0) +
+    pendingPlans.reduce(
+      (s, p) => s + (p.monthlyAmount ?? 0) + (p.buildAmount ?? 0),
+      0,
+    ) +
+    pendingInvoices.reduce(
+      (s, p) => s + (p.monthlyAmount ?? 0) + (p.buildAmount ?? 0),
+      0,
+    );
+
+  const attention: Attention[] = [
+    ...unpaidCharges.map((c) => ({
+      id: `charge-${c.id}`,
+      label: `${c.clientName} owes ${fmt(c.amount)}`,
+      detail: c.description || "One-time charge",
+      href: `/clients/${c.userId}`,
+    })),
+    ...pendingPlans.map((p) => ({
+      id: `plan-${p.userId}`,
+      label: `${p.clientName} · plan invoice unpaid`,
+      detail: `${fmt(p.monthlyAmount ?? 0)}/mo${
+        p.buildAmount ? ` + ${fmt(p.buildAmount)} upfront` : ""
+      }`,
+      href: `/clients/${p.userId}`,
+    })),
+    ...pendingInvoices.map((p) => ({
+      id: `invoice-${p.id}`,
+      label: `${p.name} · invoice unpaid`,
+      detail: `${fmt((p.monthlyAmount ?? 0) + (p.buildAmount ?? 0))} due · not a client yet`,
+      payHref: `/invoice/${p.token}`,
+    })),
+    ...invited.map((c) => ({
+      id: `invite-${c.id}`,
+      label: `${c.name} · invite not accepted`,
+      detail: c.email,
+      href: `/clients/${c.id}`,
+    })),
+  ];
 
   return (
     <>
-      <div className="grid grid-cols-2 gap-4 sm:max-w-[380px]">
-        <Stat label="Clients" value={clients.length} />
-        <Stat label="Team" value={team.length} />
-      </div>
+      <PageHeader title="Dashboard" />
 
-      <div className="mt-8">
-        <InviteForm />
+      <div className="grid grid-cols-1 gap-4 sm:max-w-[640px] sm:grid-cols-3">
+        <Stat label="Active clients" value={String(activeCount)} />
+        <Stat label="MRR" value={fmt(mrr)} />
+        <Stat label="Outstanding" value={fmt(outstanding)} />
       </div>
 
       <section className="mt-11">
-        <h2 className="font-serif text-[20px] font-medium">People</h2>
-
-        {people.length === 0 ? (
-          <p className="mt-4 text-[15px] text-muted">No accounts yet.</p>
+        <h2 className="font-serif text-[20px] font-medium">Needs attention</h2>
+        {attention.length === 0 ? (
+          <p className="mt-4 text-[15px] text-muted">
+            All caught up. Nothing needs you right now.
+          </p>
         ) : (
-          <div className="mt-4 overflow-hidden rounded-2xl border border-border bg-paper">
-            <table className="w-full text-left text-[15px]">
-              <thead>
-                <tr className="border-b border-border text-[13px] font-semibold text-muted">
-                  <th className="px-5 py-3.5">Name</th>
-                  <th className="px-5 py-3.5">Email</th>
-                  <th className="px-5 py-3.5">Role</th>
-                  <th className="px-5 py-3.5">Joined</th>
-                </tr>
-              </thead>
-              <tbody>
-                {people.map((p) => (
-                  <tr
-                    key={p.id}
-                    className="border-b border-border-soft last:border-0"
-                  >
-                    <td className="px-5 py-3.5 font-medium">
-                      {p.role === "client" ? (
-                        <Link
-                          href={`/admin/clients/${p.id}`}
-                          className="text-accent hover:text-accent-hover"
-                        >
-                          {p.name}
-                        </Link>
-                      ) : (
-                        p.name
-                      )}
-                    </td>
-                    <td className="px-5 py-3.5 text-muted">{p.email}</td>
-                    <td className="px-5 py-3.5">
-                      <RoleBadge
-                        role={p.role}
-                        pending={p.role === "client" && !activated.has(p.id)}
-                      />
-                    </td>
-                    <td className="px-5 py-3.5 text-muted">
-                      {dateFmt.format(p.createdAt)}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="mt-4 max-w-[720px] divide-y divide-border-soft overflow-hidden rounded-2xl border border-border bg-paper">
+            {attention.map((item) => {
+              const row = (
+                <div className="flex items-center justify-between gap-4 px-5 py-3.5">
+                  <div className="min-w-0">
+                    <div className="text-[15px] font-medium text-ink">
+                      {item.label}
+                    </div>
+                    <div className="truncate text-[13px] text-muted">
+                      {item.detail}
+                    </div>
+                  </div>
+                  {item.href && (
+                    <span className="shrink-0 text-[13px] font-medium text-accent">
+                      View →
+                    </span>
+                  )}
+                  {item.payHref && (
+                    <a
+                      href={item.payHref}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="shrink-0 text-[13px] font-medium text-accent underline"
+                    >
+                      Pay link
+                    </a>
+                  )}
+                </div>
+              );
+              return item.href ? (
+                <Link
+                  key={item.id}
+                  href={item.href}
+                  className="block transition-colors hover:bg-ground"
+                >
+                  {row}
+                </Link>
+              ) : (
+                <div key={item.id}>{row}</div>
+              );
+            })}
           </div>
         )}
       </section>
@@ -106,35 +191,11 @@ export default async function AdminPage() {
   );
 }
 
-function Stat({ label, value }: { label: string; value: number }) {
+function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-2xl border border-border bg-paper px-5 py-4">
-      <div className="font-serif text-[28px] font-medium">{value}</div>
+      <div className="font-serif text-[26px] font-medium">{value}</div>
       <div className="mt-0.5 text-[13px] font-semibold text-muted">{label}</div>
     </div>
-  );
-}
-
-function RoleBadge({
-  role,
-  pending,
-}: {
-  role: string | null;
-  pending?: boolean;
-}) {
-  const isAdmin = role === "admin";
-  return (
-    <span className="inline-flex items-center gap-2">
-      <span
-        className={`inline-block rounded-full px-2.5 py-1 text-[12px] font-semibold ${
-          isAdmin ? "bg-accent-soft text-accent" : "bg-sand text-muted"
-        }`}
-      >
-        {role ?? "client"}
-      </span>
-      {pending && (
-        <span className="text-[12px] font-medium text-faint">Invited</span>
-      )}
-    </span>
   );
 }

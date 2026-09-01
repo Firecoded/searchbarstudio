@@ -94,11 +94,60 @@ export const clientBilling = pgTable("client_billing", {
   stripeCustomerId: text("stripe_customer_id"),
   stripeSubscriptionId: text("stripe_subscription_id"),
   status: text("status").notNull().default("none"),
+  // Token for the branded /pay/[token] page when a plan invoice is outstanding.
+  token: text("token").unique(),
   checkoutUrl: text("checkout_url"),
   planName: text("plan_name"),
   buildAmount: integer("build_amount"),
+  buildDetails: text("build_details"),
   monthlyAmount: integer("monthly_amount"),
   currentPeriodEnd: timestamp("current_period_end"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .$onUpdate(() => /* @__PURE__ */ new Date())
+    .notNull(),
+});
+
+// A one-time charge to an existing client (deposit, final payment, add-on),
+// independent of their recurring plan. A client can have many over time; the
+// webhook flips status to "paid" when the payment completes.
+export const charge = pgTable(
+  "charge",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    amount: integer("amount").notNull(),
+    description: text("description"),
+    status: text("status").notNull().default("pending"),
+    // Token for the branded /pay/[token] page.
+    token: text("token").unique(),
+    checkoutUrl: text("checkout_url"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .notNull(),
+  },
+  (table) => [index("charge_userId_idx").on(table.userId)],
+);
+
+// An invoice sent to someone who isn't a client yet. Keyed by a token in the
+// invoice link; on payment we create their account and a client_billing row and
+// mark this paid. Lets the admin see invoices that are still outstanding.
+export const pendingInvoice = pgTable("pending_invoice", {
+  id: text("id").primaryKey(),
+  token: text("token").notNull().unique(),
+  name: text("name").notNull(),
+  email: text("email").notNull(),
+  stripeCustomerId: text("stripe_customer_id"),
+  planName: text("plan_name"),
+  buildAmount: integer("build_amount"),
+  monthlyAmount: integer("monthly_amount"),
+  buildDetails: text("build_details"),
+  status: text("status").notNull().default("pending"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at")
     .defaultNow()

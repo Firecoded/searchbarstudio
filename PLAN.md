@@ -83,6 +83,9 @@ projects._
       (Zoho or similar) that forwards inbound to the personal Gmail, plus Gmail
       "Send mail as" so replies go out from `hello@searchbarstudio.com`. Gmail
       stays the day-to-day inbox; the branded address is the in-between.
+- [ ] Swap the email wordmark for a hosted logo image (needs the domain live +
+      a public logo URL); keep the wordmark as the image's alt-text fallback for
+      clients that block images.
 - [ ] Final responsive + accessibility polish
 
 ---

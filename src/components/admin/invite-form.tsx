@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect, useRef } from "react";
+import { useActionState, useState } from "react";
 import { inviteClient, type InviteState } from "@/lib/admin-actions";
 
 const fieldClass =
@@ -11,15 +11,12 @@ const initialState: InviteState = { ok: false };
 
 export function InviteForm() {
   const [state, action, pending] = useActionState(inviteClient, initialState);
-  const formRef = useRef<HTMLFormElement>(null);
-
-  useEffect(() => {
-    if (state.ok) formRef.current?.reset();
-  }, [state.ok]);
+  // Controlled so a failed submit keeps what they typed; cleared on success.
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
 
   return (
     <form
-      ref={formRef}
       action={action}
       className="rounded-2xl border border-border bg-paper p-6"
     >
@@ -28,7 +25,7 @@ export function InviteForm() {
         They&rsquo;ll get an email to set a password and reach their dashboard.
       </p>
 
-      <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-[1fr_1fr_auto] sm:items-end">
+      <div className="mt-5 space-y-4">
         <div>
           <label className={labelClass} htmlFor="invite-name">
             Name
@@ -40,6 +37,8 @@ export function InviteForm() {
             className={fieldClass}
             type="text"
             placeholder="Jane Smith"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
           />
         </div>
         <div>
@@ -53,12 +52,14 @@ export function InviteForm() {
             className={fieldClass}
             type="email"
             placeholder="jane@business.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
         </div>
         <button
           type="submit"
           disabled={pending}
-          className="h-[42px] rounded-xl bg-accent px-6 text-[15px] font-semibold text-accent-ink transition-colors hover:bg-accent-hover disabled:opacity-60"
+          className="h-[42px] w-full rounded-xl bg-accent px-6 text-[15px] font-semibold text-accent-ink transition-colors hover:bg-accent-hover disabled:opacity-60"
         >
           {pending ? "Sending..." : "Send invite"}
         </button>

@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 export const metadata = {
-  title: "Terms of Service — SearchbarStudio",
+  title: "Terms of Service · SearchbarStudio",
 };
 
 function Section({
