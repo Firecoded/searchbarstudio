@@ -58,14 +58,14 @@ export default async function ClientsPage() {
           No clients yet. Add one with “New client”.
         </p>
       ) : (
-        <div className="overflow-hidden rounded-2xl border border-border bg-paper">
-          <table className="w-full text-left text-[15px]">
+        <div className="overflow-x-auto rounded-2xl border border-border bg-paper">
+          <table className="w-full min-w-[560px] text-left text-[15px]">
             <thead>
               <tr className="border-b border-border text-[13px] font-semibold text-muted">
-                <th className="px-5 py-3.5">Name</th>
-                <th className="px-5 py-3.5">Email</th>
-                <th className="px-5 py-3.5">Plan</th>
-                <th className="px-5 py-3.5">Joined</th>
+                <th className="whitespace-nowrap px-5 py-3.5">Name</th>
+                <th className="whitespace-nowrap px-5 py-3.5">Email</th>
+                <th className="whitespace-nowrap px-5 py-3.5">Plan</th>
+                <th className="whitespace-nowrap px-5 py-3.5">Joined</th>
               </tr>
             </thead>
             <tbody>

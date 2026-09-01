@@ -41,20 +41,16 @@ export default async function DashboardPage({
   const isCanceling = billing?.status === "canceling";
   const isCanceled = billing?.status === "canceled";
   const isPending = billing?.status === "pending" && billing.checkoutUrl;
+  // While an admin impersonates this client, block actions that move money or
+  // open the client's Stripe portal so viewing can't become acting. Only in
+  // production, so payment flows stay testable while impersonating in dev.
+  const blockActions =
+    !!session.session.impersonatedBy &&
+    process.env.NODE_ENV === "production";
 
   return (
     <>
       <PageHeader title="Home" />
-      {billingFlag === "success" && (
-        <p className="mt-6 rounded-lg bg-sand px-4 py-3 text-[14px] text-ink">
-          Payment received, thank you. Your plan is being activated.
-        </p>
-      )}
-      {billingFlag === "cancelled" && (
-        <p className="mt-6 rounded-lg bg-accent-soft px-4 py-3 text-[14px] text-accent">
-          Checkout cancelled. Your invoice is still available below.
-        </p>
-      )}
       {billingFlag === "portal_error" && (
         <p className="mt-6 rounded-lg bg-accent-soft px-4 py-3 text-[14px] text-accent">
           Couldn&rsquo;t open the billing portal. Please try again shortly.
@@ -70,40 +66,29 @@ export default async function DashboardPage({
       </section>
 
       {isPending && (
-        <section className="mt-5 rounded-2xl border border-border bg-paper p-6">
-          <h2 className="font-serif text-[20px] font-medium">Invoice ready</h2>
-          <p className="mt-2 text-[15px] leading-[1.55] text-muted">
-            Your invoice is ready to review and pay securely through Stripe.
-          </p>
-          <a
-            href={billing!.checkoutUrl!}
-            className="mt-4 inline-block rounded-xl bg-accent px-6 py-3 text-[15px] font-semibold text-accent-ink transition-colors hover:bg-accent-hover"
-          >
-            Review and pay
-          </a>
-        </section>
+        <MoneyDueCard
+          label="Invoice"
+          amountCents={(billing!.monthlyAmount ?? 0) + (billing!.buildAmount ?? 0)}
+          forText={billing!.planName ?? "Monthly care plan"}
+          note={
+            billing!.monthlyAmount != null
+              ? `Then ${money.format(billing!.monthlyAmount / 100)}/month`
+              : undefined
+          }
+          href={billing!.checkoutUrl}
+          blocked={blockActions}
+        />
       )}
 
       {unpaidCharges.map((c) => (
-        <section
+        <MoneyDueCard
           key={c.id}
-          className="mt-5 rounded-2xl border border-border bg-paper p-6"
-        >
-          <h2 className="font-serif text-[20px] font-medium">
-            {c.description || "One-time charge"}
-          </h2>
-          <p className="mt-2 text-[15px] text-muted">
-            {money.format(c.amount / 100)} due.
-          </p>
-          {c.checkoutUrl && (
-            <a
-              href={c.checkoutUrl}
-              className="mt-4 inline-block rounded-xl bg-accent px-6 py-3 text-[15px] font-semibold text-accent-ink transition-colors hover:bg-accent-hover"
-            >
-              Review and pay
-            </a>
-          )}
-        </section>
+          label="Payment due"
+          amountCents={c.amount}
+          forText={c.description}
+          href={c.checkoutUrl}
+          blocked={blockActions}
+        />
       ))}
 
       {(isActive || isCanceling) && (
@@ -130,14 +115,24 @@ export default async function DashboardPage({
               </>
             )}
           </p>
-          <form action={openBillingPortal} className="mt-4">
+          {blockActions ? (
             <button
-              type="submit"
-              className="rounded-xl border border-border px-5 py-2.5 text-[15px] font-semibold text-ink transition-colors hover:bg-ground"
+              disabled
+              title="Disabled while viewing as this client"
+              className="mt-4 cursor-not-allowed rounded-xl border border-border px-5 py-2.5 text-[15px] font-semibold text-faint"
             >
               Manage billing
             </button>
-          </form>
+          ) : (
+            <form action={openBillingPortal} className="mt-4">
+              <button
+                type="submit"
+                className="rounded-xl border border-border px-5 py-2.5 text-[15px] font-semibold text-ink transition-colors hover:bg-ground"
+              >
+                Manage billing
+              </button>
+            </form>
+          )}
         </section>
       )}
 
@@ -165,5 +160,65 @@ export default async function DashboardPage({
         </p>
       </section>
     </>
+  );
+}
+
+// An outstanding invoice or one-time charge, shown as an action card so it
+// stands apart from the informational cards.
+function MoneyDueCard({
+  label,
+  amountCents,
+  forText,
+  note,
+  href,
+  blocked,
+}: {
+  label: string;
+  amountCents: number;
+  forText?: string | null;
+  note?: string;
+  href?: string | null;
+  blocked: boolean;
+}) {
+  return (
+    <section className="mt-5 rounded-2xl border border-accent/25 bg-accent-soft/60 p-6">
+      <div className="text-[12px] font-semibold uppercase tracking-[0.06em] text-accent">
+        {label}
+      </div>
+      <div className="mt-1.5 font-serif text-[28px] font-medium leading-none text-ink">
+        {money.format(amountCents / 100)}
+      </div>
+      {forText && <p className="mt-2 text-[15px] text-muted">For: {forText}</p>}
+      {note && <p className="mt-1 text-[13px] text-muted">{note}</p>}
+      {href && (
+        <>
+          <p className="mt-3 text-[14px] leading-[1.5] text-muted">
+            Pay securely by card through Stripe, it takes a minute.
+          </p>
+          {blocked ? (
+            <DisabledPay label="Review and pay" />
+          ) : (
+            <a
+              href={href}
+              className="mt-4 inline-block rounded-xl bg-accent px-6 py-3 text-[15px] font-semibold text-accent-ink transition-colors hover:bg-accent-hover"
+            >
+              Review and pay
+            </a>
+          )}
+        </>
+      )}
+    </section>
+  );
+}
+
+// A greyed-out stand-in for a pay button while an admin is impersonating.
+function DisabledPay({ label }: { label: string }) {
+  return (
+    <span
+      title="Disabled while viewing as this client"
+      className="mt-4 inline-block cursor-not-allowed rounded-xl bg-sand px-6 py-3 text-[15px] font-semibold text-faint"
+    >
+      {label}
+    </span>
   );
 }

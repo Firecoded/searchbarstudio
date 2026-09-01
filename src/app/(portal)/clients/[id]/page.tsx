@@ -7,6 +7,7 @@ import { PageHeader } from "@/components/portal/page-header";
 import { BillingForm } from "@/components/admin/billing-form";
 import { BillingControls } from "@/components/admin/billing-controls";
 import { ChargeForm } from "@/components/admin/charge-form";
+import { ImpersonateButton } from "@/components/admin/impersonate-button";
 import { DevBillingPanel } from "@/components/admin/dev-billing-panel";
 
 const money = new Intl.NumberFormat("en-US", {
@@ -51,6 +52,7 @@ export default async function ClientDetailPage({
       <PageHeader
         title={client.name}
         parent={{ label: "Clients", href: "/clients" }}
+        action={<ImpersonateButton userId={client.id} name={client.name} />}
       />
       <p className="-mt-5 mb-8 text-[14px] text-muted">
         {client.email} · Client since {dateFmt.format(client.createdAt)}
@@ -125,14 +127,14 @@ export default async function ClientDetailPage({
             No one-time charges yet.
           </p>
         ) : (
-          <div className="mt-4 overflow-hidden rounded-2xl border border-border bg-paper">
-            <table className="w-full text-left text-[15px]">
+          <div className="mt-4 overflow-x-auto rounded-2xl border border-border bg-paper">
+            <table className="w-full min-w-[520px] text-left text-[15px]">
               <thead>
                 <tr className="border-b border-border text-[13px] font-semibold text-muted">
-                  <th className="px-5 py-3.5">For</th>
-                  <th className="px-5 py-3.5">Amount</th>
-                  <th className="px-5 py-3.5">Date</th>
-                  <th className="px-5 py-3.5">Status</th>
+                  <th className="whitespace-nowrap px-5 py-3.5">For</th>
+                  <th className="whitespace-nowrap px-5 py-3.5">Amount</th>
+                  <th className="whitespace-nowrap px-5 py-3.5">Date</th>
+                  <th className="whitespace-nowrap px-5 py-3.5">Status</th>
                 </tr>
               </thead>
               <tbody>
@@ -141,16 +143,16 @@ export default async function ClientDetailPage({
                     key={c.id}
                     className="border-b border-border-soft last:border-0"
                   >
-                    <td className="px-5 py-3.5 font-medium">
+                    <td className="whitespace-nowrap px-5 py-3.5 font-medium">
                       {c.description || "One-time charge"}
                     </td>
-                    <td className="px-5 py-3.5">
+                    <td className="whitespace-nowrap px-5 py-3.5">
                       {money.format(c.amount / 100)}
                     </td>
-                    <td className="px-5 py-3.5 text-muted">
+                    <td className="whitespace-nowrap px-5 py-3.5 text-muted">
                       {dateFmt.format(c.createdAt)}
                     </td>
-                    <td className="px-5 py-3.5">
+                    <td className="whitespace-nowrap px-5 py-3.5">
                       {c.status === "paid" ? (
                         <span className="text-muted">Paid</span>
                       ) : (

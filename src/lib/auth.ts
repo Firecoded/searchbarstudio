@@ -1,4 +1,5 @@
 import { betterAuth } from "better-auth";
+import { admin } from "better-auth/plugins";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "@/db";
 import * as schema from "@/db/schema";
@@ -30,4 +31,7 @@ export const auth = betterAuth({
       role: { type: "string", defaultValue: "client", input: false },
     },
   },
+  // Only for admin-gated impersonation ("view as client"). Banning etc. are
+  // unused. The impersonation session self-expires after an hour.
+  plugins: [admin({ impersonationSessionDuration: 60 * 60 })],
 });

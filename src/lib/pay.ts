@@ -204,6 +204,44 @@ export async function createPayCheckoutSecret(
   return session.client_secret ?? null;
 }
 
+export type Receipt = {
+  kind: "charge" | "plan";
+  name: string;
+  amountPaid: number;
+  forText: string | null;
+  monthlyAmount: number | null;
+};
+
+// What was just paid, for the confirmation screen. Amounts come from our own
+// records (reliable across payment vs subscription sessions), and the row is
+// still resolvable by token after it's marked paid/active.
+export async function getReceipt(token: string): Promise<Receipt | null> {
+  const p = await resolvePayable(token);
+  if (!p) return null;
+
+  const client = await db.query.user.findFirst({
+    where: eq(user.id, p.row.userId),
+  });
+  const name = client?.name ?? "";
+
+  if (p.kind === "charge") {
+    return {
+      kind: "charge",
+      name,
+      amountPaid: p.row.amount,
+      forText: p.row.description,
+      monthlyAmount: null,
+    };
+  }
+  return {
+    kind: "plan",
+    name,
+    amountPaid: (p.row.monthlyAmount ?? 0) + (p.row.buildAmount ?? 0),
+    forText: p.row.planName,
+    monthlyAmount: p.row.monthlyAmount,
+  };
+}
+
 // Settles a completed pay session immediately so the client sees the result
 // without waiting on the webhook. Idempotent: safe alongside the webhook.
 export async function finalizePayment(
