@@ -1,6 +1,6 @@
 import { Container } from "./ui";
 import { Reveal } from "./reveal";
-import { Mail, Instagram } from "./icons";
+import { Mail } from "./icons";
 import { ContactForm } from "./contact-form";
 
 const rings =
@@ -16,35 +16,28 @@ export function Contact() {
         >
           <div>
             <h2 className="font-serif text-[30px] font-medium leading-[1.1] text-white sm:text-[38px] lg:text-[46px]">
-              Let&rsquo;s build something you&rsquo;re proud of.
+              Let&rsquo;s get your website started.
             </h2>
             <p className="mt-[18px] text-[18px] leading-[1.55] text-[#ffe6da]">
-              Tell me a little about your business and what you&rsquo;re after. I
-              read every message and reply as soon as I can.
+              Tell me a little about your business and what you&rsquo;re looking
+              for. The more details you can share, the better. I read every
+              message personally and will get back to you as soon as I can.
             </p>
-            <div className="mt-8 flex flex-col gap-4">
-              <div className="flex min-w-0 items-center gap-3">
+            <div className="mt-8">
+              <a
+                href="mailto:jacob@searchbarstudio.com"
+                className="group flex min-w-0 items-center gap-3"
+              >
                 <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[11px] bg-white/[0.16]">
                   <Mail size={20} className="text-white" />
                 </span>
                 <div className="min-w-0">
                   <div className="text-[13px] text-[#ffe6da]">Email</div>
-                  <div className="break-all text-base font-semibold text-white">
+                  <div className="break-all text-base font-semibold text-white group-hover:underline">
                     jacob@searchbarstudio.com
                   </div>
                 </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <span className="flex h-10 w-10 items-center justify-center rounded-[11px] bg-white/[0.16]">
-                  <Instagram size={20} className="text-white" />
-                </span>
-                <div>
-                  <div className="text-[13px] text-[#ffe6da]">Instagram</div>
-                  <div className="text-base font-semibold text-white">
-                    @searchbarstudio
-                  </div>
-                </div>
-              </div>
+              </a>
             </div>
           </div>
 
