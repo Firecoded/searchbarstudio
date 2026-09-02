@@ -36,10 +36,12 @@ export default async function ClientsPage() {
     .orderBy(asc(user.createdAt));
 
   const credentials = await db
-    .select({ userId: account.userId })
+    .select({ userId: account.userId, createdAt: account.createdAt })
     .from(account)
     .where(eq(account.providerId, "credential"));
-  const activated = new Set(credentials.map((c) => c.userId));
+  // A client "joins" when they set a password (creating their credential
+  // account), so use that timestamp rather than the invite/creation date.
+  const joinedAt = new Map(credentials.map((c) => [c.userId, c.createdAt]));
 
   const billingRows = await db
     .select({
@@ -65,12 +67,13 @@ export default async function ClientsPage() {
                 <th className="whitespace-nowrap px-5 py-3.5">Name</th>
                 <th className="whitespace-nowrap px-5 py-3.5">Email</th>
                 <th className="whitespace-nowrap px-5 py-3.5">Plan</th>
-                <th className="whitespace-nowrap px-5 py-3.5">Joined</th>
+                <th className="whitespace-nowrap px-5 py-3.5">Status</th>
               </tr>
             </thead>
             <tbody>
               {clients.map((c) => {
                 const status = planByUser.get(c.id);
+                const joined = joinedAt.get(c.id);
                 return (
                   <ClientRow
                     key={c.id}
@@ -78,8 +81,8 @@ export default async function ClientsPage() {
                     name={c.name}
                     email={c.email}
                     plan={status ? (planLabel[status] ?? "None") : "None"}
-                    joined={dateFmt.format(c.createdAt)}
-                    invited={!activated.has(c.id)}
+                    invited={!joined}
+                    joined={joined ? dateFmt.format(joined) : ""}
                   />
                 );
               })}

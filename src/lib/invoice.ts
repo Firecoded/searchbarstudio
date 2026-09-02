@@ -8,6 +8,7 @@ import {
   user,
   account,
   clientBilling,
+  charge,
   verification,
 } from "@/db/schema";
 import { stripe } from "@/lib/stripe";
@@ -66,17 +67,41 @@ export async function createInvoiceCheckoutSecret(
   });
   if (!pi || pi.status !== "pending" || !pi.stripeCustomerId) return null;
 
-  const base: Stripe.Checkout.SessionCreateParams = {
-    // Current Stripe API renamed the embedded UI mode; the SDK types still say
-    // "embedded", so cast to the value the API now expects.
-    ui_mode: "embedded_page" as Stripe.Checkout.SessionCreateParams["ui_mode"],
-    mode: "subscription",
-    customer: pi.stripeCustomerId,
-    line_items: lineItemsFor(pi),
-    subscription_data: { metadata: { pendingInvoiceToken: token } },
-    metadata: { pendingInvoiceToken: token },
-    return_url: `${APP_URL}/invoice/${token}/complete?session_id={CHECKOUT_SESSION_ID}`,
-  };
+  // Current Stripe API renamed the embedded UI mode; the SDK types still say
+  // "embedded", so cast to the value the API now expects.
+  const uiMode = "embedded_page" as Stripe.Checkout.SessionCreateParams["ui_mode"];
+  const returnUrl = `${APP_URL}/invoice/${token}/complete?session_id={CHECKOUT_SESSION_ID}`;
+  const isPlan = pi.monthlyAmount != null && pi.monthlyAmount > 0;
+
+  // A plan invoice bills as a subscription (recurring + optional upfront); a
+  // one-time invoice is a single payment that still provisions the account.
+  const base: Stripe.Checkout.SessionCreateParams = isPlan
+    ? {
+        ui_mode: uiMode,
+        mode: "subscription",
+        customer: pi.stripeCustomerId,
+        line_items: lineItemsFor(pi),
+        subscription_data: { metadata: { pendingInvoiceToken: token } },
+        metadata: { pendingInvoiceToken: token },
+        return_url: returnUrl,
+      }
+    : {
+        ui_mode: uiMode,
+        mode: "payment",
+        customer: pi.stripeCustomerId,
+        line_items: [
+          {
+            price_data: {
+              currency: "usd",
+              unit_amount: pi.buildAmount ?? 0,
+              product_data: { name: pi.buildDetails || "One-time charge" },
+            },
+            quantity: 1,
+          },
+        ],
+        metadata: { pendingInvoiceToken: token },
+        return_url: returnUrl,
+      };
 
   let session: Stripe.Checkout.Session;
   try {
@@ -171,6 +196,32 @@ export async function provisionInvoiceAccount(
           currentPeriodEnd: end ? new Date(end * 1000) : null,
         },
       });
+  } else {
+    // One-time invoice (no plan): remember the Stripe customer for future
+    // billing, and record the payment as a paid charge in their history. Keyed
+    // by the invoice id so the webhook + return page stay idempotent.
+    const customerId =
+      pi.stripeCustomerId ??
+      (typeof session.customer === "string" ? session.customer : null);
+    await db
+      .insert(clientBilling)
+      .values({ id: randomUUID(), userId, stripeCustomerId: customerId, status: "none" })
+      .onConflictDoUpdate({
+        target: clientBilling.userId,
+        set: { stripeCustomerId: customerId },
+      });
+    if (pi.buildAmount && pi.buildAmount > 0) {
+      await db
+        .insert(charge)
+        .values({
+          id: `inv_${pi.id}`,
+          userId,
+          amount: pi.buildAmount,
+          description: pi.buildDetails,
+          status: "paid",
+        })
+        .onConflictDoNothing();
+    }
   }
 
   await db

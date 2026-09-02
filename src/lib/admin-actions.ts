@@ -486,24 +486,31 @@ export async function createPendingInvoice(
 
   const name = (formData.get("name") as string)?.trim() ?? "";
   const email = ((formData.get("email") as string)?.trim() ?? "").toLowerCase();
-  const planName =
-    (formData.get("planName") as string)?.trim() || "Monthly care plan";
   const buildDetails = (formData.get("buildDetails") as string)?.trim() ?? "";
-  const monthlyCents = dollarsToCents(
-    (formData.get("monthlyAmount") as string) ?? "",
-  );
+  const monthlyRaw = (formData.get("monthlyAmount") as string)?.trim() ?? "";
+  const monthlyCents = monthlyRaw ? dollarsToCents(monthlyRaw) : null;
   const buildRaw = (formData.get("buildAmount") as string)?.trim() ?? "";
-  const buildCents = buildRaw ? dollarsToCents(buildRaw) : 0;
+  const buildCents = buildRaw ? dollarsToCents(buildRaw) : null;
+  // No monthly plan means a one-time invoice; there's no plan name to store.
+  const planName = monthlyCents
+    ? (formData.get("planName") as string)?.trim() || "Monthly care plan"
+    : null;
 
   if (!name) return { ok: false, error: "Please add a name." };
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return { ok: false, error: "Please enter a valid email address." };
   }
-  if (!monthlyCents || monthlyCents < 50) {
-    return { ok: false, error: "Enter a monthly amount of at least $0.50." };
+  if (monthlyRaw && (monthlyCents === null || monthlyCents < 50)) {
+    return { ok: false, error: "The monthly amount must be at least $0.50." };
   }
-  if (buildCents === null) {
-    return { ok: false, error: "The build amount isn't a valid number." };
+  if (buildRaw && (buildCents === null || buildCents < 50)) {
+    return { ok: false, error: "The one-time amount must be at least $0.50." };
+  }
+  if (!monthlyCents && !buildCents) {
+    return {
+      ok: false,
+      error: "Enter a monthly amount, a one-time amount, or both.",
+    };
   }
 
   const existingClient = await db.query.user.findFirst({

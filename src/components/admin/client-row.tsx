@@ -21,15 +21,18 @@ export function ClientRow({ href, name, email, plan, joined, invited }: Props) {
     >
       <td className="whitespace-nowrap px-5 py-3.5 font-medium text-ink">
         {name}
-        {invited && (
-          <span className="ml-2 text-[12px] font-medium text-faint">
-            Invited
-          </span>
-        )}
       </td>
       <td className="whitespace-nowrap px-5 py-3.5 text-muted">{email}</td>
       <td className="whitespace-nowrap px-5 py-3.5 text-muted">{plan}</td>
-      <td className="whitespace-nowrap px-5 py-3.5 text-muted">{joined}</td>
+      <td className="whitespace-nowrap px-5 py-3.5">
+        {invited ? (
+          <span className="inline-flex items-center rounded-full bg-sand px-2.5 py-1 text-[12px] font-semibold text-muted">
+            Invited
+          </span>
+        ) : (
+          <span className="text-muted">Joined {joined}</span>
+        )}
+      </td>
     </tr>
   );
 }

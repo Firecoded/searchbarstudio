@@ -15,6 +15,7 @@ export function InvoiceForm() {
     initialState,
   );
 
+  const [mode, setMode] = useState<"plan" | "onetime">("plan");
   // Controlled so a failed submit keeps what they typed (React resets
   // uncontrolled fields after a form action). Cleared only on success.
   const [name, setName] = useState("");
@@ -23,6 +24,8 @@ export function InvoiceForm() {
   const [monthlyAmount, setMonthlyAmount] = useState("");
   const [planName, setPlanName] = useState("");
   const [buildDetails, setBuildDetails] = useState("");
+
+  const isPlan = mode === "plan";
 
   return (
     <form
@@ -35,47 +38,149 @@ export function InvoiceForm() {
         password and land in their dashboard.
       </p>
 
+      <div className="mt-4 inline-flex rounded-xl border border-border bg-ground p-1 text-[13px] font-semibold">
+        <button
+          type="button"
+          onClick={() => setMode("plan")}
+          className={`rounded-lg px-3.5 py-1.5 transition-colors ${
+            isPlan ? "bg-accent text-accent-ink" : "text-muted hover:text-ink"
+          }`}
+        >
+          Care plan
+        </button>
+        <button
+          type="button"
+          onClick={() => setMode("onetime")}
+          className={`rounded-lg px-3.5 py-1.5 transition-colors ${
+            !isPlan ? "bg-accent text-accent-ink" : "text-muted hover:text-ink"
+          }`}
+        >
+          One-time
+        </button>
+      </div>
+      <p className="mt-2 text-[13px] text-muted">
+        {isPlan
+          ? "A recurring monthly plan, with an optional charge on the first invoice."
+          : "A single payment, no recurring plan."}
+      </p>
+
       <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
           <label className={labelClass} htmlFor="inv-name">
             Name
           </label>
-          <input id="inv-name" name="name" required className={fieldClass} type="text" placeholder="Jane Smith" value={name} onChange={(e) => setName(e.target.value)} />
+          <input
+            id="inv-name"
+            name="name"
+            required
+            className={fieldClass}
+            type="text"
+            placeholder="Jane Smith"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
         </div>
         <div>
           <label className={labelClass} htmlFor="inv-email">
             Email
           </label>
-          <input id="inv-email" name="email" required className={fieldClass} type="email" placeholder="jane@business.com" value={email} onChange={(e) => setEmail(e.target.value)} />
+          <input
+            id="inv-email"
+            name="email"
+            required
+            className={fieldClass}
+            type="email"
+            placeholder="jane@business.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
         </div>
-        <div>
-          <label className={labelClass} htmlFor="inv-build">
-            One-time charge{" "}
-            <span className="font-medium text-faint">optional</span>
-          </label>
-          <input id="inv-build" name="buildAmount" className={fieldClass} inputMode="decimal" placeholder="2500" value={buildAmount} onChange={(e) => setBuildAmount(e.target.value)} />
-        </div>
-        <div>
-          <label className={labelClass} htmlFor="inv-monthly">
-            Monthly plan
-          </label>
-          <input id="inv-monthly" name="monthlyAmount" required className={fieldClass} inputMode="decimal" placeholder="99" value={monthlyAmount} onChange={(e) => setMonthlyAmount(e.target.value)} />
-        </div>
+
+        {isPlan ? (
+          <>
+            <div>
+              <label className={labelClass} htmlFor="inv-build">
+                One-time charge{" "}
+                <span className="font-medium text-faint">optional</span>
+              </label>
+              <input
+                id="inv-build"
+                name="buildAmount"
+                className={fieldClass}
+                inputMode="decimal"
+                placeholder="2500"
+                value={buildAmount}
+                onChange={(e) => setBuildAmount(e.target.value)}
+              />
+            </div>
+            <div>
+              <label className={labelClass} htmlFor="inv-monthly">
+                Monthly plan
+              </label>
+              <input
+                id="inv-monthly"
+                name="monthlyAmount"
+                required
+                className={fieldClass}
+                inputMode="decimal"
+                placeholder="99"
+                value={monthlyAmount}
+                onChange={(e) => setMonthlyAmount(e.target.value)}
+              />
+            </div>
+          </>
+        ) : (
+          <div className="sm:col-span-2">
+            <label className={labelClass} htmlFor="inv-build">
+              Amount
+            </label>
+            <input
+              id="inv-build"
+              name="buildAmount"
+              required
+              className={fieldClass}
+              inputMode="decimal"
+              placeholder="2500"
+              value={buildAmount}
+              onChange={(e) => setBuildAmount(e.target.value)}
+            />
+          </div>
+        )}
       </div>
 
-      <div className="mt-4">
-        <label className={labelClass} htmlFor="inv-plan">
-          Plan name
-        </label>
-        <input id="inv-plan" name="planName" className={fieldClass} type="text" placeholder="Monthly care plan" value={planName} onChange={(e) => setPlanName(e.target.value)} />
-      </div>
+      {isPlan && (
+        <div className="mt-4">
+          <label className={labelClass} htmlFor="inv-plan">
+            Plan name
+          </label>
+          <input
+            id="inv-plan"
+            name="planName"
+            className={fieldClass}
+            type="text"
+            placeholder="Monthly care plan"
+            value={planName}
+            onChange={(e) => setPlanName(e.target.value)}
+          />
+        </div>
+      )}
 
       <div className="mt-4">
         <label className={labelClass} htmlFor="inv-details">
-          What&rsquo;s this charge for?{" "}
-          <span className="font-medium text-faint">optional, shown to client</span>
+          What&rsquo;s this for?{" "}
+          <span className="font-medium text-faint">
+            {isPlan ? "optional, shown to client" : "shown to client"}
+          </span>
         </label>
-        <input id="inv-details" name="buildDetails" className={fieldClass} type="text" placeholder="Deposit, final payment, new feature…" value={buildDetails} onChange={(e) => setBuildDetails(e.target.value)} />
+        <input
+          id="inv-details"
+          name="buildDetails"
+          className={fieldClass}
+          type="text"
+          placeholder="Deposit, final payment, new feature…"
+          value={buildDetails}
+          onChange={(e) => setBuildDetails(e.target.value)}
+        />
       </div>
 
       {state.error && (

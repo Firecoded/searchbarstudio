@@ -46,6 +46,7 @@ export default async function WelcomePage({
   const firstName = ctx.name.split(" ")[0];
   const build = ctx.buildAmount ?? 0;
   const monthly = ctx.monthlyAmount ?? 0;
+  const isPlan = monthly > 0;
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-ground px-6 py-12">
@@ -75,12 +76,14 @@ export default async function WelcomePage({
                 <dd className="font-medium">{fmt(build)}</dd>
               </div>
             )}
-            <div className="flex items-center justify-between">
-              <dt className="text-muted">
-                {ctx.planName ?? "Monthly plan"} (first month)
-              </dt>
-              <dd className="font-medium">{fmt(monthly)}</dd>
-            </div>
+            {isPlan && (
+              <div className="flex items-center justify-between">
+                <dt className="text-muted">
+                  {ctx.planName ?? "Monthly plan"} (first month)
+                </dt>
+                <dd className="font-medium">{fmt(monthly)}</dd>
+              </div>
+            )}
             <div className="flex items-center justify-between border-t border-border-soft pt-2">
               <dt className="font-semibold">Paid today</dt>
               <dd className="font-serif text-[17px] font-medium">

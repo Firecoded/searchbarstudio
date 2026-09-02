@@ -138,6 +138,10 @@ export default async function AdminDashboardPage() {
 
       <section className="mt-11">
         <h2 className="font-serif text-[20px] font-medium">Needs attention</h2>
+        <p className="mt-1 text-[13px] text-muted">
+          Unpaid charges and invoices, plus client invites that haven&rsquo;t
+          been accepted.
+        </p>
         {attention.length === 0 ? (
           <p className="mt-4 text-[15px] text-muted">
             All caught up. Nothing needs you right now.

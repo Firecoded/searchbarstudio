@@ -53,6 +53,7 @@ export default async function InvoicePage({
 
   const build = pi.buildAmount ?? 0;
   const monthly = pi.monthlyAmount ?? 0;
+  const isPlan = monthly > 0;
 
   return (
     <main className="min-h-screen bg-ground">
@@ -82,15 +83,17 @@ export default async function InvoicePage({
                     <span className="font-medium">{fmt(build)}</span>
                   </div>
                 )}
-                <div className="flex items-center justify-between border-b border-border-soft pb-3">
-                  <dt className="font-medium">
-                    {pi.planName ?? "Monthly care plan"}
-                    <span className="ml-1 text-[13px] font-normal text-muted">
-                      (first month)
-                    </span>
-                  </dt>
-                  <span className="font-medium">{fmt(monthly)}</span>
-                </div>
+                {isPlan && (
+                  <div className="flex items-center justify-between border-b border-border-soft pb-3">
+                    <dt className="font-medium">
+                      {pi.planName ?? "Monthly care plan"}
+                      <span className="ml-1 text-[13px] font-normal text-muted">
+                        (first month)
+                      </span>
+                    </dt>
+                    <span className="font-medium">{fmt(monthly)}</span>
+                  </div>
+                )}
                 <div className="flex items-center justify-between pt-1">
                   <dt className="font-semibold">Due today</dt>
                   <span className="font-serif text-[20px] font-medium">
@@ -98,24 +101,31 @@ export default async function InvoicePage({
                   </span>
                 </div>
               </dl>
-              <p className="mt-3 text-[13px] text-muted">
-                Then {fmt(monthly)}/month for the care plan. Cancel anytime.
-              </p>
+              {isPlan && (
+                <p className="mt-3 text-[13px] text-muted">
+                  Then {fmt(monthly)}/month for the care plan. Cancel anytime.
+                </p>
+              )}
             </div>
 
-            <div className="mt-6">
-              <h2 className="font-serif text-[18px] font-medium">
-                What the care plan covers
-              </h2>
-              <ul className="mt-3 space-y-2">
-                {included.map((item) => (
-                  <li key={item} className="flex items-start gap-2.5 text-[15px] text-muted">
-                    <span className="mt-[3px] text-accent">✓</span>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
+            {isPlan && (
+              <div className="mt-6">
+                <h2 className="font-serif text-[18px] font-medium">
+                  What the care plan covers
+                </h2>
+                <ul className="mt-3 space-y-2">
+                  {included.map((item) => (
+                    <li
+                      key={item}
+                      className="flex items-start gap-2.5 text-[15px] text-muted"
+                    >
+                      <span className="mt-[3px] text-accent">✓</span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
 
           <div className="overflow-hidden rounded-2xl border border-border bg-paper p-4">
