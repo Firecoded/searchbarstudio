@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 export const metadata = {
-  title: "Terms of Service · SearchbarStudio",
+  title: "Terms of Service · Searchbar Studio",
 };
 
 function Section({
@@ -35,7 +35,7 @@ export default function TermsPage() {
 
       <p className="mt-6 text-[15px] leading-[1.6] text-muted">
         These terms cover the design, build, and ongoing care services provided
-        by SearchbarStudio (&ldquo;we,&rdquo; &ldquo;us&rdquo;) to you, the
+        by Searchbar Studio (&ldquo;we,&rdquo; &ldquo;us&rdquo;) to you, the
         client. By setting up billing or using our services, you agree to them.
       </p>
 

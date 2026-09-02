@@ -16,7 +16,7 @@ const mono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SearchbarStudio",
+  title: "Searchbar Studio",
   description:
     "Websites built, hosted, and looked after for small businesses.",
 };

@@ -20,7 +20,7 @@ export function Nav() {
       <Container className="flex h-[72px] items-center justify-between sm:h-[78px]">
         <a
           href="#top"
-          aria-label="SearchbarStudio home"
+          aria-label="Searchbar Studio home"
           className="flex items-center"
           onClick={close}
         >

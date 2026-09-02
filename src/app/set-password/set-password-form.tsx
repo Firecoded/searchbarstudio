@@ -74,7 +74,7 @@ export function SetPasswordForm() {
   return (
     <div className="w-full max-w-[400px] rounded-2xl border border-border bg-paper p-8">
       <h1 className="font-serif text-[28px] font-medium">
-        Welcome to SearchbarStudio
+        Welcome to Searchbar Studio
       </h1>
 
       {linkError ? (

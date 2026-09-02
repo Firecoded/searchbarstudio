@@ -36,7 +36,10 @@ export function Hero() {
             a beautiful website, made simple
             <span className="ml-0.5 inline-block h-[1.05em] w-0.5 translate-y-[2px] animate-caret bg-accent align-[-2px]" />
           </span>
-          <a href="#contact" className={`${btnPrimary} shrink-0 px-4 py-3 sm:px-6 sm:py-3.5`}>
+          <a
+            href="#services"
+            className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-ink px-4 py-3 text-[15px] font-semibold text-paper transition-colors hover:bg-[#3a3229] sm:px-6 sm:py-3.5"
+          >
             Search
           </a>
         </div>

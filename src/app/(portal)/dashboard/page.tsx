@@ -58,10 +58,14 @@ export default async function DashboardPage({
       )}
 
       <section className="mt-9 rounded-2xl border border-border bg-paper p-6">
-        <h2 className="font-serif text-[20px] font-medium">Your project</h2>
+        <div className="flex items-center gap-2.5">
+          <h2 className="font-serif text-[20px] font-medium">Your project</h2>
+          <ComingSoon />
+        </div>
         <p className="mt-2 text-[15px] leading-[1.55] text-muted">
-          This is where your project status and updates will live. I&rsquo;ll
-          have it set up shortly.
+          This is where your live project status and updates will show up.
+          I&rsquo;m still building this part, for now I&rsquo;ll keep you posted
+          directly.
         </p>
       </section>
 
@@ -158,8 +162,20 @@ export default async function DashboardPage({
           </a>{" "}
           and I&rsquo;ll take care of it.
         </p>
+        <p className="mt-2 text-[13px] text-faint">
+          Requesting changes right here in your dashboard is coming soon.
+        </p>
       </section>
     </>
+  );
+}
+
+// Marks a section whose in-app feature isn't built yet.
+function ComingSoon() {
+  return (
+    <span className="rounded-full bg-sand px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-[0.05em] text-muted">
+      Coming soon
+    </span>
   );
 }
 

@@ -7,10 +7,10 @@ export type EmailContent = { subject: string; props: BrandedEmailProps };
 
 export function inviteEmail(name: string, url: string): EmailContent {
   return {
-    subject: "You're invited to SearchbarStudio",
+    subject: "You're invited to Searchbar Studio",
     props: {
-      preview: "Set your password to reach your SearchbarStudio dashboard.",
-      heading: "Welcome to SearchbarStudio",
+      preview: "Set your password to reach your Searchbar Studio dashboard.",
+      heading: "Welcome to Searchbar Studio",
       paragraphs: [
         `Hi ${name}, **let's get you set up.** Pick a password and you're in.`,
         "Your dashboard is your home base with me, where you can:",
@@ -28,9 +28,9 @@ export function inviteEmail(name: string, url: string): EmailContent {
 
 export function invoiceEmail(name: string, url: string): EmailContent {
   return {
-    subject: "You've got an invoice from SearchbarStudio",
+    subject: "You've got an invoice from Searchbar Studio",
     props: {
-      preview: "Your invoice from SearchbarStudio. Pay and set up your account.",
+      preview: "Your invoice from Searchbar Studio. Pay and set up your account.",
       heading: "You've got an invoice",
       paragraphs: [
         `Hi ${name}, **here's your invoice.** Review it and pay securely.`,
@@ -49,9 +49,9 @@ export function invoiceEmail(name: string, url: string): EmailContent {
 
 export function billingEmail(name: string, url: string): EmailContent {
   return {
-    subject: "Your SearchbarStudio invoice",
+    subject: "Your Searchbar Studio invoice",
     props: {
-      preview: "Your invoice from SearchbarStudio is ready to pay.",
+      preview: "Your invoice from Searchbar Studio is ready to pay.",
       heading: "Your invoice is ready",
       paragraphs: [
         `Hi ${name}, **your invoice is ready.** Review it and pay securely.`,
@@ -80,9 +80,9 @@ export function paymentReceivedEmail(name: string, url: string): EmailContent {
 
 export function resetPasswordEmail(name: string, url: string): EmailContent {
   return {
-    subject: "Reset your SearchbarStudio password",
+    subject: "Reset your Searchbar Studio password",
     props: {
-      preview: "Reset your SearchbarStudio password.",
+      preview: "Reset your Searchbar Studio password.",
       heading: "Reset your password",
       paragraphs: [
         `Hi ${name}, we got a request to **reset your password.** Choose a new one below.`,

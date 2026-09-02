@@ -2,7 +2,7 @@ import { Resend } from "resend";
 
 // onboarding@resend.dev works before the real domain is verified.
 const FROM =
-  process.env.EMAIL_FROM ?? "SearchbarStudio <onboarding@resend.dev>";
+  process.env.EMAIL_FROM ?? "Searchbar Studio <onboarding@resend.dev>";
 
 export async function sendEmail(opts: {
   to: string;

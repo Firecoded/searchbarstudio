@@ -92,7 +92,7 @@ function BrandedEmail({
                 margin: 0,
               }}
             >
-              Searchbar<span style={{ color: color.accent }}>Studio</span>
+              Searchbar <span style={{ color: color.accent }}>Studio</span>
             </Text>
           </Section>
 
@@ -182,7 +182,7 @@ function BrandedEmail({
 
           <Section className="sb-footer" style={{ padding: "20px 8px 0" }}>
             <Text style={{ fontSize: 12, color: color.faint, margin: 0 }}>
-              SearchbarStudio ·{" "}
+              Searchbar Studio ·{" "}
               <Link
                 href="mailto:hello@searchbarstudio.com"
                 style={{ color: color.faint, textDecoration: "underline" }}

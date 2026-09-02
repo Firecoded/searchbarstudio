@@ -1,6 +1,6 @@
 import { Container, Pill, btnGhost } from "./ui";
 import { Reveal } from "./reveal";
-import { DesignRuler, Shield, Search, Chat } from "./icons";
+import { DesignRuler, Shield, Search, Pencil } from "./icons";
 
 const services = [
   {
@@ -19,9 +19,9 @@ const services = [
     body: "SEO basics done right, plus Google setup, so the right customers can actually find you.",
   },
   {
-    Icon: Chat,
-    title: "Yours to update",
-    body: "Change your own text and photos anytime through a simple dashboard. Or hand it to me, your call.",
+    Icon: Pencil,
+    title: "Easy Updates",
+    body: "Update your website content through a simple dashboard, or I can handle it for you.",
   },
 ];
 

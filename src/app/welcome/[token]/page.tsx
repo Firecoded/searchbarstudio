@@ -59,7 +59,7 @@ export default async function WelcomePage({
           </h1>
         </div>
         <p className="mt-3 text-[15px] leading-[1.55] text-muted">
-          Welcome aboard, {firstName}. You&rsquo;re officially a SearchbarStudio
+          Welcome aboard, {firstName}. You&rsquo;re officially a Searchbar Studio
           client, and a receipt is on its way to your email.
         </p>
 

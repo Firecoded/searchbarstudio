@@ -12,7 +12,7 @@ export function Logo({
   return (
     <Image
       src={dark ? lockupDark : lockup}
-      alt="SearchbarStudio"
+      alt="Searchbar Studio"
       priority
       className={`w-auto ${className}`}
     />

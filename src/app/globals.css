@@ -112,3 +112,11 @@ html {
   [data-stagger] > *:nth-child(3) { transition-delay: 180ms; }
   [data-stagger] > *:nth-child(4) { transition-delay: 270ms; }
 }
+
+/* Interactive elements get a pointer cursor (native buttons don't by default). */
+button:not(:disabled),
+[role="button"]:not(:disabled),
+label[for],
+summary {
+  cursor: pointer;
+}
