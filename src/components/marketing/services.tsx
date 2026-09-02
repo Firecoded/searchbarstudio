@@ -16,7 +16,7 @@ const services = [
   {
     Icon: Search,
     title: "Getting found",
-    body: "SEO basics done right, plus Google setup, so the right customers can actually find you.",
+    body: "SEO done properly, so the people who need you can find you easily.",
   },
   {
     Icon: Pencil,
