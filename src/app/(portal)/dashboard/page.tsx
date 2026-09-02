@@ -155,10 +155,10 @@ export default async function DashboardPage({
         <p className="mt-2 text-[15px] leading-[1.55] text-muted">
           Email me at{" "}
           <a
-            href="mailto:hello@searchbarstudio.com"
+            href="mailto:jacob@searchbarstudio.com"
             className="font-medium text-accent"
           >
-            hello@searchbarstudio.com
+            jacob@searchbarstudio.com
           </a>{" "}
           and I&rsquo;ll take care of it.
         </p>

@@ -99,10 +99,10 @@ export default async function WelcomePage({
         <p className="mt-6 text-center text-[13px] text-muted">
           Questions?{" "}
           <a
-            href="mailto:hello@searchbarstudio.com"
+            href="mailto:jacob@searchbarstudio.com"
             className="font-medium text-accent"
           >
-            hello@searchbarstudio.com
+            jacob@searchbarstudio.com
           </a>
         </p>
       </div>

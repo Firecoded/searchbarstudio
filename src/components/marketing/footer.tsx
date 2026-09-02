@@ -2,7 +2,7 @@ import { Container } from "./ui";
 import { Logo } from "./logo";
 
 const links = [
-  { label: "hello@searchbarstudio.com", href: "mailto:hello@searchbarstudio.com" },
+  { label: "jacob@searchbarstudio.com", href: "mailto:jacob@searchbarstudio.com" },
   { label: "Instagram", href: "#" },
   { label: "Client login", href: "/login" },
 ];

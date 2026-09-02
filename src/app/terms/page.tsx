@@ -97,10 +97,10 @@ export default function TermsPage() {
         <p>
           Questions? Email{" "}
           <a
-            href="mailto:hello@searchbarstudio.com"
+            href="mailto:jacob@searchbarstudio.com"
             className="font-medium text-accent"
           >
-            hello@searchbarstudio.com
+            jacob@searchbarstudio.com
           </a>
           .
         </p>

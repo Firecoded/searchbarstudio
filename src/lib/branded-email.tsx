@@ -184,10 +184,10 @@ function BrandedEmail({
             <Text style={{ fontSize: 12, color: color.faint, margin: 0 }}>
               Searchbar Studio ·{" "}
               <Link
-                href="mailto:hello@searchbarstudio.com"
+                href="mailto:jacob@searchbarstudio.com"
                 style={{ color: color.faint, textDecoration: "underline" }}
               >
-                hello@searchbarstudio.com
+                jacob@searchbarstudio.com
               </Link>
             </Text>
           </Section>

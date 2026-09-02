@@ -30,7 +30,7 @@ export function Contact() {
                 <div className="min-w-0">
                   <div className="text-[13px] text-[#ffe6da]">Email</div>
                   <div className="break-all text-base font-semibold text-white">
-                    hello@searchbarstudio.com
+                    jacob@searchbarstudio.com
                   </div>
                 </div>
               </div>
