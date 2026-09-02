@@ -12,6 +12,8 @@ function fmt(cents: number) {
   return money.format(cents / 100);
 }
 
+export const metadata = { robots: { index: false, follow: false } };
+
 export default async function WelcomePage({
   params,
 }: {

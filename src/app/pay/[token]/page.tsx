@@ -19,6 +19,8 @@ const included = [
   "Direct line to me, no account managers",
 ];
 
+export const metadata = { robots: { index: false, follow: false } };
+
 export default async function PayPage({
   params,
 }: {

@@ -54,16 +54,6 @@ export function Hero() {
           </a>
         </div>
 
-        <div className="mt-8 flex items-center gap-3">
-          <div className="flex">
-            <span className="h-8 w-8 rounded-full border-2 border-ground bg-[#e8b04a]" />
-            <span className="-ml-2.5 h-8 w-8 rounded-full border-2 border-ground bg-[#7fa77f]" />
-            <span className="-ml-2.5 h-8 w-8 rounded-full border-2 border-ground bg-accent" />
-          </div>
-          <span className="text-[15px] text-muted">
-            Loved by local business owners across [Your Area]
-          </span>
-        </div>
       </Container>
     </section>
   );

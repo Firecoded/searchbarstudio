@@ -48,6 +48,10 @@ export function About() {
             stick around to keep it running. And if you ever need more than a
             website, I can build that too.
           </p>
+          <p className="mt-4 text-[18px] leading-[1.6] text-muted">
+            I&rsquo;m based in Tempe, working with businesses across the Phoenix
+            metro and with clients anywhere online.
+          </p>
           <a
             href="#contact"
             className="mt-6 inline-flex items-center gap-1.5 text-[15px] font-semibold text-accent transition-colors hover:text-accent-hover"

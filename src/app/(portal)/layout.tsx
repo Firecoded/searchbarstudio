@@ -3,6 +3,8 @@ import { getSession } from "@/lib/session";
 import { PortalShell } from "@/components/portal/portal-shell";
 import { ImpersonationBanner } from "@/components/portal/impersonation-banner";
 
+export const metadata = { robots: { index: false, follow: false } };
+
 export default async function PortalLayout({
   children,
 }: {
