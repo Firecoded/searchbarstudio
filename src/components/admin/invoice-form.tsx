@@ -96,16 +96,115 @@ export function InvoiceForm() {
           />
         </div>
 
-        {isPlan ? (
-          <>
+      </div>
+
+      {isPlan ? (
+        <>
+          <fieldset className="mt-5 rounded-xl border border-border-soft bg-ground/40 p-4">
+            <legend className="px-1 text-[13px] font-semibold text-ink">
+              Monthly care plan
+            </legend>
+            <p className="text-[13px] text-muted">
+              Billed automatically every month, starting today. Appears on the
+              invoice as the recurring line.
+            </p>
+            <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div>
+                <label className={labelClass} htmlFor="inv-monthly">
+                  Monthly amount ($)
+                </label>
+                <input
+                  id="inv-monthly"
+                  name="monthlyAmount"
+                  required
+                  className={fieldClass}
+                  inputMode="decimal"
+                  placeholder="49"
+                  value={monthlyAmount}
+                  onChange={(e) => setMonthlyAmount(e.target.value)}
+                />
+              </div>
+              <div>
+                <label className={labelClass} htmlFor="inv-plan">
+                  Plan name{" "}
+                  <span className="font-medium text-faint">
+                    shown to client
+                  </span>
+                </label>
+                <input
+                  id="inv-plan"
+                  name="planName"
+                  className={fieldClass}
+                  type="text"
+                  placeholder="Essential care plan"
+                  value={planName}
+                  onChange={(e) => setPlanName(e.target.value)}
+                />
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset className="mt-4 rounded-xl border border-border-soft bg-ground/40 p-4">
+            <legend className="px-1 text-[13px] font-semibold text-ink">
+              One-time charge{" "}
+              <span className="font-medium text-faint">optional</span>
+            </legend>
+            <p className="text-[13px] text-muted">
+              A one-off added to this first invoice only, e.g. the website
+              build. Leave blank for none.
+            </p>
+            <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div>
+                <label className={labelClass} htmlFor="inv-build">
+                  Amount ($)
+                </label>
+                <input
+                  id="inv-build"
+                  name="buildAmount"
+                  className={fieldClass}
+                  inputMode="decimal"
+                  placeholder="2500"
+                  value={buildAmount}
+                  onChange={(e) => setBuildAmount(e.target.value)}
+                />
+              </div>
+              <div>
+                <label className={labelClass} htmlFor="inv-details">
+                  Label{" "}
+                  <span className="font-medium text-faint">
+                    shown to client
+                  </span>
+                </label>
+                <input
+                  id="inv-details"
+                  name="buildDetails"
+                  className={fieldClass}
+                  type="text"
+                  placeholder="Website build"
+                  value={buildDetails}
+                  onChange={(e) => setBuildDetails(e.target.value)}
+                />
+              </div>
+            </div>
+          </fieldset>
+        </>
+      ) : (
+        <fieldset className="mt-5 rounded-xl border border-border-soft bg-ground/40 p-4">
+          <legend className="px-1 text-[13px] font-semibold text-ink">
+            One-time charge
+          </legend>
+          <p className="text-[13px] text-muted">
+            A single payment. No recurring plan is created.
+          </p>
+          <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
               <label className={labelClass} htmlFor="inv-build">
-                One-time charge{" "}
-                <span className="font-medium text-faint">optional</span>
+                Amount ($)
               </label>
               <input
                 id="inv-build"
                 name="buildAmount"
+                required
                 className={fieldClass}
                 inputMode="decimal"
                 placeholder="2500"
@@ -114,74 +213,23 @@ export function InvoiceForm() {
               />
             </div>
             <div>
-              <label className={labelClass} htmlFor="inv-monthly">
-                Monthly plan
+              <label className={labelClass} htmlFor="inv-details">
+                Label{" "}
+                <span className="font-medium text-faint">shown to client</span>
               </label>
               <input
-                id="inv-monthly"
-                name="monthlyAmount"
-                required
+                id="inv-details"
+                name="buildDetails"
                 className={fieldClass}
-                inputMode="decimal"
-                placeholder="99"
-                value={monthlyAmount}
-                onChange={(e) => setMonthlyAmount(e.target.value)}
+                type="text"
+                placeholder="Website build"
+                value={buildDetails}
+                onChange={(e) => setBuildDetails(e.target.value)}
               />
             </div>
-          </>
-        ) : (
-          <div className="sm:col-span-2">
-            <label className={labelClass} htmlFor="inv-build">
-              Amount
-            </label>
-            <input
-              id="inv-build"
-              name="buildAmount"
-              required
-              className={fieldClass}
-              inputMode="decimal"
-              placeholder="2500"
-              value={buildAmount}
-              onChange={(e) => setBuildAmount(e.target.value)}
-            />
           </div>
-        )}
-      </div>
-
-      {isPlan && (
-        <div className="mt-4">
-          <label className={labelClass} htmlFor="inv-plan">
-            Plan name
-          </label>
-          <input
-            id="inv-plan"
-            name="planName"
-            className={fieldClass}
-            type="text"
-            placeholder="Monthly care plan"
-            value={planName}
-            onChange={(e) => setPlanName(e.target.value)}
-          />
-        </div>
+        </fieldset>
       )}
-
-      <div className="mt-4">
-        <label className={labelClass} htmlFor="inv-details">
-          What&rsquo;s this for?{" "}
-          <span className="font-medium text-faint">
-            {isPlan ? "optional, shown to client" : "shown to client"}
-          </span>
-        </label>
-        <input
-          id="inv-details"
-          name="buildDetails"
-          className={fieldClass}
-          type="text"
-          placeholder="Deposit, final payment, new feature…"
-          value={buildDetails}
-          onChange={(e) => setBuildDetails(e.target.value)}
-        />
-      </div>
 
       {state.error && (
         <p className="mt-4 rounded-lg bg-accent-soft px-3 py-2 text-[14px] text-accent">

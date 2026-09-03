@@ -36,11 +36,24 @@ export default async function DashboardPage({
     .from(charge)
     .where(and(eq(charge.userId, session.user.id), eq(charge.status, "pending")))
     .orderBy(desc(charge.createdAt));
+  const paidCharges = await db
+    .select()
+    .from(charge)
+    .where(and(eq(charge.userId, session.user.id), eq(charge.status, "paid")))
+    .orderBy(desc(charge.createdAt))
+    .limit(5);
 
   const isActive = billing?.status === "active";
   const isCanceling = billing?.status === "canceling";
   const isCanceled = billing?.status === "canceled";
   const isPending = billing?.status === "pending" && billing.checkoutUrl;
+  const hasCustomer = !!billing?.stripeCustomerId;
+  const showBilling =
+    isActive ||
+    isCanceling ||
+    isCanceled ||
+    hasCustomer ||
+    paidCharges.length > 0;
   // While an admin impersonates this client, block actions that move money or
   // open the client's Stripe portal so viewing can't become acting. Only in
   // production, so payment flows stay testable while impersonating in dev.
@@ -95,58 +108,91 @@ export default async function DashboardPage({
         />
       ))}
 
-      {(isActive || isCanceling) && (
+      {showBilling && (
         <section className="mt-5 rounded-2xl border border-border bg-paper p-6">
-          <div className="flex items-center gap-2">
-            <h2 className="font-serif text-[20px] font-medium">Care plan</h2>
-            <span
-              className={`rounded-full px-2.5 py-1 text-[12px] font-semibold ${
-                isCanceling ? "bg-sand text-muted" : "bg-accent-soft text-accent"
-              }`}
-            >
-              {isCanceling ? "Canceling" : "Active"}
-            </span>
-          </div>
-          <p className="mt-2 text-[15px] text-muted">
-            {billing?.monthlyAmount != null && (
-              <>{money.format(billing.monthlyAmount / 100)}/month</>
-            )}
-            {billing?.currentPeriodEnd && (
-              <>
-                {" · "}
-                {isCanceling ? "ends" : "next charge"}{" "}
-                {dateFmt.format(billing.currentPeriodEnd)}
-              </>
-            )}
-          </p>
-          {blockActions ? (
-            <button
-              disabled
-              title="Disabled while viewing as this client"
-              className="mt-4 cursor-not-allowed rounded-xl border border-border px-5 py-2.5 text-[15px] font-semibold text-faint"
-            >
-              Manage billing
-            </button>
-          ) : (
-            <form action={openBillingPortal} className="mt-4">
-              <button
-                type="submit"
-                className="rounded-xl border border-border px-5 py-2.5 text-[15px] font-semibold text-ink transition-colors hover:bg-ground"
-              >
-                Manage billing
-              </button>
-            </form>
-          )}
-        </section>
-      )}
+          <h2 className="font-serif text-[20px] font-medium">Billing</h2>
 
-      {isCanceled && (
-        <section className="mt-5 rounded-2xl border border-border bg-paper p-6">
-          <h2 className="font-serif text-[20px] font-medium">Care plan</h2>
-          <p className="mt-2 text-[15px] leading-[1.55] text-muted">
-            You don&rsquo;t have an active plan right now. Reach out if
-            you&rsquo;d like to start one back up.
-          </p>
+          {(isActive || isCanceling) && (
+            <div className="mt-3">
+              <div className="flex items-center gap-2">
+                <span className="text-[15px] font-medium">
+                  {billing?.planName ?? "Care plan"}
+                </span>
+                <span
+                  className={`rounded-full px-2.5 py-1 text-[12px] font-semibold ${
+                    isCanceling
+                      ? "bg-sand text-muted"
+                      : "bg-accent-soft text-accent"
+                  }`}
+                >
+                  {isCanceling ? "Canceling" : "Active"}
+                </span>
+              </div>
+              <p className="mt-1 text-[14px] text-muted">
+                {billing?.monthlyAmount != null && (
+                  <>{money.format(billing.monthlyAmount / 100)}/month</>
+                )}
+                {billing?.currentPeriodEnd && (
+                  <>
+                    {" · "}
+                    {isCanceling ? "ends" : "next charge"}{" "}
+                    {dateFmt.format(billing.currentPeriodEnd)}
+                  </>
+                )}
+              </p>
+            </div>
+          )}
+
+          {isCanceled && (
+            <p className="mt-2 text-[15px] leading-[1.55] text-muted">
+              No active plan right now. Reach out if you&rsquo;d like to start
+              one back up.
+            </p>
+          )}
+
+          {paidCharges.length > 0 && (
+            <div className="mt-4 border-t border-border-soft pt-3">
+              <div className="text-[13px] font-semibold text-muted">
+                Recent payments
+              </div>
+              <ul className="mt-1.5 divide-y divide-border-soft">
+                {paidCharges.map((c) => (
+                  <li
+                    key={c.id}
+                    className="flex items-center justify-between gap-4 py-2.5 text-[14px]"
+                  >
+                    <span className="min-w-0 truncate">
+                      {c.description || "One-time charge"}
+                    </span>
+                    <span className="shrink-0 text-muted">
+                      {money.format(c.amount / 100)} · Paid{" "}
+                      {dateFmt.format(c.createdAt)}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {hasCustomer &&
+            (blockActions ? (
+              <button
+                disabled
+                title="Disabled while viewing as this client"
+                className="mt-5 cursor-not-allowed rounded-xl border border-border px-5 py-2.5 text-[15px] font-semibold text-faint"
+              >
+                Manage billing &amp; invoices
+              </button>
+            ) : (
+              <form action={openBillingPortal} className="mt-5">
+                <button
+                  type="submit"
+                  className="rounded-xl border border-border px-5 py-2.5 text-[15px] font-semibold text-ink transition-colors hover:bg-ground"
+                >
+                  Manage billing &amp; invoices
+                </button>
+              </form>
+            ))}
         </section>
       )}
 

@@ -78,6 +78,11 @@ export default async function InvoicePage({
                     <div>
                       <dt className="font-medium">
                         {pi.buildDetails || "One-time charge"}
+                        {isPlan && (
+                          <span className="ml-1 text-[13px] font-normal text-muted">
+                            (one-time)
+                          </span>
+                        )}
                       </dt>
                     </div>
                     <span className="font-medium">{fmt(build)}</span>
@@ -103,7 +108,8 @@ export default async function InvoicePage({
               </dl>
               {isPlan && (
                 <p className="mt-3 text-[13px] text-muted">
-                  Then {fmt(monthly)}/month for the care plan. Cancel anytime.
+                  This invoice covers your first month. After that, you&rsquo;ll
+                  be billed {fmt(monthly)}/month automatically.
                 </p>
               )}
             </div>

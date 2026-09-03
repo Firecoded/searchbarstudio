@@ -30,7 +30,7 @@ export function Hero() {
           your site, so you never have to think about it again.
         </p>
 
-        <div className="mt-8 flex w-full max-w-[680px] items-center gap-2.5 rounded-[18px] border-[1.5px] border-border-soft bg-paper py-2.5 pl-4 pr-2.5 shadow-[0_20px_40px_-24px_rgba(120,70,40,0.35)] sm:mt-10 sm:pl-[22px]">
+        <div className="mt-8 flex w-full max-w-[680px] items-center gap-2.5 rounded-[18px] border-[1.5px] border-border-soft bg-paper px-4 py-4 shadow-[0_20px_40px_-24px_rgba(120,70,40,0.35)] sm:mt-10 sm:py-2.5 sm:pl-[22px] sm:pr-2.5">
           <Search size={22} strokeWidth={2.2} className="shrink-0 text-[#a99a88]" />
           <span className="min-w-0 flex-1 truncate text-left font-mono text-[14px] text-[#3a3229] sm:text-[16px] lg:text-[18px]">
             a beautiful website, made simple
@@ -38,7 +38,7 @@ export function Hero() {
           </span>
           <a
             href="#services"
-            className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-ink px-4 py-3 text-[15px] font-semibold text-paper transition-colors hover:bg-[#3a3229] sm:px-6 sm:py-3.5"
+            className="hidden shrink-0 items-center gap-2 rounded-xl bg-ink px-4 py-3 text-[15px] font-semibold text-paper transition-colors hover:bg-[#3a3229] sm:inline-flex sm:px-6 sm:py-3.5"
           >
             Search
           </a>
