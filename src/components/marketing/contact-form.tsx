@@ -32,10 +32,14 @@ const sentStyles = `
   }
 `;
 
+const REFERRAL_SOURCE = "Someone referred me";
+
 export function ContactForm() {
   const [state, action, pending] = useActionState(submitContact, initialState);
   const inner = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState<number | undefined>(undefined);
+  const [source, setSource] = useState("");
+  const isReferral = source === REFERRAL_SOURCE;
 
   // Keep the outer box sized to whatever's inside (form or success) and let CSS
   // transition the height, so swapping to the success state glides instead of
@@ -188,17 +192,33 @@ export function ContactForm() {
                 id="source"
                 name="source"
                 className={fieldClass}
-                defaultValue=""
+                value={source}
+                onChange={(e) => setSource(e.target.value)}
               >
                 <option value="" disabled>
                   Select one
                 </option>
-                <option>A friend or past client</option>
-                <option>Google search</option>
-                <option>Instagram</option>
+                <option>{REFERRAL_SOURCE}</option>
+                <option>Google or another search</option>
+                <option>Instagram or Facebook</option>
+                <option>I saw a website you built</option>
                 <option>Somewhere else</option>
               </select>
             </div>
+            {isReferral && (
+              <div className="mt-4">
+                <label className={labelClass} htmlFor="referredBy">
+                  Who referred you?
+                </label>
+                <input
+                  id="referredBy"
+                  name="referredBy"
+                  className={fieldClass}
+                  type="text"
+                  placeholder="Their name or business"
+                />
+              </div>
+            )}
             <div className="mt-4">
               <label className={labelClass} htmlFor="message">
                 A little about your project

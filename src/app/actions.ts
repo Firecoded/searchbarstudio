@@ -40,6 +40,7 @@ export async function submitContact(
   const timeline = (formData.get("timeline") as string)?.trim() ?? "";
   const site = (formData.get("site") as string)?.trim() ?? "";
   const source = (formData.get("source") as string)?.trim() ?? "";
+  const referredBy = (formData.get("referredBy") as string)?.trim() ?? "";
 
   if (!name) {
     return { ok: false, error: "Please add your name." };
@@ -64,6 +65,7 @@ export async function submitContact(
     timeline && row("Timeline", timeline),
     site && row("Current/liked site", site),
     source && row("Heard via", source),
+    referredBy && row("Referred by", referredBy),
     `<p style="margin:16px 0 6px"><strong>Message</strong></p>`,
     `<p style="margin:0;white-space:pre-wrap">${escapeHtml(message)}</p>`,
   ]
