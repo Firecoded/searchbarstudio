@@ -6,10 +6,16 @@ import {
   Container,
   Section,
   Text,
+  Img,
   Button,
   Link,
 } from "@react-email/components";
 import { render } from "@react-email/render";
+
+// Emails are rendered and sent from any environment, but recipients open them
+// in their own inbox, so asset URLs must be absolute and point at the live
+// site. Never localhost, or a test send embeds a broken image.
+const EMAIL_ORIGIN = "https://searchbarstudio.com";
 
 const color = {
   ground: "#faf6f0",
@@ -83,17 +89,25 @@ function BrandedEmail({
           style={{ maxWidth: 520, margin: "0 auto", padding: "0 16px" }}
         >
           <Section style={{ padding: "4px 4px 20px" }}>
-            <Text
+            <Img
+              src={`${EMAIL_ORIGIN}/logo-lockup.png`}
+              width={158}
+              height={30}
+              alt="Searchbar Studio"
               style={{
+                display: "block",
+                border: 0,
+                outline: "none",
+                textDecoration: "none",
+                // If a client blocks images, the alt text shows instead. These
+                // font styles are picked up by many clients for that fallback
+                // text, so it still reads in the brand serif.
                 fontFamily: serif,
                 fontSize: 20,
                 fontWeight: 600,
                 color: color.ink,
-                margin: 0,
               }}
-            >
-              Searchbar <span style={{ color: color.accent }}>Studio</span>
-            </Text>
+            />
           </Section>
 
           <Section

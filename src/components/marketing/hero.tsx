@@ -26,14 +26,14 @@ export function Hero() {
           <em className="italic text-accent">searching</em> for.
         </h1>
         <p className="mt-5 max-w-[700px] text-balance text-[17px] leading-[1.55] text-muted sm:mt-6 sm:text-[20px]">
-          Great websites, made easy and affordable. I design, build, and maintain
-          your site, so you never have to think about it again.
+          Design, build, hosting, updates, all done for you, so your website is
+          one less thing to worry about.
         </p>
 
         <div className="mt-8 flex w-full max-w-[680px] items-center gap-2.5 rounded-[18px] border-[1.5px] border-border-soft bg-paper px-4 py-4 shadow-[0_20px_40px_-24px_rgba(120,70,40,0.35)] sm:mt-10 sm:py-2.5 sm:pl-[22px] sm:pr-2.5">
           <Search size={22} strokeWidth={2.2} className="shrink-0 text-[#a99a88]" />
           <span className="min-w-0 flex-1 truncate text-left font-mono text-[14px] text-[#3a3229] sm:text-[16px] lg:text-[18px]">
-            a beautiful website, made simple
+            someone to handle my website for me
             <span className="ml-0.5 inline-block h-[1.05em] w-0.5 translate-y-[2px] animate-caret bg-accent align-[-2px]" />
           </span>
           <a

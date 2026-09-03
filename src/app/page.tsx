@@ -65,8 +65,8 @@ export default function Home() {
         <Hero />
         <Services />
         <Work />
-        <CarePlan />
         <About />
+        <CarePlan />
         <Process />
         <Contact />
       </main>
