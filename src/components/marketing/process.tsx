@@ -5,12 +5,12 @@ const steps = [
   {
     n: "1",
     title: "Say hello",
-    body: "Send a message about your business. I reply with a simple plan and a fixed price.",
+    body: "Send a quick note about your business. I'll get back to you with a few questions and some initial ideas.",
   },
   {
     n: "2",
-    title: "Build & review",
-    body: "I design and build your site, and we shape it together until it's right.",
+    title: "Plan & build",
+    body: "I turn your ideas into a clear plan and price. We shake hands, I start building, and we work together to get it perfect.",
   },
   {
     n: "3",
