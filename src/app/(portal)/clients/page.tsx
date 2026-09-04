@@ -24,31 +24,32 @@ export default async function ClientsPage() {
   const session = await getSession();
   if (session?.user.role !== "admin") redirect("/dashboard");
 
-  const clients = await db
-    .select({
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      createdAt: user.createdAt,
-    })
-    .from(user)
-    .where(eq(user.role, "client"))
-    .orderBy(asc(user.createdAt));
-
-  const credentials = await db
-    .select({ userId: account.userId, createdAt: account.createdAt })
-    .from(account)
-    .where(eq(account.providerId, "credential"));
+  // Independent reads, run in parallel so their latencies overlap.
+  const [clients, credentials, billingRows] = await Promise.all([
+    db
+      .select({
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        createdAt: user.createdAt,
+      })
+      .from(user)
+      .where(eq(user.role, "client"))
+      .orderBy(asc(user.createdAt)),
+    db
+      .select({ userId: account.userId, createdAt: account.createdAt })
+      .from(account)
+      .where(eq(account.providerId, "credential")),
+    db
+      .select({
+        userId: clientBilling.userId,
+        status: clientBilling.status,
+      })
+      .from(clientBilling),
+  ]);
   // A client "joins" when they set a password (creating their credential
   // account), so use that timestamp rather than the invite/creation date.
   const joinedAt = new Map(credentials.map((c) => [c.userId, c.createdAt]));
-
-  const billingRows = await db
-    .select({
-      userId: clientBilling.userId,
-      status: clientBilling.status,
-    })
-    .from(clientBilling);
   const planByUser = new Map(billingRows.map((b) => [b.userId, b.status]));
 
   return (

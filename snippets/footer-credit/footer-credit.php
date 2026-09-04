@@ -18,7 +18,7 @@
 add_action( 'wp_footer', function () {
 	?>
 	<p style="margin:0;padding:12px 0;text-align:center;font:400 12px/1.5 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#9a8c7b;">
-		Site by <a href="https://searchbarstudio.com" rel="noopener" style="color:#c1592f;text-decoration:none;">Searchbar Studio</a>
+		Site by <a href="https://searchbarstudio.com" target="_blank" rel="noopener" style="color:#c1592f;text-decoration:none;">Searchbar Studio</a>
 	</p>
 	<?php
 } );

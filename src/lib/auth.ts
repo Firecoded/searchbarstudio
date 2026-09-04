@@ -11,6 +11,12 @@ export const auth = betterAuth({
   baseURL: process.env.BETTER_AUTH_URL,
   secret: process.env.BETTER_AUTH_SECRET,
   database: drizzleAdapter(db, { provider: "pg", schema }),
+  // Cache the session in a short-lived signed cookie so most navigations read
+  // it from the cookie instead of hitting the database each time. Sign-in and
+  // impersonation set fresh cookies, so this only affects the read path.
+  session: {
+    cookieCache: { enabled: true, maxAge: 5 * 60 },
+  },
   emailAndPassword: {
     enabled: true,
     // Accounts are created by invite (server-side), not open registration.

@@ -28,20 +28,25 @@ export default async function DashboardPage({
   if (session.user.role === "admin") redirect("/admin");
 
   const { billing: billingFlag } = await searchParams;
-  const billing = await db.query.clientBilling.findFirst({
-    where: eq(clientBilling.userId, session.user.id),
-  });
-  const unpaidCharges = await db
-    .select()
-    .from(charge)
-    .where(and(eq(charge.userId, session.user.id), eq(charge.status, "pending")))
-    .orderBy(desc(charge.createdAt));
-  const paidCharges = await db
-    .select()
-    .from(charge)
-    .where(and(eq(charge.userId, session.user.id), eq(charge.status, "paid")))
-    .orderBy(desc(charge.createdAt))
-    .limit(5);
+  // Independent reads, run in parallel so their latencies overlap.
+  const [billing, unpaidCharges, paidCharges] = await Promise.all([
+    db.query.clientBilling.findFirst({
+      where: eq(clientBilling.userId, session.user.id),
+    }),
+    db
+      .select()
+      .from(charge)
+      .where(
+        and(eq(charge.userId, session.user.id), eq(charge.status, "pending")),
+      )
+      .orderBy(desc(charge.createdAt)),
+    db
+      .select()
+      .from(charge)
+      .where(and(eq(charge.userId, session.user.id), eq(charge.status, "paid")))
+      .orderBy(desc(charge.createdAt))
+      .limit(5),
+  ]);
 
   const isActive = billing?.status === "active";
   const isCanceling = billing?.status === "canceling";

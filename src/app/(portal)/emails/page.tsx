@@ -5,22 +5,34 @@ import { emailGallery } from "@/lib/email-content";
 import { EmailGallery } from "@/components/admin/email-gallery";
 import { PageHeader } from "@/components/portal/page-header";
 
+// The gallery is static reference content (fixed sample data), so render the
+// branded emails once per server instance and reuse them, instead of
+// re-rendering all of them on every visit to this page.
+type GalleryEmail = {
+  key: string;
+  label: string;
+  subject: string;
+  html: string;
+};
+let cachedEmails: Promise<GalleryEmail[]> | null = null;
+function getGalleryEmails() {
+  if (!cachedEmails) {
+    cachedEmails = Promise.all(
+      emailGallery.map(async (e) => {
+        const content = e.build("Jane", "#");
+        const { html } = await renderBrandedEmail(content.props);
+        return { key: e.key, label: e.label, subject: content.subject, html };
+      }),
+    );
+  }
+  return cachedEmails;
+}
+
 export default async function EmailsPage() {
   const session = await getSession();
   if (session?.user.role !== "admin") redirect("/dashboard");
 
-  const emails = await Promise.all(
-    emailGallery.map(async (e) => {
-      const content = e.build("Jane", "#");
-      const { html } = await renderBrandedEmail(content.props);
-      return {
-        key: e.key,
-        label: e.label,
-        subject: content.subject,
-        html,
-      };
-    }),
-  );
+  const emails = await getGalleryEmails();
 
   return (
     <>

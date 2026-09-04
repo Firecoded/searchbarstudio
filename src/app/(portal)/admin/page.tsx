@@ -27,62 +27,67 @@ export default async function AdminDashboardPage() {
   const session = await getSession();
   if (session?.user.role !== "admin") redirect("/dashboard");
 
-  // Active plans → active-client count + MRR.
-  const activePlans = await db
-    .select({
-      monthlyAmount: clientBilling.monthlyAmount,
-    })
-    .from(clientBilling)
-    .where(inArray(clientBilling.status, ["active", "canceling"]));
+  // Independent reads, run in parallel so their latencies overlap instead of
+  // stacking one after another.
+  const [
+    activePlans,
+    unpaidCharges,
+    pendingPlans,
+    pendingInvoices,
+    clientUsers,
+    credentials,
+  ] = await Promise.all([
+    // Active plans → active-client count + MRR.
+    db
+      .select({ monthlyAmount: clientBilling.monthlyAmount })
+      .from(clientBilling)
+      .where(inArray(clientBilling.status, ["active", "canceling"])),
+    // Unpaid one-time charges.
+    db
+      .select({
+        id: charge.id,
+        amount: charge.amount,
+        description: charge.description,
+        userId: charge.userId,
+        clientName: user.name,
+      })
+      .from(charge)
+      .innerJoin(user, eq(user.id, charge.userId))
+      .where(eq(charge.status, "pending")),
+    // Plan invoices sent but not yet paid.
+    db
+      .select({
+        userId: clientBilling.userId,
+        monthlyAmount: clientBilling.monthlyAmount,
+        buildAmount: clientBilling.buildAmount,
+        clientName: user.name,
+      })
+      .from(clientBilling)
+      .innerJoin(user, eq(user.id, clientBilling.userId))
+      .where(eq(clientBilling.status, "pending")),
+    // Invoices to people who aren't clients yet, still unpaid.
+    db
+      .select({
+        id: pendingInvoice.id,
+        token: pendingInvoice.token,
+        name: pendingInvoice.name,
+        monthlyAmount: pendingInvoice.monthlyAmount,
+        buildAmount: pendingInvoice.buildAmount,
+      })
+      .from(pendingInvoice)
+      .where(eq(pendingInvoice.status, "pending")),
+    // Client users, to find who hasn't set a password yet.
+    db
+      .select({ id: user.id, name: user.name, email: user.email })
+      .from(user)
+      .where(eq(user.role, "client")),
+    db
+      .select({ userId: account.userId })
+      .from(account)
+      .where(eq(account.providerId, "credential")),
+  ]);
   const activeCount = activePlans.length;
   const mrr = activePlans.reduce((sum, p) => sum + (p.monthlyAmount ?? 0), 0);
-
-  // Unpaid one-time charges.
-  const unpaidCharges = await db
-    .select({
-      id: charge.id,
-      amount: charge.amount,
-      description: charge.description,
-      userId: charge.userId,
-      clientName: user.name,
-    })
-    .from(charge)
-    .innerJoin(user, eq(user.id, charge.userId))
-    .where(eq(charge.status, "pending"));
-
-  // Plan invoices sent but not yet paid.
-  const pendingPlans = await db
-    .select({
-      userId: clientBilling.userId,
-      monthlyAmount: clientBilling.monthlyAmount,
-      buildAmount: clientBilling.buildAmount,
-      clientName: user.name,
-    })
-    .from(clientBilling)
-    .innerJoin(user, eq(user.id, clientBilling.userId))
-    .where(eq(clientBilling.status, "pending"));
-
-  // Invoices to people who aren't clients yet, still unpaid.
-  const pendingInvoices = await db
-    .select({
-      id: pendingInvoice.id,
-      token: pendingInvoice.token,
-      name: pendingInvoice.name,
-      monthlyAmount: pendingInvoice.monthlyAmount,
-      buildAmount: pendingInvoice.buildAmount,
-    })
-    .from(pendingInvoice)
-    .where(eq(pendingInvoice.status, "pending"));
-
-  // Invited clients who haven't set a password yet.
-  const clientUsers = await db
-    .select({ id: user.id, name: user.name, email: user.email })
-    .from(user)
-    .where(eq(user.role, "client"));
-  const credentials = await db
-    .select({ userId: account.userId })
-    .from(account)
-    .where(eq(account.providerId, "credential"));
   const activated = new Set(credentials.map((c) => c.userId));
   const invited = clientUsers.filter((c) => !activated.has(c.id));
 
