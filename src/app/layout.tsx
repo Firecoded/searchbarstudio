@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Manrope, Newsreader, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
+import { AnalyticsScripts } from "@/components/analytics";
 
 const sans = Manrope({ variable: "--font-sans", subsets: ["latin"] });
 const serif = Newsreader({
@@ -52,7 +53,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${sans.variable} ${serif.variable} ${mono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        {children}
+        <AnalyticsScripts />
+      </body>
     </html>
   );
 }
