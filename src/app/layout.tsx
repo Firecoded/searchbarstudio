@@ -19,7 +19,7 @@ const mono = IBM_Plex_Mono({
 const APP_URL =
   process.env.NEXT_PUBLIC_APP_URL ?? "https://searchbarstudio.com";
 
-const title = "Searchbar Studio | Phoenix Web Design for Small Businesses";
+const title = "Searchbar Studio | Great Websites, Made Easy and Affordable";
 const description =
   "Searchbar Studio designs, builds, and maintains websites for small businesses across Phoenix and the Valley. Work directly with a senior developer, no agencies, no jargon, no runaround.";
 
