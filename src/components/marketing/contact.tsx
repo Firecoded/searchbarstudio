@@ -1,6 +1,7 @@
 import { Container } from "./ui";
 import { Reveal } from "./reveal";
 import { ContactForm } from "./contact-form";
+import { TrackedLink } from "../tracked-link";
 
 const rings =
   "radial-gradient(circle at 94% 84%, transparent 72px, rgba(255,255,255,0.14) 74px, rgba(255,255,255,0.14) 76px, transparent 78px), radial-gradient(circle at 94% 84%, transparent 116px, rgba(255,255,255,0.09) 118px, rgba(255,255,255,0.09) 120px, transparent 122px), linear-gradient(135deg,#c1592f,#e0996a)";
@@ -26,12 +27,14 @@ export function Contact() {
 
           <p className="mt-7 text-[14px] text-[#ffe6da]">
             Prefer to email me?{" "}
-            <a
+            <TrackedLink
               href="mailto:jacob@searchbarstudio.com"
+              event="email_link_clicked"
+              eventProps={{ location: "contact" }}
               className="font-semibold text-white underline-offset-2 hover:underline"
             >
               jacob@searchbarstudio.com
-            </a>
+            </TrackedLink>
           </p>
         </Reveal>
       </Container>

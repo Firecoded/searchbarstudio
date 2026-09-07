@@ -3,6 +3,7 @@
 import { useActionState, useEffect, useRef, useState } from "react";
 import { submitContact, type ContactState } from "@/app/actions";
 import { Search, ArrowRight } from "./icons";
+import { track } from "../posthog";
 
 const fieldClass =
   "mt-2 w-full rounded-[11px] border-[1.5px] border-[#e2d6c5] bg-paper px-[15px] py-[13px] text-[15px] text-ink placeholder:text-[#a99a88] focus:border-accent focus:outline-none";
@@ -137,6 +138,14 @@ export function ContactForm() {
   };
   useEffect(() => () => clearTimeout(glowTimer.current), []);
 
+  // Funnel end: a successful send, or a server-side failure worth watching.
+  useEffect(() => {
+    if (state.ok) track("contact_submitted", { intent, businessType, goal });
+  }, [state.ok]);
+  useEffect(() => {
+    if (state.error) track("contact_submit_failed", { error: state.error });
+  }, [state.error]);
+
   // Measure the content so the box height animates when it changes (e.g. the
   // referral field appearing). A min-height on the inner keeps steps a
   // consistent size so they don't jump between one another.
@@ -237,6 +246,8 @@ export function ContactForm() {
                       key={o}
                       type="button"
                       onClick={() => {
+                        if (step === 0 && !intent) track("contact_started");
+                        track("contact_intent_selected", { intent: o });
                         setIntent(o);
                         setStep(1);
                       }}
@@ -269,6 +280,7 @@ export function ContactForm() {
                       key={o}
                       type="button"
                       onClick={() => {
+                        track("contact_business_selected", { businessType: o });
                         setBusinessType(o);
                         setStep(2);
                       }}
@@ -294,6 +306,7 @@ export function ContactForm() {
                       key={o}
                       type="button"
                       onClick={() => {
+                        track("contact_goal_selected", { goal: o });
                         setGoal(o);
                         setStep(3);
                       }}

@@ -1,5 +1,6 @@
 import { Container } from "./ui";
 import { Logo } from "./logo";
+import { TrackedLink } from "../tracked-link";
 
 // Section links mirror the top nav (Log in stays out; it lives in the utility
 // row below as Client login).
@@ -52,15 +53,27 @@ export function Footer() {
             &copy; {year} Searchbar Studio
           </p>
           <div className="flex flex-wrap gap-x-6 gap-y-2 text-[14px]">
-            {links.map((l) => (
-              <a
-                key={l.label}
-                href={l.href}
-                className="text-[#b6a898] transition-colors hover:text-white"
-              >
-                {l.label}
-              </a>
-            ))}
+            {links.map((l) =>
+              l.href.startsWith("mailto:") ? (
+                <TrackedLink
+                  key={l.label}
+                  href={l.href}
+                  event="email_link_clicked"
+                  eventProps={{ location: "footer" }}
+                  className="text-[#b6a898] transition-colors hover:text-white"
+                >
+                  {l.label}
+                </TrackedLink>
+              ) : (
+                <a
+                  key={l.label}
+                  href={l.href}
+                  className="text-[#b6a898] transition-colors hover:text-white"
+                >
+                  {l.label}
+                </a>
+              ),
+            )}
           </div>
         </div>
       </Container>

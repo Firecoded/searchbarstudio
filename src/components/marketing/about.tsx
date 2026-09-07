@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Container, Pill } from "./ui";
 import { Reveal } from "./reveal";
+import { TrackedLink } from "../tracked-link";
 import founder from "../../../public/founder.png";
 
 const blob =
@@ -55,13 +56,15 @@ export function About() {
             I&rsquo;m based in Tempe, working with businesses across the Phoenix
             metro and with clients anywhere online.
           </p>
-          <a
+          <TrackedLink
             href="#contact"
+            event="cta_clicked"
+            eventProps={{ location: "about" }}
             className="mt-6 inline-flex items-center gap-1.5 text-[15px] font-semibold text-accent transition-colors hover:text-accent-hover"
           >
             Get in touch
             <span aria-hidden="true">&rarr;</span>
-          </a>
+          </TrackedLink>
         </div>
         </Reveal>
       </Container>

@@ -1,6 +1,7 @@
 import { Container, Pill, btnGhost } from "./ui";
 import { Reveal } from "./reveal";
 import { DesignRuler, Shield, Search, Pencil } from "./icons";
+import { TrackedLink } from "../tracked-link";
 
 const services = [
   {
@@ -67,9 +68,14 @@ export function Services() {
               runs on the web, I can build it.
             </p>
           </div>
-          <a href="#contact" className={`${btnGhost} shrink-0`}>
+          <TrackedLink
+            href="#contact"
+            event="cta_clicked"
+            eventProps={{ location: "services" }}
+            className={`${btnGhost} shrink-0`}
+          >
             Let&rsquo;s talk
-          </a>
+          </TrackedLink>
         </Reveal>
       </Container>
     </section>

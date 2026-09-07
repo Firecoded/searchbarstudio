@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Container, btnPrimary } from "./ui";
 import { Logo } from "./logo";
+import { track } from "../posthog";
 
 const links = [
   { label: "What I do", href: "#services" },
@@ -48,7 +49,11 @@ export function Nav() {
           >
             Log in
           </a>
-          <a href="#contact" className={btnPrimary}>
+          <a
+            href="#contact"
+            onClick={() => track("cta_clicked", { location: "nav" })}
+            className={btnPrimary}
+          >
             Get in touch
           </a>
         </nav>
@@ -119,7 +124,10 @@ export function Nav() {
           </a>
           <a
             href="#contact"
-            onClick={close}
+            onClick={() => {
+              track("cta_clicked", { location: "nav_mobile" });
+              close();
+            }}
             style={{ transitionDelay: `${itemDelay(links.length + 1)}ms` }}
             className={`${btnPrimary} mt-3 justify-center py-3.5 transition-[transform,opacity,background-color] duration-200 ease-out motion-reduce:transition-none ${
               open ? "translate-y-0 opacity-100" : "-translate-y-1 opacity-0"

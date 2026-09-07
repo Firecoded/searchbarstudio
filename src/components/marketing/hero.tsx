@@ -1,5 +1,6 @@
 import { Container, btnPrimary, btnGhost } from "./ui";
 import { Search, ArrowRight } from "./icons";
+import { TrackedLink } from "../tracked-link";
 
 const weaveTile =
   "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Cg stroke='%23d8c1a6' stroke-width='1.3' stroke-linecap='round' opacity='0.16'%3E%3Cline x1='4' y1='6' x2='20' y2='6'/%3E%3Cline x1='4' y1='12' x2='20' y2='12'/%3E%3Cline x1='4' y1='18' x2='20' y2='18'/%3E%3Cline x1='30' y1='4' x2='30' y2='20'/%3E%3Cline x1='36' y1='4' x2='36' y2='20'/%3E%3Cline x1='42' y1='4' x2='42' y2='20'/%3E%3Cline x1='6' y1='28' x2='6' y2='44'/%3E%3Cline x1='12' y1='28' x2='12' y2='44'/%3E%3Cline x1='18' y1='28' x2='18' y2='44'/%3E%3Cline x1='28' y1='30' x2='44' y2='30'/%3E%3Cline x1='28' y1='36' x2='44' y2='36'/%3E%3Cline x1='28' y1='42' x2='44' y2='42'/%3E%3C/g%3E%3C/svg%3E\")";
@@ -39,22 +40,34 @@ export function Hero() {
               style={{ animationDelay: "2.9s" }}
             />
           </span>
-          <a
+          <TrackedLink
             href="#services"
+            event="cta_clicked"
+            eventProps={{ location: "hero_search" }}
             className="hidden shrink-0 items-center gap-2 rounded-xl bg-ink px-4 py-3 text-[15px] font-semibold text-paper transition-colors hover:bg-[#3a3229] sm:inline-flex sm:px-6 sm:py-3.5"
           >
             Search
-          </a>
+          </TrackedLink>
         </div>
 
         <div className="mt-8 flex w-full flex-col gap-3 sm:mt-9 sm:w-auto sm:flex-row sm:gap-3.5">
-          <a href="#contact" className={`${btnPrimary} justify-center px-[30px] py-4 text-base`}>
+          <TrackedLink
+            href="#contact"
+            event="cta_clicked"
+            eventProps={{ location: "hero" }}
+            className={`${btnPrimary} justify-center px-[30px] py-4 text-base`}
+          >
             Get started
             <ArrowRight size={16} />
-          </a>
-          <a href="#work" className={`${btnGhost} justify-center px-[26px] py-4 text-base`}>
+          </TrackedLink>
+          <TrackedLink
+            href="#work"
+            event="cta_clicked"
+            eventProps={{ location: "hero_secondary" }}
+            className={`${btnGhost} justify-center px-[26px] py-4 text-base`}
+          >
             See recent work
-          </a>
+          </TrackedLink>
         </div>
 
       </Container>

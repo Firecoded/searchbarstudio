@@ -1,6 +1,7 @@
 import { Container, Pill, btnPrimary } from "./ui";
 import { Reveal } from "./reveal";
 import { Check } from "./icons";
+import { TrackedLink } from "../tracked-link";
 
 const promises = [
   "Hosting, security & daily backups",
@@ -61,9 +62,14 @@ export function CarePlan() {
               </div>
             ))}
           </div>
-          <a href="#contact" className={`${btnPrimary} mt-7 w-full justify-center py-[15px]`}>
+          <TrackedLink
+            href="#contact"
+            event="cta_clicked"
+            eventProps={{ location: "care_plan" }}
+            className={`${btnPrimary} mt-7 w-full justify-center py-[15px]`}
+          >
             Get started
-          </a>
+          </TrackedLink>
         </div>
         </Reveal>
       </Container>

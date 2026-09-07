@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Container, Pill, btnGhost } from "./ui";
 import { Reveal } from "./reveal";
 import { ArrowRight, ArrowUpRight, Close } from "./icons";
+import { track } from "../posthog";
 
 type Project = {
   tag: string;
@@ -94,7 +95,10 @@ export function Work() {
           {projects.map((p) => (
             <button
               key={p.name + p.tag}
-              onClick={() => setOpen(p)}
+              onClick={() => {
+                track("work_item_opened", { project: p.name });
+                setOpen(p);
+              }}
               className="group overflow-hidden rounded-[18px] border border-border bg-paper text-left transition-transform hover:-translate-y-1 hover:shadow-[0_18px_34px_-22px_rgba(120,70,40,0.4)]"
             >
               <div
@@ -166,6 +170,12 @@ export function Work() {
                 href={open.href ?? "#"}
                 target="_blank"
                 rel="noreferrer"
+                onClick={() =>
+                  track("work_live_site_clicked", {
+                    project: open.name,
+                    href: open.href,
+                  })
+                }
                 className={`${btnGhost} mt-7`}
               >
                 Visit the live site
