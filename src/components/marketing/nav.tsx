@@ -22,7 +22,7 @@ export function Nav() {
   const itemDelay = (i: number) => (open ? i : count - 1 - i) * 45;
 
   return (
-    <header className="relative z-40 border-b border-border">
+    <header className="relative z-40 border-b border-border bg-paper">
       <Container className="relative z-40 flex h-[72px] items-center justify-between sm:h-[78px]">
         <a
           href="#top"
