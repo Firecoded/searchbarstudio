@@ -51,6 +51,12 @@ export function PostHogProvider({ children }: { children: React.ReactNode }) {
         return event;
       },
     });
+
+    // Self-exclusion, like Vercel's toggle: visit /?ph=off once on a browser
+    // to opt it out for good (stored in a cookie), /?ph=on to opt back in.
+    const ph = new URLSearchParams(window.location.search).get("ph");
+    if (ph === "off") posthog.opt_out_capturing();
+    else if (ph === "on") posthog.opt_in_capturing();
   }, []);
 
   return (
@@ -72,6 +78,7 @@ function PageViews() {
 
   useEffect(() => {
     if (!ENABLED || !posthog.__loaded || !pathname) return;
+    if (posthog.has_opted_out_capturing()) return;
     if (isSecretPath(pathname)) {
       posthog.stopSessionRecording();
       return;
