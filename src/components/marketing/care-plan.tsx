@@ -62,7 +62,7 @@ export function CarePlan() {
             ))}
           </div>
           <a href="#contact" className={`${btnPrimary} mt-7 w-full justify-center py-[15px]`}>
-            Get a quote
+            Get started
           </a>
         </div>
         </Reveal>
