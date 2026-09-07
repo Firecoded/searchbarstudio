@@ -41,6 +41,9 @@ export async function submitContact(
   const site = (formData.get("site") as string)?.trim() ?? "";
   const source = (formData.get("source") as string)?.trim() ?? "";
   const referredBy = (formData.get("referredBy") as string)?.trim() ?? "";
+  const businessType = (formData.get("businessType") as string)?.trim() ?? "";
+  const goal = (formData.get("goal") as string)?.trim() ?? "";
+  const business = (formData.get("business") as string)?.trim() ?? "";
 
   if (!name) {
     return { ok: false, error: "Please add your name." };
@@ -54,20 +57,20 @@ export async function submitContact(
       error: "Please enter a valid email address, like you@example.com.",
     };
   }
-  if (!message) {
-    return { ok: false, error: "Please add a short note about your project." };
-  }
-
   const html = [
     row("Name", name),
     row("Email", email),
-    need && row("Needs", need),
+    business && row("Business", business),
+    need && row("Looking for", need),
+    businessType && row("Business type", businessType),
+    goal && row("Main goal", goal),
     timeline && row("Timeline", timeline),
     site && row("Current/liked site", site),
     source && row("Heard via", source),
     referredBy && row("Referred by", referredBy),
-    `<p style="margin:16px 0 6px"><strong>Message</strong></p>`,
-    `<p style="margin:0;white-space:pre-wrap">${escapeHtml(message)}</p>`,
+    message && `<p style="margin:16px 0 6px"><strong>Message</strong></p>`,
+    message &&
+      `<p style="margin:0;white-space:pre-wrap">${escapeHtml(message)}</p>`,
   ]
     .filter(Boolean)
     .join("");
