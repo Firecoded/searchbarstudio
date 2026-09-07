@@ -27,8 +27,7 @@ export function Hero() {
           <em className="italic text-accent">searching</em> for.
         </h1>
         <p className="mt-5 max-w-[700px] text-balance text-[17px] leading-[1.55] text-muted sm:mt-6 sm:text-[20px]">
-          Design, build, hosting, updates, all done for you, so your website is
-          one less thing to worry about.
+          Spend your time on your business, not your website.
         </p>
 
         <div className="mt-8 flex w-full max-w-[680px] items-center gap-2.5 rounded-[18px] border-[1.5px] border-border-soft bg-paper px-4 py-4 shadow-[0_20px_40px_-24px_rgba(120,70,40,0.35)] sm:mt-10 sm:py-2.5 sm:pl-[22px] sm:pr-2.5">
