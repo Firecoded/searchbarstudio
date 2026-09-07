@@ -33,7 +33,12 @@ export function Hero() {
         <div className="mt-8 flex w-full max-w-[680px] items-center gap-2.5 rounded-[18px] border-[1.5px] border-border-soft bg-paper px-4 py-4 shadow-[0_20px_40px_-24px_rgba(120,70,40,0.35)] sm:mt-10 sm:py-2.5 sm:pl-[22px] sm:pr-2.5">
           <Search size={22} strokeWidth={2.2} className="shrink-0 text-[#a99a88]" />
           <span className="flex min-w-0 flex-1 items-center text-left font-mono text-[14px] text-[#3a3229] sm:text-[16px] lg:text-[18px]">
-            <span className="hero-type">someone to handle my website for me</span>
+            <span className="hero-type hero-type-full hidden sm:inline-block">
+              someone to handle my website for me
+            </span>
+            <span className="hero-type hero-type-short inline-block sm:hidden">
+              someone to handle my website
+            </span>
             <span
               className="ml-0.5 inline-block h-[1.05em] w-0.5 translate-y-[1px] animate-caret bg-accent"
               style={{ animationDelay: "2.9s" }}
