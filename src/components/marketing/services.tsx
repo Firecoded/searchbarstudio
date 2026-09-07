@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
 import { Container, Pill, btnGhost } from "./ui";
 import { Reveal } from "./reveal";
 import { DesignRuler, Shield, Search, Pencil } from "./icons";
@@ -27,8 +30,25 @@ const services = [
 ];
 
 export function Services() {
+  const sectionRef = useRef<HTMLElement>(null);
+  // Toggles with scroll so the icons draw in on the way down and retract on
+  // the way back up.
+  const [drawn, setDrawn] = useState(false);
+
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      (entries) => setDrawn(entries[0].isIntersecting),
+      { threshold: 0.25 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
   return (
     <section
+      ref={sectionRef}
       id="services"
       className="scroll-mt-20 border-y border-border bg-paper py-16 sm:py-24 lg:py-[120px]"
     >
@@ -50,7 +70,11 @@ export function Services() {
               key={title}
               className="rounded-2xl border border-border bg-ground p-7"
             >
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-accent-soft">
+              <div
+                className={`svc-icon flex h-12 w-12 items-center justify-center rounded-xl bg-accent-soft${
+                  drawn ? " drawn" : ""
+                }`}
+              >
                 <Icon size={24} className="text-accent" />
               </div>
               <h3 className="mt-5 text-[21px] font-medium">{title}</h3>

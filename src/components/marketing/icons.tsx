@@ -26,8 +26,8 @@ function Svg({
 
 export const Search = (p: IconProps) => (
   <Svg {...p} strokeWidth={p.strokeWidth ?? 2.3}>
-    <circle cx="11" cy="11" r="7" />
-    <line x1="21" y1="21" x2="16.5" y2="16.5" />
+    <circle cx="11" cy="11" r="7" pathLength={100} />
+    <line x1="21" y1="21" x2="16.5" y2="16.5" pathLength={100} />
   </Svg>
 );
 
@@ -68,16 +68,16 @@ export const Menu = (p: IconProps) => (
 
 export const DesignRuler = (p: IconProps) => (
   <Svg {...p} strokeWidth={p.strokeWidth ?? 1.9}>
-    <path d="M12 19l7-7 3 3-7 7-3-3z" />
-    <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z" />
-    <path d="M2 2l7.586 7.586" />
-    <circle cx="11" cy="11" r="2" />
+    <path d="M12 19l7-7 3 3-7 7-3-3z" pathLength={100} />
+    <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z" pathLength={100} />
+    <path d="M2 2l7.586 7.586" pathLength={100} />
+    <circle cx="11" cy="11" r="2" pathLength={100} />
   </Svg>
 );
 
 export const Shield = (p: IconProps) => (
   <Svg {...p} strokeWidth={p.strokeWidth ?? 1.9}>
-    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" pathLength={100} />
   </Svg>
 );
 
@@ -89,8 +89,8 @@ export const Chat = (p: IconProps) => (
 
 export const Pencil = (p: IconProps) => (
   <Svg {...p} strokeWidth={p.strokeWidth ?? 1.9}>
-    <path d="M12 20h9" />
-    <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z" />
+    <path d="M12 20h9" pathLength={100} />
+    <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z" pathLength={100} />
   </Svg>
 );
 

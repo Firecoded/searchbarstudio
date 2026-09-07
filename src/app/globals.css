@@ -139,6 +139,25 @@ body {
   }
 }
 
+/* Services icons draw themselves in (stroke-dashoffset) when the section is in
+   view (and retract on the way back up), after a short lead-in delay so the
+   draw is easy to catch. pathLength=100 normalizes the dash so every icon
+   draws evenly. */
+.svc-icon svg :is(path, circle, line, rect) {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  transition: stroke-dashoffset 1.1s ease-in-out 0.35s;
+}
+.svc-icon.drawn svg :is(path, circle, line, rect) {
+  stroke-dashoffset: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .svc-icon svg :is(path, circle, line, rect) {
+    stroke-dashoffset: 0;
+    transition: none;
+  }
+}
+
 html {
   scroll-behavior: smooth;
 }
