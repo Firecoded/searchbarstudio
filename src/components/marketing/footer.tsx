@@ -1,6 +1,14 @@
 import { Container } from "./ui";
 import { Logo } from "./logo";
 
+// Section links mirror the top nav (Log in stays out; it lives in the utility
+// row below as Client login).
+const navLinks = [
+  { label: "What I do", href: "#services" },
+  { label: "Work", href: "#work" },
+  { label: "About", href: "#about" },
+];
+
 const links = [
   { label: "jacob@searchbarstudio.com", href: "mailto:jacob@searchbarstudio.com" },
   { label: "Terms", href: "/terms" },
@@ -13,11 +21,30 @@ export function Footer() {
   return (
     <footer className="bg-espresso">
       <Container className="py-12">
-        <div className="flex flex-col items-start gap-2.5">
-          <Logo dark className="h-9" />
-          <p className="text-[14px] text-[#b6a898]">
-            Great websites, made easy and affordable.
-          </p>
+        <div className="flex flex-col items-start gap-8 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col items-start gap-2.5">
+            <a
+              href="#top"
+              aria-label="Back to top"
+              className="inline-flex transition-opacity hover:opacity-80"
+            >
+              <Logo dark className="h-9" />
+            </a>
+            <p className="text-[14px] text-[#b6a898]">
+              Great websites, made easy and affordable.
+            </p>
+          </div>
+          <nav className="flex flex-wrap gap-x-6 gap-y-2 text-[15px] font-medium sm:justify-end">
+            {navLinks.map((l) => (
+              <a
+                key={l.href}
+                href={l.href}
+                className="text-[#b6a898] transition-colors hover:text-white"
+              >
+                {l.label}
+              </a>
+            ))}
+          </nav>
         </div>
 
         <div className="mt-8 flex flex-col gap-4 border-t border-white/10 pt-6 sm:flex-row sm:items-center sm:justify-between">
