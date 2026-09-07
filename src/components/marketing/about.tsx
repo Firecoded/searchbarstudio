@@ -14,7 +14,7 @@ export function About() {
       className="scroll-mt-20 border-t border-border"
       style={{ background: blob }}
     >
-      <Container className="py-16 sm:py-[88px]">
+      <Container className="py-16 sm:py-[88px] lg:py-[120px]">
         <Reveal
           stagger
           className="grid grid-cols-1 items-center gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-14"

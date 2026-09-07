@@ -22,7 +22,7 @@ const rings =
 export function CarePlan() {
   return (
     <section id="care" className="scroll-mt-20 bg-espresso" style={{ background: rings }}>
-      <Container className="py-16 sm:py-[88px]">
+      <Container className="py-16 sm:py-[88px] lg:py-[120px]">
         <Reveal
           stagger
           className="grid grid-cols-1 items-center gap-12 lg:grid-cols-[1fr_0.9fr] lg:gap-[60px]"

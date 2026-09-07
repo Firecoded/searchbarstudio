@@ -9,7 +9,7 @@ const rings =
 export function Contact() {
   return (
     <section id="contact" className="scroll-mt-20">
-      <Container className="pb-16 sm:pb-24">
+      <Container className="pb-16 sm:pb-24 lg:pb-[120px]">
         <Reveal
           className="flex flex-col items-center overflow-hidden rounded-[26px] p-6 text-center sm:p-10 lg:p-[60px]"
           style={{ background: rings }}

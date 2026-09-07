@@ -30,13 +30,13 @@ export function Services() {
   return (
     <section
       id="services"
-      className="scroll-mt-20 border-y border-border bg-paper py-16 sm:py-24"
+      className="scroll-mt-20 border-y border-border bg-paper py-16 sm:py-24 lg:py-[120px]"
     >
       <Container>
         <Reveal>
           <Pill>What I do</Pill>
-          <h2 className="mt-[18px] max-w-[660px] font-serif text-[30px] font-medium sm:text-[38px] lg:text-[44px]">
-            Everything your website needs, handled by one person.
+          <h2 className="mt-[18px] font-serif text-[30px] font-medium sm:text-[38px] lg:text-[44px]">
+            Everything your website needs, start to finish.
           </h2>
         </Reveal>
       </Container>

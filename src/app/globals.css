@@ -78,6 +78,67 @@ body {
   }
 }
 
+/* Scroll cue: a chevron gently bounces at the bottom of the hero, hinting
+   there's more below. Static for reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes hero-scroll-bounce {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(6px);
+    }
+  }
+  .hero-scroll-chevron {
+    animation: hero-scroll-bounce 1.6s ease-in-out infinite;
+  }
+}
+
+/* Process connectors draw themselves in when the section enters view: the line
+   grows from the number toward the next one, then the arrowhead fades in.
+   Staggered per connector via an inline transition-delay; fully drawn and
+   static for reduced motion. */
+.proc-line,
+.proc-vline {
+  transition: transform 0.75s ease-out;
+}
+.proc-line {
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+.proc-vline {
+  transform: scaleY(0);
+  transform-origin: top center;
+}
+.proc-line.drawn {
+  transform: scaleX(1);
+}
+.proc-vline.drawn {
+  transform: scaleY(1);
+}
+.proc-head {
+  opacity: 0;
+  transition: opacity 0.4s ease-out;
+}
+.proc-head.drawn {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .proc-line,
+  .proc-vline {
+    transform: none;
+  }
+  .proc-head {
+    opacity: 1;
+  }
+  .proc-line,
+  .proc-vline,
+  .proc-head {
+    transition: none;
+  }
+}
+
 html {
   scroll-behavior: smooth;
 }

@@ -7,7 +7,7 @@ const weaveTile =
 
 export function Hero() {
   return (
-    <section className="relative flex min-h-[86svh] items-center overflow-hidden">
+    <section className="relative flex min-h-[80svh] items-center overflow-hidden">
       <div
         aria-hidden
         className="pointer-events-none absolute left-1/2 top-1/2 h-[2600px] w-[2600px] -translate-x-1/2 -translate-y-1/2 rotate-45"
@@ -68,8 +68,26 @@ export function Hero() {
             See recent work
           </TrackedLink>
         </div>
-
       </Container>
+
+      <a
+        href="#services"
+        aria-label="Scroll to see what I do"
+        className="group absolute bottom-4 left-1/2 -translate-x-1/2 sm:bottom-6"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={2}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden="true"
+          className="hero-scroll-chevron h-7 w-7 text-[#a99a88] transition-colors group-hover:text-accent"
+        >
+          <path d="M6 9l6 6 6-6" />
+        </svg>
+      </a>
     </section>
   );
 }

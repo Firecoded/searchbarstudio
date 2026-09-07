@@ -74,7 +74,7 @@ export function Work() {
   const [open, setOpen] = useState<Project | null>(null);
 
   return (
-    <section id="work" className="scroll-mt-20 pt-16 sm:pt-24">
+    <section id="work" className="scroll-mt-20 pt-16 sm:pt-24 lg:pt-[120px]">
       <Container>
         <Reveal>
           <Pill>Recent work</Pill>
@@ -87,7 +87,7 @@ export function Work() {
         </Reveal>
       </Container>
 
-      <Container className="mt-9 pb-16 sm:pb-24">
+      <Container className="mt-9 pb-16 sm:pb-24 lg:pb-[120px]">
         <Reveal
           stagger
           className="grid grid-cols-1 gap-[22px] sm:grid-cols-2 lg:grid-cols-3"

@@ -1,3 +1,6 @@
+"use client";
+
+import { Fragment, useEffect, useRef, useState } from "react";
 import { Container, Pill } from "./ui";
 import { Reveal } from "./reveal";
 
@@ -20,8 +23,32 @@ const steps = [
 ];
 
 export function Process() {
+  const ref = useRef<HTMLDivElement>(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setInView(true);
+          io.disconnect();
+        }
+      },
+      { threshold: 0.3 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  // Per-connector stagger: line then arrowhead, next connector after.
+  const lineDelay = (i: number) => 0.2 + i * 0.85;
+  const headDelay = (i: number) => lineDelay(i) + 0.65;
+  const drawn = (extra = "") => (inView ? ` drawn${extra}` : "");
+
   return (
-    <section className="pt-16 sm:pt-24">
+    <section className="pt-16 sm:pt-24 lg:pt-[120px]">
       <Container>
         <Reveal>
           <Pill>How it works</Pill>
@@ -30,21 +57,88 @@ export function Process() {
           </h2>
         </Reveal>
       </Container>
-      <Container className="mt-9 pb-16 sm:pb-24">
-        <Reveal
-          stagger
-          className="grid grid-cols-1 gap-5 sm:grid-cols-3"
-        >
-        {steps.map((s) => (
-          <div key={s.n}>
-            <div className="flex h-11 w-11 items-center justify-center rounded-full bg-accent-soft font-serif text-[20px] font-semibold text-accent">
-              {s.n}
-            </div>
-            <h3 className="mt-4 text-[21px] font-medium">{s.title}</h3>
-            <p className="mt-2 text-[15px] leading-[1.55] text-muted">{s.body}</p>
-          </div>
-        ))}
-        </Reveal>
+      <Container className="mt-9 pb-16 sm:pb-24 lg:pb-[120px]">
+        <div ref={ref} className="flex flex-col sm:flex-row sm:items-start">
+          {steps.map((s, i) => {
+            const last = i === steps.length - 1;
+            return (
+              <Fragment key={s.n}>
+                <div className="sm:flex-1">
+                  {/* Number paired with the connector that bridges to the next
+                      number, so the arrow visibly runs circle-to-circle. */}
+                  <div className="flex items-center">
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent-soft font-serif text-[20px] font-semibold text-accent">
+                      {s.n}
+                    </div>
+                    {!last && (
+                      <span className="relative mx-14 hidden h-[1.5px] flex-1 sm:block">
+                        <span
+                          className={`proc-line absolute inset-0 rounded-full${drawn()}`}
+                          style={{
+                            backgroundColor: "#d89a78",
+                            transitionDelay: `${lineDelay(i)}s`,
+                          }}
+                        />
+                        <svg
+                          viewBox="0 0 10 10"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.6"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          aria-hidden="true"
+                          className={`proc-head absolute -right-1.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2${drawn()}`}
+                          style={{
+                            color: "#c8794e",
+                            transitionDelay: `${headDelay(i)}s`,
+                          }}
+                        >
+                          <path d="M3 1 L7 5 L3 9" />
+                        </svg>
+                      </span>
+                    )}
+                  </div>
+                  <h3 className="mt-4 text-[21px] font-medium">{s.title}</h3>
+                  <p className="mt-2 text-[15px] leading-[1.55] text-muted">
+                    {s.body}
+                  </p>
+                </div>
+
+                {/* Mobile: a vertical connector down the stack, under the
+                    number. */}
+                {!last && (
+                  <div className="flex py-2 pl-[21px] sm:hidden">
+                    <span className="relative h-8 w-[1.5px]">
+                      <span
+                        className={`proc-vline absolute inset-0 rounded-full${drawn()}`}
+                        style={{
+                          backgroundColor: "#d89a78",
+                          transitionDelay: `${lineDelay(i)}s`,
+                        }}
+                      />
+                      <svg
+                        viewBox="0 0 10 10"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.6"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        aria-hidden="true"
+                        className={`proc-head absolute -bottom-1 left-1/2 h-2.5 w-2.5 -translate-x-1/2${drawn()}`}
+                        style={{
+                          color: "#c8794e",
+                          transitionDelay: `${headDelay(i)}s`,
+                        }}
+                      >
+                        <path d="M1 3 L5 7 L9 3" />
+                      </svg>
+                    </span>
+                  </div>
+                )}
+              </Fragment>
+            );
+          })}
+        </div>
       </Container>
     </section>
   );
