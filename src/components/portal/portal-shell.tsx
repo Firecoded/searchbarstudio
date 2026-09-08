@@ -52,6 +52,15 @@ function IconMail() {
   );
 }
 
+function IconProject() {
+  return (
+    <svg className={iconClass} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+      <rect x="3" y="4" width="18" height="16" rx="2" />
+      <path d="M3 9h18" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 function navFor(role: string | null | undefined): NavItem[] {
   if (role === "admin") {
     return [
@@ -63,6 +72,7 @@ function navFor(role: string | null | undefined): NavItem[] {
   }
   return [
     { label: "Home", href: "/dashboard", icon: <IconHome /> },
+    { label: "Project", href: "/project", icon: <IconProject /> },
     { label: "Settings", href: "/settings", icon: <IconSettings /> },
   ];
 }

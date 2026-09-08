@@ -1,9 +1,12 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { and, eq, desc } from "drizzle-orm";
 import { getSession } from "@/lib/session";
 import { db } from "@/db";
 import { clientBilling, charge } from "@/db/schema";
 import { openBillingPortal } from "@/lib/dashboard-actions";
+import { getProjectByUserId, getProjectUpdates } from "@/lib/project";
+import { PROJECT_STAGE_META, stageIndex, stageLabel } from "@/lib/project-stages";
 import { PageHeader } from "@/components/portal/page-header";
 
 const money = new Intl.NumberFormat("en-US", {
@@ -29,7 +32,7 @@ export default async function DashboardPage({
 
   const { billing: billingFlag } = await searchParams;
   // Independent reads, run in parallel so their latencies overlap.
-  const [billing, unpaidCharges, paidCharges] = await Promise.all([
+  const [billing, unpaidCharges, paidCharges, project] = await Promise.all([
     db.query.clientBilling.findFirst({
       where: eq(clientBilling.userId, session.user.id),
     }),
@@ -46,7 +49,12 @@ export default async function DashboardPage({
       .where(and(eq(charge.userId, session.user.id), eq(charge.status, "paid")))
       .orderBy(desc(charge.createdAt))
       .limit(5),
+    getProjectByUserId(session.user.id),
   ]);
+
+  const latestUpdate = project
+    ? (await getProjectUpdates(project.id))[0]
+    : undefined;
 
   const isActive = billing?.status === "active";
   const isCanceling = billing?.status === "canceling";
@@ -75,17 +83,13 @@ export default async function DashboardPage({
         </p>
       )}
 
-      <section className="mt-9 rounded-2xl border border-border bg-paper p-6">
-        <div className="flex items-center gap-2.5">
-          <h2 className="font-serif text-[20px] font-medium">Your project</h2>
-          <ComingSoon />
-        </div>
-        <p className="mt-2 text-[15px] leading-[1.55] text-muted">
-          This is where your live project status and updates will show up.
-          I&rsquo;m still building this part, for now I&rsquo;ll keep you posted
-          directly.
-        </p>
-      </section>
+      <ProjectCard
+        project={project}
+        latest={latestUpdate}
+        latestDate={
+          latestUpdate ? dateFmt.format(latestUpdate.createdAt) : undefined
+        }
+      />
 
       {isPending && (
         <MoneyDueCard
@@ -221,12 +225,126 @@ export default async function DashboardPage({
   );
 }
 
-// Marks a section whose in-app feature isn't built yet.
-function ComingSoon() {
+// The dashboard's project card: nothing yet, a proposal to review, or the
+// current status with the latest update. Full detail lives on /dashboard/project.
+function ProjectCard({
+  project,
+  latest,
+  latestDate,
+}: {
+  project: Awaited<ReturnType<typeof getProjectByUserId>>;
+  latest: Awaited<ReturnType<typeof getProjectUpdates>>[number] | undefined;
+  latestDate?: string;
+}) {
+  if (!project) {
+    return (
+      <section className="mt-9 rounded-2xl border border-border bg-paper p-6">
+        <h2 className="font-serif text-[20px] font-medium">Your project</h2>
+        <p className="mt-2 text-[15px] leading-[1.55] text-muted">
+          Your project will show up here once we kick off.
+        </p>
+      </section>
+    );
+  }
+
+  if (!project.acceptedAt) {
+    return (
+      <Link
+        href="/project"
+        className="group mt-9 block rounded-2xl border border-accent/25 bg-accent-soft/60 p-6 transition-all hover:-translate-y-0.5 hover:border-accent/50 hover:shadow-[0_14px_30px_-20px_rgba(120,70,40,0.4)]"
+      >
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex flex-wrap items-center gap-2.5">
+            <h2 className="font-serif text-[20px] font-medium">Your project</h2>
+            <span className="rounded-full bg-accent-soft px-2.5 py-1 text-[12px] font-semibold text-accent">
+              Proposal ready
+            </span>
+          </div>
+          <CardArrow label="Review proposal" />
+        </div>
+        <p className="mt-2 text-[15px] leading-[1.55] text-muted">
+          Review the build and estimate I put together, and confirm when
+          you&rsquo;re ready.
+        </p>
+      </Link>
+    );
+  }
+
+  const latestLine = latest
+    ? latest.body ||
+      (latest.toStage ? `Moved to ${stageLabel(latest.toStage)}` : "")
+    : "";
+
   return (
-    <span className="rounded-full bg-sand px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-[0.05em] text-muted">
-      Coming soon
+    <Link
+      href="/project"
+      className="group mt-9 block rounded-2xl border border-border bg-paper p-6 transition-all hover:-translate-y-0.5 hover:border-accent hover:shadow-[0_14px_30px_-20px_rgba(120,70,40,0.4)]"
+    >
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex flex-wrap items-center gap-2.5">
+          <h2 className="font-serif text-[20px] font-medium">{project.title}</h2>
+          <span className="rounded-full bg-accent-soft px-2.5 py-1 text-[12px] font-semibold text-accent">
+            {stageLabel(project.stage)}
+          </span>
+        </div>
+        <CardArrow label="View project" />
+      </div>
+
+      <MiniStepper current={project.stage} />
+
+      {latestLine && (
+        <div className="mt-4">
+          <div className="text-[12px] font-semibold uppercase tracking-[0.05em] text-faint">
+            Latest update
+          </div>
+          <p className="mt-0.5 flex items-center gap-2 text-[15px] text-muted">
+            <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
+            <span className="min-w-0 truncate">
+              {latestLine}
+              {latestDate && <span className="text-faint"> · {latestDate}</span>}
+            </span>
+          </p>
+        </div>
+      )}
+    </Link>
+  );
+}
+
+// The card's link affordance: a label + arrow that nudges right on hover.
+function CardArrow({ label }: { label: string }) {
+  return (
+    <span className="mt-0.5 flex shrink-0 items-center gap-1 text-[13px] font-semibold text-accent transition-colors group-hover:text-accent-hover">
+      {label}
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+        className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5"
+      >
+        <path d="M5 12h14M13 6l6 6-6 6" />
+      </svg>
     </span>
+  );
+}
+
+// A compact 6-segment progress bar; segments fill up to the current stage.
+function MiniStepper({ current }: { current: string }) {
+  const idx = stageIndex(current);
+  return (
+    <div className="mt-4 flex items-center gap-1.5" aria-hidden>
+      {PROJECT_STAGE_META.map((s, i) => (
+        <span
+          key={s.value}
+          className={`h-1.5 flex-1 rounded-full ${
+            i <= idx ? "bg-accent" : "bg-[#e9decd]"
+          }`}
+        />
+      ))}
+    </div>
   );
 }
 

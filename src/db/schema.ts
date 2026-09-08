@@ -161,9 +161,77 @@ export const pendingInvoice = pgTable("pending_invoice", {
     .notNull(),
 });
 
+// The client's website project: what they see in the portal. Starts in
+// "proposal mode" (acceptedAt null) showing the agreed scope + estimate, then
+// becomes the live status view once the client confirms.
+export const PROJECT_STAGES = [
+  "kickoff",
+  "design",
+  "build",
+  "review",
+  "live",
+  "care",
+] as const;
+export type ProjectStage = (typeof PROJECT_STAGES)[number];
+
+export const project = pgTable(
+  "project",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    title: text("title").notNull(),
+    stage: text("stage").notNull().default("kickoff"),
+    // Proposal mode content (shown before acceptance).
+    proposalIntro: text("proposal_intro"),
+    scope: text("scope"),
+    estimate: text("estimate"),
+    // The fuller pinned brief (live mode).
+    brief: text("brief"),
+    // An admin-authored ask shown to the client (e.g. "email me your logo").
+    needsFromClient: text("needs_from_client"),
+    mocksUrl: text("mocks_url"),
+    previewUrl: text("preview_url"),
+    liveUrl: text("live_url"),
+    // Set when the client confirms the proposal; the snapshot freezes the
+    // accepted scope + estimate, immune to later edits.
+    acceptedAt: timestamp("accepted_at"),
+    acceptedSnapshot: text("accepted_snapshot"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .notNull(),
+  },
+  (table) => [index("project_userId_idx").on(table.userId)],
+);
+
+// Timeline entries. Kind is derived from which fields are set: body only is a
+// note, stages only a status change, both a combined entry.
+export const projectUpdate = pgTable(
+  "project_update",
+  {
+    id: text("id").primaryKey(),
+    projectId: text("project_id")
+      .notNull()
+      .references(() => project.id, { onDelete: "cascade" }),
+    body: text("body"),
+    fromStage: text("from_stage"),
+    toStage: text("to_stage"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .notNull(),
+  },
+  (table) => [index("project_update_projectId_idx").on(table.projectId)],
+);
+
 export const userRelations = relations(user, ({ many, one }) => ({
   sessions: many(session),
   accounts: many(account),
+  projects: many(project),
   billing: one(clientBilling, {
     fields: [user.id],
     references: [clientBilling.userId],
@@ -181,5 +249,20 @@ export const accountRelations = relations(account, ({ one }) => ({
   user: one(user, {
     fields: [account.userId],
     references: [user.id],
+  }),
+}));
+
+export const projectRelations = relations(project, ({ one, many }) => ({
+  user: one(user, {
+    fields: [project.userId],
+    references: [user.id],
+  }),
+  updates: many(projectUpdate),
+}));
+
+export const projectUpdateRelations = relations(projectUpdate, ({ one }) => ({
+  project: one(project, {
+    fields: [projectUpdate.projectId],
+    references: [project.id],
   }),
 }));

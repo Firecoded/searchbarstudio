@@ -9,6 +9,8 @@ import { BillingControls } from "@/components/admin/billing-controls";
 import { ChargeForm } from "@/components/admin/charge-form";
 import { ImpersonateButton } from "@/components/admin/impersonate-button";
 import { DevBillingPanel } from "@/components/admin/dev-billing-panel";
+import { ProjectPanel } from "@/components/admin/project-panel";
+import { getProjectByUserId, getProjectUpdates } from "@/lib/project";
 
 const money = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -33,14 +35,18 @@ export default async function ClientDetailPage({
   const client = await db.query.user.findFirst({ where: eq(user.id, id) });
   if (!client || client.role !== "client") notFound();
 
-  const billing = await db.query.clientBilling.findFirst({
-    where: eq(clientBilling.userId, id),
-  });
-  const charges = await db
-    .select()
-    .from(charge)
-    .where(eq(charge.userId, id))
-    .orderBy(desc(charge.createdAt));
+  // Independent reads in parallel so their latencies overlap (mirrors the
+  // dashboard). Project updates depend on the project id, so they follow.
+  const [billing, charges, project] = await Promise.all([
+    db.query.clientBilling.findFirst({ where: eq(clientBilling.userId, id) }),
+    db
+      .select()
+      .from(charge)
+      .where(eq(charge.userId, id))
+      .orderBy(desc(charge.createdAt)),
+    getProjectByUserId(id),
+  ]);
+  const projectUpdates = project ? await getProjectUpdates(project.id) : [];
 
   const isActive = billing?.status === "active";
   const isCanceling = billing?.status === "canceling";
@@ -48,7 +54,7 @@ export default async function ClientDetailPage({
   const wasCanceled = billing?.status === "canceled";
 
   return (
-    <div className="max-w-[760px]">
+    <div>
       <PageHeader
         title={client.name}
         parent={{ label: "Clients", href: "/clients" }}
@@ -58,9 +64,20 @@ export default async function ClientDetailPage({
         {client.email} · Client since {dateFmt.format(client.createdAt)}
       </p>
 
+      <section className="mb-11">
+        <h2 className="font-serif text-[20px] font-medium">Project</h2>
+        <div className="mt-4">
+          <ProjectPanel
+            clientId={client.id}
+            project={project ?? null}
+            updates={projectUpdates}
+          />
+        </div>
+      </section>
+
       <section>
         <h2 className="font-serif text-[20px] font-medium">Plan</h2>
-        <div className="mt-4">
+        <div className="mt-4 max-w-[640px]">
           {isActive || isCanceling ? (
             <div className="rounded-2xl border border-border bg-paper p-6">
               <div className="flex items-center gap-2">
