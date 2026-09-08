@@ -66,7 +66,7 @@ export function Process() {
             const last = i === steps.length - 1;
             return (
               <Fragment key={s.n}>
-                <div className="sm:flex-1">
+                <div className="flex flex-col items-center text-center sm:block sm:flex-1 sm:text-left">
                   {/* Number paired with the connector that bridges to the next
                       number, so the arrow visibly runs circle-to-circle. */}
                   <div className="flex items-center">
@@ -110,8 +110,8 @@ export function Process() {
                 {/* Mobile: a vertical connector down the stack, under the
                     number. */}
                 {!last && (
-                  <div className="flex py-2 pl-[21px] sm:hidden">
-                    <span className="relative h-8 w-[1.5px]">
+                  <div className="flex justify-center py-3 sm:hidden">
+                    <span className="relative h-14 w-[1.5px]">
                       <span
                         className={`proc-vline absolute inset-0 rounded-full${drawnMobile}`}
                         style={{

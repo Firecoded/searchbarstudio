@@ -164,11 +164,11 @@ export function ContactForm() {
   return (
     <div
       style={{ height }}
-      className="overflow-hidden rounded-[18px] bg-paper transition-[height] duration-300 ease-out motion-reduce:transition-none"
+      className="overflow-hidden rounded-none bg-paper transition-[height] duration-300 ease-out motion-reduce:transition-none sm:rounded-[18px]"
     >
       <div ref={inner} className="flex flex-col" style={{ minHeight: 531 }}>
         {showChrome && (
-          <div className="px-[30px] pt-6">
+          <div className="px-[18px] pt-6 sm:px-[30px]">
             <div className="flex items-center justify-between text-[12px] font-medium text-muted">
               <button
                 type="button"
@@ -188,7 +188,7 @@ export function ContactForm() {
           </div>
         )}
 
-        <div className="flex flex-1 items-center px-[30px] py-8">
+        <div className="flex flex-1 items-center px-[18px] py-8 sm:px-[30px]">
           <div className="w-full">
             {state.ok ? (
               <div className="flex flex-col items-center text-center">

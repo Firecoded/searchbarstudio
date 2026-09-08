@@ -6,7 +6,13 @@ import { Reveal } from "./reveal";
 import { DesignRuler, Shield, Search, Pencil } from "./icons";
 import { TrackedLink } from "../tracked-link";
 
-const services = [
+type Service = {
+  Icon: React.ComponentType<{ size?: number; className?: string }>;
+  title: string;
+  body: string;
+};
+
+const services: Service[] = [
   {
     Icon: DesignRuler,
     title: "Design & build",
@@ -29,26 +35,41 @@ const services = [
   },
 ];
 
-export function Services() {
-  const sectionRef = useRef<HTMLElement>(null);
-  // Toggles with scroll so the icons draw in on the way down and retract on
-  // the way back up.
+// Each card watches itself, so on mobile every icon draws as its own card
+// scrolls into view (and retracts on the way back up).
+function ServiceCard({ Icon, title, body }: Service) {
+  const ref = useRef<HTMLDivElement>(null);
   const [drawn, setDrawn] = useState(false);
 
   useEffect(() => {
-    const el = sectionRef.current;
+    const el = ref.current;
     if (!el) return;
     const io = new IntersectionObserver(
       (entries) => setDrawn(entries[0].isIntersecting),
-      { threshold: 0.25 },
+      { threshold: 0.5 },
     );
     io.observe(el);
     return () => io.disconnect();
   }, []);
 
   return (
+    <div ref={ref} className="rounded-2xl border border-border bg-ground p-7">
+      <div
+        className={`svc-icon flex h-12 w-12 items-center justify-center rounded-xl bg-accent-soft${
+          drawn ? " drawn" : ""
+        }`}
+      >
+        <Icon size={24} className="text-accent" />
+      </div>
+      <h3 className="mt-5 text-[21px] font-medium">{title}</h3>
+      <p className="mt-2.5 text-[15px] leading-[1.55] text-muted">{body}</p>
+    </div>
+  );
+}
+
+export function Services() {
+  return (
     <section
-      ref={sectionRef}
       id="services"
       className="scroll-mt-20 border-y border-border bg-paper py-16 sm:py-24 lg:py-[120px]"
     >
@@ -65,21 +86,8 @@ export function Services() {
           stagger
           className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4"
         >
-          {services.map(({ Icon, title, body }) => (
-            <div
-              key={title}
-              className="rounded-2xl border border-border bg-ground p-7"
-            >
-              <div
-                className={`svc-icon flex h-12 w-12 items-center justify-center rounded-xl bg-accent-soft${
-                  drawn ? " drawn" : ""
-                }`}
-              >
-                <Icon size={24} className="text-accent" />
-              </div>
-              <h3 className="mt-5 text-[21px] font-medium">{title}</h3>
-              <p className="mt-2.5 text-[15px] leading-[1.55] text-muted">{body}</p>
-            </div>
+          {services.map((s) => (
+            <ServiceCard key={s.title} {...s} />
           ))}
         </Reveal>
       </Container>
