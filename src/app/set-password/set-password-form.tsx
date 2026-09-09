@@ -9,6 +9,10 @@ export function SetPasswordForm() {
   const router = useRouter();
   const params = useSearchParams();
   const token = params.get("token");
+  // Where to send them after setup. Allowlisted so the param can't be used to
+  // redirect anywhere off the expected in-app destinations.
+  const next =
+    params.get("next") === "/project" ? "/project" : "/dashboard";
 
   const [resolved, setResolved] = useState<{ email: string | null } | null>(
     null,
@@ -52,11 +56,12 @@ export function SetPasswordForm() {
       return;
     }
 
-    // Sign the new client straight in so they land on their dashboard.
+    // Sign the new client straight in so they land where the invite points
+    // (their project for a project invite, otherwise the dashboard).
     if (email) {
       const signIn = await authClient.signIn.email({ email, password });
       if (!signIn.error) {
-        router.push("/dashboard");
+        router.push(next);
         return;
       }
     }
@@ -88,7 +93,7 @@ export function SetPasswordForm() {
         <>
           <p className="mt-1.5 text-[15px] text-muted">
             Set a password for <span className="text-ink">{email}</span> to get
-            into your dashboard.
+            into your account.
           </p>
 
           <form onSubmit={onSubmit} className="mt-7 flex flex-col gap-4">

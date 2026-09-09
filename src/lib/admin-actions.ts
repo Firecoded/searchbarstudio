@@ -13,10 +13,16 @@ import {
   clientBilling,
   pendingInvoice,
   charge,
+  project,
 } from "@/db/schema";
 import { sendEmail } from "@/lib/email";
 import { renderBrandedEmail } from "@/lib/branded-email";
-import { inviteEmail, invoiceEmail, billingEmail } from "@/lib/email-content";
+import {
+  inviteEmail,
+  projectInviteEmail,
+  invoiceEmail,
+  billingEmail,
+} from "@/lib/email-content";
 import { stripe } from "@/lib/stripe";
 import { periodBounds, syncSubscriptionToDb } from "@/lib/billing";
 
@@ -79,6 +85,29 @@ export async function inviteClient(
     });
   }
 
+  // Optional: if a build title is given, attach the proposal to the client now
+  // so it's waiting the moment they finish setting up. This turns a bare invite
+  // into a project invite, which lands them on the proposal and gets the warmer
+  // email. Skip creation if they already have a project (e.g. a re-invite).
+  const projectTitle = (formData.get("projectTitle") as string)?.trim() ?? "";
+  let hasProject = false;
+  if (projectTitle) {
+    const existingProject = await db.query.project.findFirst({
+      where: eq(project.userId, userId),
+    });
+    if (!existingProject) {
+      await db.insert(project).values({
+        id: randomUUID(),
+        userId,
+        title: projectTitle,
+        scope: (formData.get("scope") as string)?.trim() || null,
+        estimate: (formData.get("estimate") as string)?.trim() || null,
+        brief: (formData.get("brief") as string)?.trim() || null,
+      });
+    }
+    hasProject = true;
+  }
+
   // A verification row keyed this way is what Better Auth's reset-password
   // endpoint consumes, and it creates the credential account on first use.
   const token = randomBytes(24).toString("base64url");
@@ -89,9 +118,13 @@ export async function inviteClient(
     expiresAt: new Date(Date.now() + INVITE_TTL_MS),
   });
 
-  const url = `${APP_URL}/set-password?token=${token}`;
+  // Project invites land on the proposal; bare invites on the dashboard.
+  const next = hasProject ? "/project" : "/dashboard";
+  const url = `${APP_URL}/set-password?token=${token}&next=${encodeURIComponent(next)}`;
   try {
-    const invite = inviteEmail(name, url);
+    const invite = hasProject
+      ? projectInviteEmail(name, url, projectTitle)
+      : inviteEmail(name, url);
     const { html, text } = await renderBrandedEmail(invite.props);
     await sendEmail({ to: email, subject: invite.subject, html, text });
   } catch {
@@ -102,6 +135,7 @@ export async function inviteClient(
   }
 
   revalidatePath("/admin");
+  revalidatePath("/clients");
   return { ok: true, invited: email };
 }
 

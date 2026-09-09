@@ -5,6 +5,13 @@ import type { BrandedEmailProps } from "@/lib/branded-email";
 // branded-email props; callers render the props and send with the subject.
 export type EmailContent = { subject: string; props: BrandedEmailProps };
 
+// Greet by first name only. Names are admin-entered as a single field, so a
+// simple split is enough; the guard keeps a blank or odd name from rendering
+// "Hi ,".
+function firstName(name: string): string {
+  return name.trim().split(/\s+/)[0] || "there";
+}
+
 export function inviteEmail(name: string, url: string): EmailContent {
   return {
     subject: "You're invited to Searchbar Studio",
@@ -12,7 +19,7 @@ export function inviteEmail(name: string, url: string): EmailContent {
       preview: "Set your password to reach your Searchbar Studio dashboard.",
       heading: "Welcome to Searchbar Studio",
       paragraphs: [
-        `Hi ${name}, **let's get you set up.** Pick a password and you're in.`,
+        `Hi ${firstName(name)}, **let's get you set up.** Pick a password and you're in.`,
         "Your dashboard is your home base with me, where you can:",
       ],
       bullets: [
@@ -26,6 +33,33 @@ export function inviteEmail(name: string, url: string): EmailContent {
   };
 }
 
+// Sent when the invite comes with a build already lined up (agreed over chat).
+// Warmer than the bare invite, and it points at the proposal, not the dashboard.
+export function projectInviteEmail(
+  name: string,
+  url: string,
+  projectTitle: string,
+): EmailContent {
+  return {
+    subject: "Your project is ready to review",
+    props: {
+      preview: `Set up your account to review ${projectTitle} and get started.`,
+      heading: "Let's build your website",
+      paragraphs: [
+        `Hi ${firstName(name)}, **excited to work with you.** I've put together a proposal for what we discussed, and it's ready for you to review.`,
+        "Here's how it works:",
+      ],
+      bullets: [
+        "Set up your account with a quick password",
+        "Review the build and the estimate",
+        'Hit "Sounds good" and I\'ll get started',
+      ],
+      button: { label: "Set up your account", href: url },
+      note: "This link is good for 7 days. If it expires, ask me to send a new one.",
+    },
+  };
+}
+
 export function invoiceEmail(name: string, url: string): EmailContent {
   return {
     subject: "You've got an invoice from Searchbar Studio",
@@ -33,7 +67,7 @@ export function invoiceEmail(name: string, url: string): EmailContent {
       preview: "Your invoice from Searchbar Studio. Pay and set up your account.",
       heading: "You've got an invoice",
       paragraphs: [
-        `Hi ${name}, **here's your invoice.** Review it and pay securely.`,
+        `Hi ${firstName(name)}, **here's your invoice.** Review it and pay securely.`,
         "Right after paying, **you'll create your account.** It's your home base with me, where you can:",
       ],
       bullets: [
@@ -54,7 +88,7 @@ export function billingEmail(name: string, url: string): EmailContent {
       preview: "Your invoice from Searchbar Studio is ready to pay.",
       heading: "Your invoice is ready",
       paragraphs: [
-        `Hi ${name}, **your invoice is ready.** Review it and pay securely.`,
+        `Hi ${firstName(name)}, **your invoice is ready.** Review it and pay securely.`,
         "You can view your invoices and manage billing any time from your dashboard.",
       ],
       button: { label: "Review and pay", href: url },
@@ -70,7 +104,7 @@ export function paymentReceivedEmail(name: string, url: string): EmailContent {
       preview: "Payment received. Thanks!",
       heading: "Payment received",
       paragraphs: [
-        `Hi ${name}, **thanks, your payment went through.**`,
+        `Hi ${firstName(name)}, **thanks, your payment went through.**`,
         "You can view your invoice and get to your dashboard here:",
       ],
       button: { label: "View your invoice", href: url },
@@ -85,7 +119,7 @@ export function resetPasswordEmail(name: string, url: string): EmailContent {
       preview: "Reset your Searchbar Studio password.",
       heading: "Reset your password",
       paragraphs: [
-        `Hi ${name}, we got a request to **reset your password.** Choose a new one below.`,
+        `Hi ${firstName(name)}, we got a request to **reset your password.** Choose a new one below.`,
         "If you didn't ask for this, you can safely ignore this email.",
       ],
       button: { label: "Reset password", href: url },
@@ -100,6 +134,11 @@ export const emailGallery: {
   build: (name: string, url: string) => EmailContent;
 }[] = [
   { key: "invite", label: "Invite a client", build: inviteEmail },
+  {
+    key: "project-invite",
+    label: "Invite to a project",
+    build: (name, url) => projectInviteEmail(name, url, "your new website"),
+  },
   { key: "invoice", label: "Invoice (new client)", build: invoiceEmail },
   { key: "billing", label: "Invoice (existing)", build: billingEmail },
   { key: "paid", label: "Payment received", build: paymentReceivedEmail },

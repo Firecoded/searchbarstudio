@@ -19,7 +19,7 @@ function getGalleryEmails() {
   if (!cachedEmails) {
     cachedEmails = Promise.all(
       emailGallery.map(async (e) => {
-        const content = e.build("Jane", "#");
+        const content = e.build("Jane Smith", "#");
         const { html } = await renderBrandedEmail(content.props);
         return { key: e.key, label: e.label, subject: content.subject, html };
       }),
