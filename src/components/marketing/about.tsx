@@ -42,19 +42,25 @@ export function About() {
           </h2>
           <p className="mt-5 text-[18px] leading-[1.6] text-muted">
             I&rsquo;m a senior software engineer with ten years of experience
-            building web experiences for startups and large companies. Over and
-            over I watched friends and family get burned: paying too much for a
-            site they couldn&rsquo;t touch, or losing 20 hours to a
-            drag-and-drop builder that still didn&rsquo;t look right or do what
-            they needed. They kept coming to me for help, so I started Searchbar
-            Studio to do the same for other small business owners. You work with
-            me directly, and I build a website you&rsquo;re proud to show your
-            clients. You can edit all your content easily from a simple
-            dashboard, or send a request and I&rsquo;ll update it for you.
+            building websites and web apps for startups and large companies.
+            Over the years, I watched friends and family pay too much for
+            websites they couldn&rsquo;t update themselves, or spend hours
+            trying to build one themselves that still didn&rsquo;t look or work
+            the way they wanted.
+          </p>
+          <p className="mt-4 text-[18px] leading-[1.6] text-muted">
+            They kept coming to me for help, so I started Searchbar Studio to do
+            the same for other small business owners.
+          </p>
+          <p className="mt-4 text-[18px] leading-[1.6] text-muted">
+            You work directly with me, and I build you a website you&rsquo;re
+            proud to show your clients. You can easily update your content from a
+            simple dashboard, or just send me a request and I&rsquo;ll handle it
+            for you.
           </p>
           <p className="mt-4 text-[18px] leading-[1.6] text-muted">
             I&rsquo;m based in Tempe, working with businesses across the Phoenix
-            metro and with clients anywhere online.
+            metro and clients anywhere in the U.S.
           </p>
           <TrackedLink
             href="#contact"
