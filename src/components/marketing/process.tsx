@@ -101,10 +101,12 @@ export function Process() {
                       </span>
                     )}
                   </div>
-                  <h3 className="mt-4 text-[21px] font-medium">{s.title}</h3>
-                  <p className="mt-2 text-[15px] leading-[1.55] text-muted">
-                    {s.body}
-                  </p>
+                  <div className="sm:pr-12">
+                    <h3 className="mt-4 text-[21px] font-medium">{s.title}</h3>
+                    <p className="mt-2 text-[15px] leading-[1.55] text-muted">
+                      {s.body}
+                    </p>
+                  </div>
                 </div>
 
                 {/* Mobile: a vertical connector down the stack, under the
