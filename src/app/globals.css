@@ -258,12 +258,14 @@ html {
     transform: none;
   }
 }
+/* The wipe's resting inset is negative: Caveat's strokes overhang the line
+   box, and a zero inset would keep shaving them after the animation ends. */
 @keyframes note-write {
   from {
-    clip-path: inset(0 100% 0 0);
+    clip-path: inset(-0.3em 100% -0.3em -0.3em);
   }
   to {
-    clip-path: inset(0 0 0 0);
+    clip-path: inset(-0.3em -0.5em -0.3em -0.3em);
   }
 }
 @keyframes arrow-draw {
@@ -305,7 +307,7 @@ html {
      the arrow's curve draws toward the target, then the head appears. The
      curve uses pathLength=100 so the dash math is the same for every arrow. */
   .hero-note-text {
-    clip-path: inset(0 100% 0 0);
+    clip-path: inset(-0.3em 100% -0.3em -0.3em);
     animation: note-write 0.45s ease-out both;
     animation-delay: var(--note-delay, 1.5s);
   }

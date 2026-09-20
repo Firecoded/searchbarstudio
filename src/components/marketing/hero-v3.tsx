@@ -1,9 +1,11 @@
+// Preview only: the device-mockup hero with the fictional landscaping site and
+// two notes, served at /v3 for side-by-side comparison. The live hero is ./hero.tsx.
 import Image from "next/image";
 import { Container, Pill, btnPrimary, btnGhost } from "./ui";
 import { ArrowRight } from "./icons";
 import { TrackedLink } from "../tracked-link";
-import laptop from "../../../public/hero/laptop.webp";
-import phone from "../../../public/hero/phone.webp";
+import laptop from "../../../public/hero/laptop-v3.webp";
+import phone from "../../../public/hero/phone-v3.webp";
 
 const weaveTile =
   "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Cg stroke='%23d8c1a6' stroke-width='1.3' stroke-linecap='round' opacity='0.16'%3E%3Cline x1='4' y1='6' x2='20' y2='6'/%3E%3Cline x1='4' y1='12' x2='20' y2='12'/%3E%3Cline x1='4' y1='18' x2='20' y2='18'/%3E%3Cline x1='30' y1='4' x2='30' y2='20'/%3E%3Cline x1='36' y1='4' x2='36' y2='20'/%3E%3Cline x1='42' y1='4' x2='42' y2='20'/%3E%3Cline x1='6' y1='28' x2='6' y2='44'/%3E%3Cline x1='12' y1='28' x2='12' y2='44'/%3E%3Cline x1='18' y1='28' x2='18' y2='44'/%3E%3Cline x1='28' y1='30' x2='44' y2='30'/%3E%3Cline x1='28' y1='36' x2='44' y2='36'/%3E%3Cline x1='28' y1='42' x2='44' y2='42'/%3E%3C/g%3E%3C/svg%3E\")";
@@ -45,7 +47,7 @@ function Note({
   );
 }
 
-export function Hero() {
+export function HeroV3() {
   return (
     <section className="relative flex min-h-[min(80svh,900px)] items-center overflow-hidden">
       <div
@@ -156,6 +158,31 @@ export function Hero() {
                 on any device
               </Note>
             </div>
+
+            {/* Above-left of the laptop; the arrow curves down and to the right
+                into the screen. */}
+            <Note
+              className="left-[3%] top-[-9%] -rotate-6 flex-col items-start lg:flex"
+              delay="1.5s"
+              arrow={
+                <svg
+                  viewBox="0 0 64 64"
+                  {...arrowStroke}
+                  className="ml-9 h-16 w-16 text-accent"
+                >
+                  <path
+                    d="M8 6c6 18 18 34 44 48"
+                    pathLength={100}
+                    className="hero-arrow-line"
+                  />
+                  <path d="M40 56l13-1-3-13" className="hero-arrow-head" />
+                </svg>
+              }
+            >
+              Clean design
+              <br />
+              that converts
+            </Note>
           </div>
         </div>
       </Container>

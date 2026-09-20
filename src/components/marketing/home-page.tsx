@@ -53,7 +53,7 @@ const jsonLd = {
   ],
 };
 
-// The full landing page. `hero` lets the /v1 and /v2 preview routes swap in
+// The full landing page. `hero` lets the /v1, /v2 and /v3 preview routes swap in
 // an alternate hero while keeping everything else identical.
 export function HomePage({ hero = <Hero /> }: { hero?: React.ReactNode }) {
   return (
