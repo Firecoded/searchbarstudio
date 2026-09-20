@@ -23,11 +23,13 @@ export function Nav() {
 
   return (
     <header className="relative z-40 border-b border-border bg-paper">
-      <Container className="relative z-40 flex h-[72px] items-center justify-between sm:h-[78px]">
+      {/* Three columns from md: logo, links dead-center, account actions.
+          The outer 1fr tracks match so the links center on the header. */}
+      <Container className="relative z-40 flex h-[72px] items-center justify-between sm:h-[78px] md:grid md:grid-cols-[1fr_auto_1fr]">
         <a
           href="#top"
           aria-label="Searchbar Studio home"
-          className="flex items-center"
+          className="flex items-center justify-self-start"
           onClick={close}
         >
           <Logo className="h-8 sm:h-9 lg:h-10" />
@@ -43,6 +45,9 @@ export function Nav() {
               {l.label}
             </a>
           ))}
+        </nav>
+
+        <div className="hidden items-center gap-8 justify-self-end md:flex">
           <a
             href="/login"
             className="text-[15px] font-medium text-[#4a4038] hover:text-accent"
@@ -56,7 +61,7 @@ export function Nav() {
           >
             Get in touch
           </a>
-        </nav>
+        </div>
 
         <button
           type="button"
@@ -88,54 +93,61 @@ export function Nav() {
         }`}
       />
 
+      {/* The panel unfolds from beneath the header bar: a grid row eases from
+          0fr to 1fr so it can animate to its natural height, and the middle
+          div clips the contents while it grows. Closing runs the same in
+          reverse. `inert` keeps the collapsed links out of the tab order. */}
       <div
         id="mobile-menu"
-        style={{
-          transitionDuration: open ? "150ms" : "200ms",
-          transitionDelay: open ? "0ms" : "180ms",
-        }}
-        className={`absolute left-0 right-0 top-full z-40 border-t border-border bg-ground shadow-[0_16px_30px_-18px_rgba(60,30,15,0.4)] transition-[opacity,visibility] ease-out motion-reduce:transition-none md:hidden ${
-          open ? "visible opacity-100" : "invisible opacity-0"
+        inert={!open}
+        className={`absolute left-0 right-0 top-full z-40 grid transition-[grid-template-rows,box-shadow] duration-300 ease-out motion-reduce:transition-none md:hidden ${
+          open
+            ? "grid-rows-[1fr] shadow-[0_16px_30px_-18px_rgba(60,30,15,0.4)]"
+            : "grid-rows-[0fr] shadow-none"
         }`}
       >
-        <Container className="flex flex-col py-3">
-          {links.map((l, i) => (
+        <div className="min-h-0 overflow-hidden bg-ground">
+          <Container className="flex flex-col border-t border-border py-3">
+            {links.map((l, i) => (
+              <a
+                key={l.href}
+                href={l.href}
+                onClick={close}
+                style={{ transitionDelay: `${itemDelay(i)}ms` }}
+                className={`py-3 text-[17px] font-medium text-ink transition-[transform,opacity] duration-200 ease-out motion-reduce:transition-none ${
+                  open
+                    ? "translate-y-0 opacity-100"
+                    : "-translate-y-1 opacity-0"
+                }`}
+              >
+                {l.label}
+              </a>
+            ))}
             <a
-              key={l.href}
-              href={l.href}
+              href="/login"
               onClick={close}
-              style={{ transitionDelay: `${itemDelay(i)}ms` }}
+              style={{ transitionDelay: `${itemDelay(links.length)}ms` }}
               className={`py-3 text-[17px] font-medium text-ink transition-[transform,opacity] duration-200 ease-out motion-reduce:transition-none ${
                 open ? "translate-y-0 opacity-100" : "-translate-y-1 opacity-0"
               }`}
             >
-              {l.label}
+              Log in
             </a>
-          ))}
-          <a
-            href="/login"
-            onClick={close}
-            style={{ transitionDelay: `${itemDelay(links.length)}ms` }}
-            className={`py-3 text-[17px] font-medium text-ink transition-[transform,opacity] duration-200 ease-out motion-reduce:transition-none ${
-              open ? "translate-y-0 opacity-100" : "-translate-y-1 opacity-0"
-            }`}
-          >
-            Log in
-          </a>
-          <a
-            href="#contact"
-            onClick={() => {
-              track("cta_clicked", { location: "nav_mobile" });
-              close();
-            }}
-            style={{ transitionDelay: `${itemDelay(links.length + 1)}ms` }}
-            className={`${btnPrimary} mt-3 justify-center py-3.5 transition-[transform,opacity,background-color] duration-200 ease-out motion-reduce:transition-none ${
-              open ? "translate-y-0 opacity-100" : "-translate-y-1 opacity-0"
-            }`}
-          >
-            Get in touch
-          </a>
-        </Container>
+            <a
+              href="#contact"
+              onClick={() => {
+                track("cta_clicked", { location: "nav_mobile" });
+                close();
+              }}
+              style={{ transitionDelay: `${itemDelay(links.length + 1)}ms` }}
+              className={`${btnPrimary} mt-3 justify-center py-3.5 transition-[transform,opacity,background-color] duration-200 ease-out motion-reduce:transition-none ${
+                open ? "translate-y-0 opacity-100" : "-translate-y-1 opacity-0"
+              }`}
+            >
+              Get in touch
+            </a>
+          </Container>
+        </div>
       </div>
     </header>
   );

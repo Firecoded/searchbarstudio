@@ -4,7 +4,7 @@ export const btnPrimary =
   "inline-flex items-center gap-2 rounded-xl bg-accent px-6 py-3.5 text-[15px] font-semibold text-accent-ink transition-colors hover:bg-accent-hover";
 
 export const btnGhost =
-  "inline-flex items-center gap-2 rounded-xl border-[1.5px] border-border-soft px-6 py-3.5 text-[15px] font-semibold text-ink transition-colors hover:border-accent";
+  "inline-flex items-center gap-2 rounded-xl border-[1.5px] border-accent px-6 py-3.5 text-[15px] font-semibold text-accent transition-colors hover:border-accent-hover hover:bg-accent-soft hover:text-accent-hover";
 
 export function Container({
   children,
