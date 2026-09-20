@@ -1,9 +1,10 @@
-import Image from "next/image";
+import Image, { type StaticImageData } from "next/image";
 import { Container, Pill, btnPrimary, btnGhost } from "./ui";
 import { ArrowRight } from "./icons";
 import { TrackedLink } from "../tracked-link";
-import laptop from "../../../public/hero/laptop.webp";
-import phone from "../../../public/hero/phone.webp";
+import laptopDefault from "../../../public/hero/laptop.webp";
+import phoneDefault from "../../../public/hero/phone.webp";
+import underline from "../../../public/hero/underline.png";
 
 const weaveTile =
   "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Cg stroke='%23d8c1a6' stroke-width='1.3' stroke-linecap='round' opacity='0.16'%3E%3Cline x1='4' y1='6' x2='20' y2='6'/%3E%3Cline x1='4' y1='12' x2='20' y2='12'/%3E%3Cline x1='4' y1='18' x2='20' y2='18'/%3E%3Cline x1='30' y1='4' x2='30' y2='20'/%3E%3Cline x1='36' y1='4' x2='36' y2='20'/%3E%3Cline x1='42' y1='4' x2='42' y2='20'/%3E%3Cline x1='6' y1='28' x2='6' y2='44'/%3E%3Cline x1='12' y1='28' x2='12' y2='44'/%3E%3Cline x1='18' y1='28' x2='18' y2='44'/%3E%3Cline x1='28' y1='30' x2='44' y2='30'/%3E%3Cline x1='28' y1='36' x2='44' y2='36'/%3E%3Cline x1='28' y1='42' x2='44' y2='42'/%3E%3C/g%3E%3C/svg%3E\")";
@@ -45,7 +46,15 @@ function Note({
   );
 }
 
-export function Hero() {
+// `laptop` and `phone` are the screen mockups; the preview routes pass
+// alternates so the same hero can be compared with different sites on it.
+export function Hero({
+  laptop = laptopDefault,
+  phone = phoneDefault,
+}: {
+  laptop?: StaticImageData;
+  phone?: StaticImageData;
+}) {
   return (
     <section className="relative flex min-h-[min(80svh,900px)] items-center overflow-hidden">
       <div
@@ -58,25 +67,43 @@ export function Hero() {
       <div aria-hidden className="hero-glow pointer-events-none absolute inset-0" />
       {/* A little extra bottom padding at lg+ makes room for the note tucked
           under the laptop, without pushing the device block up. */}
-      <Container className="relative z-10 py-16 sm:py-20 lg:pb-24">
+      <Container className="relative z-10 pb-16 pt-9 sm:py-20 lg:pb-24">
         <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]">
           {/* Copy column. Centered when stacked, left-aligned beside the
               device on desktop. Its children pick up the rise-in stagger. */}
           <div className="hero-rise @container flex flex-col items-center text-center lg:items-start lg:text-left">
-            <Pill>Your search ends here</Pill>
+            {/* The eyebrow is dropped on phones so the headline leads. */}
+            <div className="hidden sm:block">
+              <Pill>Your search ends here</Pill>
+            </div>
             {/* From lg the size tracks the copy column (cqw), tuned so the
                 longer first sentence holds a single line and the headline
                 sits on two lines; capped at 56px. Mobile stays at 40px and
                 wraps to three, since two lines there would mean tiny type. */}
-            <h1 className="mt-5 max-w-[620px] text-balance font-serif text-[40px] font-medium leading-[1.06] tracking-[-0.01em] sm:text-[54px] lg:text-[clamp(2.5rem,10.4cqw,3.5rem)] lg:leading-[1.04]">
-              A website you&rsquo;ll love.
-              {/* Second sentence on its own line so the two never share one. */}
-              <span className="block">None of the hassle.</span>
+            <h1 className="max-w-[620px] sm:mt-5 text-balance font-serif text-[40px] font-medium leading-[1.06] tracking-[-0.01em] sm:text-[54px] lg:text-[clamp(2.5rem,10.4cqw,3.5rem)] lg:leading-[1.04]">
+              The website your
+              {/* Second half on its own line so the break is always here. */}
+              <span className="block">
+                business{" "}
+                <span className="relative inline-block">
+                  deserves
+                  {/* Brush-stroke underline (a real stroke, isolated from a
+                      painted reference and recolored to the accent). Sized
+                      relative to the word so it scales with the type; wipes
+                      in once the headline has risen (.hero-underline). */}
+                  <Image
+                    src={underline}
+                    alt=""
+                    aria-hidden
+                    className="hero-underline pointer-events-none absolute -bottom-[0.13em] left-[5%] h-auto w-[93%]"
+                  />
+                </span>
+                .
+              </span>
             </h1>
             <p className="mt-5 max-w-[540px] text-[17px] leading-[1.6] text-muted sm:text-[19px]">
-              I design and build modern, mobile-friendly websites that look
-              great, bring in customers, and are easy for you to update. You
-              focus on your business, I&rsquo;ll handle the rest.
+              Modern, mobile-friendly websites that bring in customers and are
+              easy to update.
             </p>
 
             <div className="mt-8 flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:gap-3.5">
