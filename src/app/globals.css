@@ -33,7 +33,6 @@
   --font-sans: var(--font-sans);
   --font-serif: var(--font-serif);
   --font-mono: var(--font-mono);
-  --font-hand: var(--font-hand);
 }
 
 body {
@@ -131,6 +130,53 @@ body {
 @media (min-width: 1280px) {
   .hero-glow {
     --glow-at: calc(50% - 323px) 50%;
+  }
+}
+
+/* Hero table: the stone is knocked back with opacity so the paper shows
+   through and it sits behind the devices instead of competing with them,
+   and its right end dissolves over the last third so the asset's cut edge
+   never shows on wide screens. The devices sit well inside the solid
+   two-thirds. */
+.hero-table {
+  opacity: 0.7;
+  -webkit-mask-image:
+    linear-gradient(to right, #000 66%, transparent 100%),
+    linear-gradient(to bottom, #000 86%, transparent 100%);
+  mask-image:
+    linear-gradient(to right, #000 66%, transparent 100%),
+    linear-gradient(to bottom, #000 86%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+}
+
+/* Hero plant: its leaves run past the top of the page and off the right of
+   the viewport, so both edges dissolve instead of ending in a hard cut.
+   The pot sits in the lower middle, untouched by either fade.
+
+   Horizontal placement is a percentage of the laptop's width. Up to 1880px
+   the pot stays off the right edge with only the left leaves reaching in;
+   the device group grows at 1536px, so that range needs a larger offset to
+   keep the pot out. From 1880px the pot fits, so it moves into view. */
+.hero-plant {
+  left: 102%;
+  -webkit-mask-image:
+    linear-gradient(to bottom, transparent 0%, #000 32%),
+    linear-gradient(to left, transparent 0%, #000 16%);
+  mask-image:
+    linear-gradient(to bottom, transparent 0%, #000 32%),
+    linear-gradient(to left, transparent 0%, #000 16%);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+}
+@media (min-width: 1536px) {
+  .hero-plant {
+    left: 110%;
+  }
+}
+@media (min-width: 1880px) {
+  .hero-plant {
+    left: 92%;
   }
 }
 
@@ -246,8 +292,7 @@ html {
 }
 
 /* Hero intro beats after the laptop settles: the phone slides into place,
-   each note's text is "written" with a left-to-right wipe, then its arrow
-   draws toward the target and the head pops on. */
+   then the headline underline wipes on left to right. */
 @keyframes phone-in {
   from {
     opacity: 0;
@@ -258,24 +303,13 @@ html {
     transform: none;
   }
 }
-/* The wipe's resting inset is negative: Caveat's strokes overhang the line
-   box, and a zero inset would keep shaving them after the animation ends. */
+/* Negative insets so the wipe never shaves the stroke's soft edges. */
 @keyframes note-write {
   from {
     clip-path: inset(-0.3em 100% -0.3em -0.3em);
   }
   to {
     clip-path: inset(-0.3em -0.5em -0.3em -0.3em);
-  }
-}
-@keyframes arrow-draw {
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-@keyframes arrow-head {
-  to {
-    opacity: 1;
   }
 }
 
@@ -301,26 +335,6 @@ html {
   .hero-phone {
     opacity: 0;
     animation: phone-in 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.9s both;
-  }
-
-  /* Each note runs three beats off its own --note-delay: the text wipes on,
-     the arrow's curve draws toward the target, then the head appears. The
-     curve uses pathLength=100 so the dash math is the same for every arrow. */
-  .hero-note-text {
-    clip-path: inset(-0.3em 100% -0.3em -0.3em);
-    animation: note-write 0.45s ease-out both;
-    animation-delay: var(--note-delay, 1.5s);
-  }
-  .hero-arrow-line {
-    stroke-dasharray: 100;
-    stroke-dashoffset: 100;
-    animation: arrow-draw 0.5s ease-out both;
-    animation-delay: calc(var(--note-delay, 1.5s) + 0.35s);
-  }
-  .hero-arrow-head {
-    opacity: 0;
-    animation: arrow-head 0.2s ease-out both;
-    animation-delay: calc(var(--note-delay, 1.5s) + 0.8s);
   }
 
   /* Headline underline wipes in left to right once the headline has risen. */

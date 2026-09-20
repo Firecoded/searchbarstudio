@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Manrope, Newsreader, IBM_Plex_Mono, Caveat } from "next/font/google";
+import { Manrope, Newsreader, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import { AnalyticsScripts } from "@/components/analytics";
 import { PostHogProvider } from "@/components/posthog";
@@ -16,13 +16,6 @@ const mono = IBM_Plex_Mono({
   subsets: ["latin"],
   weight: ["400", "500"],
 });
-// Handwritten face for the hero's sketched annotations.
-const hand = Caveat({
-  variable: "--font-hand",
-  subsets: ["latin"],
-  weight: ["600", "700"],
-});
-
 const APP_URL =
   process.env.NEXT_PUBLIC_APP_URL ?? "https://searchbarstudio.com";
 
@@ -58,7 +51,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${sans.variable} ${serif.variable} ${mono.variable} ${hand.variable} h-full antialiased`}
+      className={`${sans.variable} ${serif.variable} ${mono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <PostHogProvider>{children}</PostHogProvider>

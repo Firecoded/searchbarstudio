@@ -94,6 +94,14 @@ export const Pencil = (p: IconProps) => (
   </Svg>
 );
 
+export const Code = (p: IconProps) => (
+  <Svg {...p} strokeWidth={p.strokeWidth ?? 2}>
+    <path d="M8 6l-6 6 6 6" pathLength={100} />
+    <path d="M16 6l6 6-6 6" pathLength={100} />
+    <path d="M14 4l-4 16" pathLength={100} />
+  </Svg>
+);
+
 export const Mail = (p: IconProps) => (
   <Svg {...p} strokeWidth={p.strokeWidth ?? 2}>
     <rect x="2" y="4" width="20" height="16" rx="2" />

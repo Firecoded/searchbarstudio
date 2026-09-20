@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Container, Pill, btnGhost } from "./ui";
 import { Reveal } from "./reveal";
-import { DesignRuler, Shield, Search, Pencil } from "./icons";
+import { DesignRuler, Shield, Search, Pencil, Code } from "./icons";
 import { TrackedLink } from "../tracked-link";
 
 type Service = {
@@ -35,34 +35,85 @@ const services: Service[] = [
   },
 ];
 
-// Each card watches itself, so on mobile every icon draws as its own card
-// scrolls into view (and retracts on the way back up).
-function ServiceCard({ Icon, title, body }: Service) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [drawn, setDrawn] = useState(false);
-
+// True while at least half of `ref` is on screen, so each icon draws as its
+// own card scrolls into view (and retracts on the way back up).
+function useInView(ref: React.RefObject<HTMLElement | null>) {
+  const [inView, setInView] = useState(false);
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
     const io = new IntersectionObserver(
-      (entries) => setDrawn(entries[0].isIntersecting),
+      (entries) => setInView(entries[0].isIntersecting),
       { threshold: 0.5 },
     );
     io.observe(el);
     return () => io.disconnect();
-  }, []);
+  }, [ref]);
+  return inView;
+}
+
+// The accent-tinted icon tile whose strokes draw themselves in (.svc-icon).
+function IconTile({
+  Icon,
+  drawn,
+  className = "",
+}: {
+  Icon: Service["Icon"];
+  drawn: boolean;
+  className?: string;
+}) {
+  return (
+    <div
+      className={`svc-icon flex h-12 w-12 items-center justify-center rounded-xl bg-accent-soft${
+        drawn ? " drawn" : ""
+      } ${className}`}
+    >
+      <Icon size={24} className="text-accent" />
+    </div>
+  );
+}
+
+function ServiceCard({ Icon, title, body }: Service) {
+  const ref = useRef<HTMLDivElement>(null);
+  const drawn = useInView(ref);
 
   return (
     <div ref={ref} className="rounded-2xl border border-border bg-ground p-7">
-      <div
-        className={`svc-icon flex h-12 w-12 items-center justify-center rounded-xl bg-accent-soft${
-          drawn ? " drawn" : ""
-        }`}
-      >
-        <Icon size={24} className="text-accent" />
-      </div>
+      <IconTile Icon={Icon} drawn={drawn} />
       <h3 className="mt-5 text-[21px] font-medium">{title}</h3>
       <p className="mt-2.5 text-[15px] leading-[1.55] text-muted">{body}</p>
+    </div>
+  );
+}
+
+// The "need more" bar gets the same tile, drawn in as the bar comes into view.
+function MoreCard() {
+  const ref = useRef<HTMLDivElement>(null);
+  const drawn = useInView(ref);
+
+  return (
+    <div
+      ref={ref}
+      className="flex flex-col items-start gap-5 rounded-2xl border border-border bg-ground px-7 py-6 sm:flex-row sm:items-center sm:justify-between"
+    >
+      <div className="flex items-start gap-4 sm:items-center">
+        <IconTile Icon={Code} drawn={drawn} className="shrink-0" />
+        <div>
+          <h3 className="text-[20px] font-medium">Need more than a website?</h3>
+          <p className="mt-1 text-[15px] text-muted">
+            Booking systems, customer portals, mobile apps, custom tools. If it
+            runs on the web, I can build it.
+          </p>
+        </div>
+      </div>
+      <TrackedLink
+        href="#contact"
+        event="cta_clicked"
+        eventProps={{ location: "services" }}
+        className={`${btnGhost} shrink-0`}
+      >
+        Let&rsquo;s talk
+      </TrackedLink>
     </div>
   );
 }
@@ -92,22 +143,8 @@ export function Services() {
         </Reveal>
       </Container>
       <Container className="pt-5">
-        <Reveal className="flex flex-col items-start gap-4 rounded-2xl border border-border bg-ground px-7 py-6 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h3 className="text-[20px] font-medium">Need more than a website?</h3>
-            <p className="mt-1 text-[15px] text-muted">
-              Booking systems, customer portals, mobile apps, custom tools. If it
-              runs on the web, I can build it.
-            </p>
-          </div>
-          <TrackedLink
-            href="#contact"
-            event="cta_clicked"
-            eventProps={{ location: "services" }}
-            className={`${btnGhost} shrink-0`}
-          >
-            Let&rsquo;s talk
-          </TrackedLink>
+        <Reveal>
+          <MoreCard />
         </Reveal>
       </Container>
     </section>

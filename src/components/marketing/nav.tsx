@@ -22,7 +22,9 @@ export function Nav() {
   const itemDelay = (i: number) => (open ? i : count - 1 - i) * 45;
 
   return (
-    <header className="relative z-40 border-b border-border bg-paper">
+    // Translucent so the hero's wall shadows and foliage, which extend up
+    // behind it, show through faintly.
+    <header className="relative z-40 border-b border-border bg-paper/80 backdrop-blur-sm">
       {/* Three columns from md: logo, links dead-center, account actions.
           The outer 1fr tracks match so the links center on the header. */}
       <Container className="relative z-40 flex h-[72px] items-center justify-between sm:h-[78px] md:grid md:grid-cols-[1fr_auto_1fr]">
