@@ -99,40 +99,6 @@ body {
   mask-composite: intersect;
 }
 
-/* Hero plant: its leaves run past the top of the page and off the right of
-   the viewport, so both edges dissolve instead of ending in a hard cut.
-   The pot sits in the lower middle, untouched by either fade.
-
-   Horizontal placement is a percentage of the laptop's width. Up to 1880px
-   the pot stays off the right edge with only the left leaves reaching in;
-   the device group grows at 1536px, so that range needs a larger offset to
-   keep the pot out. From 1880px the pot fits, so it moves into view. */
-.hero-plant {
-  left: 102%;
-}
-/* The mask lives on the image, not the wrapper, so the pot's shadows
-   (siblings in the wrapper) aren't clipped at the box edge. */
-.hero-plant-img {
-  -webkit-mask-image:
-    linear-gradient(to bottom, transparent 0%, #000 32%),
-    linear-gradient(to left, transparent 0%, #000 16%);
-  mask-image:
-    linear-gradient(to bottom, transparent 0%, #000 32%),
-    linear-gradient(to left, transparent 0%, #000 16%);
-  -webkit-mask-composite: source-in;
-  mask-composite: intersect;
-}
-@media (min-width: 1536px) {
-  .hero-plant {
-    left: 110%;
-  }
-}
-@media (min-width: 1880px) {
-  .hero-plant {
-    left: 92%;
-  }
-}
-
 /* Hero device mockup: from 1536px it grows and bleeds past the container on
    the right, so it anchors the hero on wide screens instead of sitting boxed
    in the 1280 frame. Width and margin move together, so the grid column is
@@ -229,10 +195,10 @@ html {
 }
 
 /* Hero scene intro, back to front: the wall light fades up, the table
-   settles, the olive fades in behind, the laptop drops onto the table, the
-   phone slides in, the underline wipes, and the foreground foliage arrives
-   last. These keyframes only set a `from`, so each element eases to its own
-   resting opacity and transform. */
+   settles, the laptop drops onto the table, the phone slides in, the
+   underline wipes, and the foreground foliage arrives last. These keyframes
+   only set a `from`, so each element eases to its own resting opacity and
+   transform. */
 @keyframes fade {
   from {
     opacity: 0;
@@ -248,12 +214,6 @@ html {
   from {
     opacity: 0;
     transform: translateY(-12px);
-  }
-}
-@keyframes fade-scale {
-  from {
-    opacity: 0;
-    transform: scale(0.985);
   }
 }
 @keyframes phone-in {
@@ -292,10 +252,6 @@ html {
   }
   .hero-table-in {
     animation: fade-up 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.25s both;
-  }
-  .hero-plant-in {
-    transform-origin: 50% 100%;
-    animation: fade-scale 1s cubic-bezier(0.22, 1, 0.36, 1) 0.45s both;
   }
   .hero-laptop-in {
     animation: fade-drop 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.55s both;

@@ -7,7 +7,6 @@ import phoneDefault from "../../../public/hero/phone.webp";
 import underline from "../../../public/hero/underline.png";
 import wallShadows from "../../../public/hero/wall-shadows.webp";
 import table from "../../../public/hero/table.webp";
-import plant from "../../../public/hero/plant.webp";
 import foliage from "../../../public/hero/foliage.webp";
 
 const weaveTile =
@@ -27,11 +26,10 @@ export function Hero({
   pinned?: boolean;
 }) {
   return (
-    // Only horizontal overflow is clipped: the table and plant bleed off the
-    // right, while the plant is free to rise above the section and over the
-    // nav on wide screens. Pinned, it sits under the nav (72px on phones,
-    // 78px from sm); the stacked phone layout fits above the fold, so it
-    // pins there too.
+    // Only horizontal overflow is clipped, so the table can bleed off the
+    // right without a scrollbar. Pinned, it sits under the nav (72px on
+    // phones, 78px from sm); the stacked phone layout fits above the fold,
+    // so it pins there too.
     <section
       className={`flex min-h-[min(80svh,900px)] items-center overflow-x-clip ${
         pinned ? "sticky top-[72px] sm:top-[78px]" : "relative"
@@ -62,11 +60,8 @@ export function Hero({
           clean paper; positioned per breakpoint in .hero-glow. */}
       <div aria-hidden className="hero-glow pointer-events-none absolute inset-0" />
       {/* A little extra bottom padding at lg+ gives the table's front edge
-          room below the laptop, without pushing the device block up. From 1880px
-          the content stacks above the header (z-40) so the plant's leaves
-          can overlap the nav; below that the mobile menu needs to stay on
-          top, so it drops back under. */}
-      <Container className="relative z-10 pb-16 pt-9 sm:py-20 lg:pb-24 min-[1880px]:z-50">
+          room below the laptop, without pushing the device block up. */}
+      <Container className="relative z-10 pb-16 pt-9 sm:py-20 lg:pb-24">
         <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]">
           {/* Copy column. Centered when stacked, left-aligned beside the
               device on desktop. Its children pick up the rise-in stagger. */}
@@ -184,33 +179,6 @@ export function Hero({
                 filter="url(#hero-laptop-shadow)"
               />
             </svg>
-            {/* Potted olive further back on the table, right of the phone,
-                big enough that its leaves run past the top of the hero. From
-                lg it sits mostly off the right edge so only its left leaves
-                reach in; from 1880px the pot fits inside the viewport, so it
-                moves left into full view (leaves may crop, a cut pot would
-                not read). The foot lands toward the back of the table's top
-                face. Same opacity as the table so the two read as one
-                background. */}
-            <div
-              aria-hidden
-              className="hero-plant hero-plant-in pointer-events-none absolute bottom-[20%] hidden w-[70%] opacity-70 lg:block"
-            >
-              {/* Pot shadow (its foot spans 37-65% of the asset's width,
-                  bottom at 97% of its height): a soft cast trailing right and
-                  back, since the light comes from the upper left, plus a
-                  band under the foot. Kept light so the pot stays as quiet
-                  as the table. */}
-              <div className="absolute bottom-[1.2%] left-[42%] right-[-18%] h-[4.5%] rounded-[50%] bg-[#3d2e24] opacity-20 blur-lg" />
-              <div className="absolute bottom-[1.8%] left-[37%] right-[35%] h-[2.6%] rounded-[50%] bg-[#3d2e24] opacity-40 blur-sm" />
-              <Image
-                src={plant}
-                alt=""
-                aria-hidden
-                sizes="20vw"
-                className="hero-plant-img relative h-auto w-full"
-              />
-            </div>
             <Image
               src={laptop}
               alt="A landscaping company's website shown on a laptop"
@@ -252,7 +220,7 @@ export function Hero({
           the margin left of the copy has room for it. */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 z-[60] hidden overflow-hidden min-[1880px]:block"
+        className="pointer-events-none absolute inset-0 z-20 hidden overflow-hidden min-[1880px]:block"
       >
         <Image
           src={foliage}

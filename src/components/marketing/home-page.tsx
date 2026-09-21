@@ -75,10 +75,8 @@ export function HomePage({
         {/* Everything after the hero stacks above it with an opaque
             background, so the table's rim can run under the next section on
             short viewports, and in the pinned variant the sections slide up
-            to cover the hero. Stays under the nav's mobile menu (z-40) except
-            on wide screens, where the hero's layers reach z-50 to put the
-            olive's leaves over the nav and there is no mobile menu. */}
-        <div className="relative z-20 bg-ground min-[1880px]:z-[60]">
+            to cover the hero. Stays under the nav's mobile menu (z-40). */}
+        <div className="relative z-30 bg-ground">
           <Services />
           <Work />
           <About />
