@@ -11,7 +11,8 @@ const links = [
   { label: "About", href: "#about" },
 ];
 
-export function Nav() {
+// `pinned` keeps the bar at the top while the page scrolls.
+export function Nav({ pinned = false }: { pinned?: boolean }) {
   const [open, setOpen] = useState(false);
   const close = () => setOpen(false);
 
@@ -24,7 +25,11 @@ export function Nav() {
   return (
     // Translucent so the hero's wall shadows and foliage, which extend up
     // behind it, show through faintly.
-    <header className="relative z-40 border-b border-border bg-paper/80 backdrop-blur-sm">
+    <header
+      className={`z-40 border-b border-border bg-paper/80 backdrop-blur-sm ${
+        pinned ? "sticky top-0" : "relative"
+      }`}
+    >
       {/* Three columns from md: logo, links dead-center, account actions.
           The outer 1fr tracks match so the links center on the header. */}
       <Container className="relative z-40 flex h-[72px] items-center justify-between sm:h-[78px] md:grid md:grid-cols-[1fr_auto_1fr]">

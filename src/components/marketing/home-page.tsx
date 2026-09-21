@@ -53,24 +53,39 @@ const jsonLd = {
   ],
 };
 
-// The full landing page. `hero` lets the /v1, /v2 and /v3 preview routes swap in
-// an alternate hero while keeping everything else identical.
-export function HomePage({ hero = <Hero /> }: { hero?: React.ReactNode }) {
+// The full landing page. `pinned` is the "sheet" variant (previewed at /v2):
+// nav and hero hold still while the sections after them slide up to cover
+// the hero. `hero` lets a preview route swap in an alternate hero.
+export function HomePage({
+  hero,
+  pinned = false,
+}: {
+  hero?: React.ReactNode;
+  pinned?: boolean;
+}) {
   return (
     <div id="top" className="flex flex-1 flex-col">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <Nav />
+      <Nav pinned={pinned} />
       <main className="flex-1">
-        {hero}
-        <Services />
-        <Work />
-        <About />
-        <CarePlan />
-        <Process />
-        <Contact />
+        {hero ?? <Hero pinned={pinned} />}
+        {/* Everything after the hero stacks above it with an opaque
+            background, so the table's rim can run under the next section on
+            short viewports, and in the pinned variant the sections slide up
+            to cover the hero. Stays under the nav's mobile menu (z-40) except
+            on wide screens, where the hero's layers reach z-50 to put the
+            olive's leaves over the nav and there is no mobile menu. */}
+        <div className="relative z-20 bg-ground min-[1880px]:z-[60]">
+          <Services />
+          <Work />
+          <About />
+          <CarePlan />
+          <Process />
+          <Contact />
+        </div>
       </main>
       <Footer />
     </div>

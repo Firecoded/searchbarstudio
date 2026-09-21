@@ -41,57 +41,6 @@ body {
   font-family: var(--font-sans), system-ui, sans-serif;
 }
 
-@keyframes blink {
-  50% {
-    opacity: 0;
-  }
-}
-
-.animate-caret {
-  animation: blink 1.1s steps(1) infinite;
-}
-
-/* Types the hero search phrase out once (no rotation). The phrase is 35
-   monospace characters, so we grow an inline-block from 0 to 35ch in 35 steps,
-   revealing one glyph per step. It waits for the search bar's rise-in, and the
-   caret (delayed above) holds steady until the text lands. */
-.hero-type {
-  overflow: hidden;
-  white-space: nowrap;
-  max-width: 100%;
-  vertical-align: bottom;
-}
-
-/* Two phrases so the type-out never hard-cuts mid-word: the full line on sm+
-   (35 chars), a shorter line on small phones (28 chars) where the full one
-   would not fit. Display is toggled by breakpoint in the markup. */
-@media (prefers-reduced-motion: no-preference) {
-  @keyframes hero-type-full {
-    from {
-      width: 0;
-    }
-    to {
-      width: 35ch;
-    }
-  }
-  @keyframes hero-type-short {
-    from {
-      width: 0;
-    }
-    to {
-      width: 28ch;
-    }
-  }
-  .hero-type-full {
-    width: 35ch;
-    animation: hero-type-full 1.9s steps(35, end) 1s both;
-  }
-  .hero-type-short {
-    width: 28ch;
-    animation: hero-type-short 1.55s steps(28, end) 1s both;
-  }
-}
-
 /* Scroll cue: a chevron gently bounces at the bottom of the hero, hinting
    there's more below. Static for reduced motion. */
 @media (prefers-reduced-motion: no-preference) {
@@ -160,6 +109,10 @@ body {
    keep the pot out. From 1880px the pot fits, so it moves into view. */
 .hero-plant {
   left: 102%;
+}
+/* The mask lives on the image, not the wrapper, so the pot's shadows
+   (siblings in the wrapper) aren't clipped at the box edge. */
+.hero-plant-img {
   -webkit-mask-image:
     linear-gradient(to bottom, transparent 0%, #000 32%),
     linear-gradient(to left, transparent 0%, #000 16%);
@@ -262,9 +215,6 @@ html {
   html {
     scroll-behavior: auto;
   }
-  .animate-caret {
-    animation: none;
-  }
 }
 
 @keyframes rise-in {
@@ -278,21 +228,34 @@ html {
   }
 }
 
-/* Gentler than rise-in for imagery: a longer fade with only a slight lift and
-   settle, so it eases in rather than pops. */
-@keyframes graphic-fade {
+/* Hero scene intro, back to front: the wall light fades up, the table
+   settles, the olive fades in behind, the laptop drops onto the table, the
+   phone slides in, the underline wipes, and the foreground foliage arrives
+   last. These keyframes only set a `from`, so each element eases to its own
+   resting opacity and transform. */
+@keyframes fade {
   from {
     opacity: 0;
-    transform: translateY(10px) scale(0.985);
-  }
-  to {
-    opacity: 1;
-    transform: none;
   }
 }
-
-/* Hero intro beats after the laptop settles: the phone slides into place,
-   then the headline underline wipes on left to right. */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+@keyframes fade-drop {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+}
+@keyframes fade-scale {
+  from {
+    opacity: 0;
+    transform: scale(0.985);
+  }
+}
 @keyframes phone-in {
   from {
     opacity: 0;
@@ -324,23 +287,31 @@ html {
   .hero-rise > *:nth-child(4) { animation-delay: 0.36s; }
   .hero-rise > *:nth-child(5) { animation-delay: 0.46s; }
 
-  /* The hero device mockup eases in on the softer graphic-fade, a beat after
-     the copy column starts rising. */
-  .hero-fade-graphic {
-    opacity: 0;
-    animation: graphic-fade 1.1s cubic-bezier(0.22, 1, 0.36, 1) 0.3s both;
+  .hero-wall {
+    animation: fade 1.4s ease-out both;
   }
-
-  /* Phone slides into its overlap position once the laptop has settled. */
+  .hero-table-in {
+    animation: fade-up 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.25s both;
+  }
+  .hero-plant-in {
+    transform-origin: 50% 100%;
+    animation: fade-scale 1s cubic-bezier(0.22, 1, 0.36, 1) 0.45s both;
+  }
+  .hero-laptop-in {
+    animation: fade-drop 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.55s both;
+  }
+  /* Phone slides into its overlap position once the laptop has landed. */
   .hero-phone {
     opacity: 0;
-    animation: phone-in 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.9s both;
+    animation: phone-in 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.95s both;
   }
-
   /* Headline underline wipes in left to right once the headline has risen. */
   .hero-underline {
     clip-path: inset(0 100% 0 0);
-    animation: note-write 0.5s ease-out 1s both;
+    animation: note-write 0.5s ease-out 1.1s both;
+  }
+  .hero-foliage-in {
+    animation: fade 0.9s ease-out 1.2s both;
   }
 
   [data-reveal]:not([data-stagger]) {

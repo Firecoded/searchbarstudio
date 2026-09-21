@@ -13,20 +13,30 @@ import foliage from "../../../public/hero/foliage.webp";
 const weaveTile =
   "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Cg stroke='%23d8c1a6' stroke-width='1.3' stroke-linecap='round' opacity='0.16'%3E%3Cline x1='4' y1='6' x2='20' y2='6'/%3E%3Cline x1='4' y1='12' x2='20' y2='12'/%3E%3Cline x1='4' y1='18' x2='20' y2='18'/%3E%3Cline x1='30' y1='4' x2='30' y2='20'/%3E%3Cline x1='36' y1='4' x2='36' y2='20'/%3E%3Cline x1='42' y1='4' x2='42' y2='20'/%3E%3Cline x1='6' y1='28' x2='6' y2='44'/%3E%3Cline x1='12' y1='28' x2='12' y2='44'/%3E%3Cline x1='18' y1='28' x2='18' y2='44'/%3E%3Cline x1='28' y1='30' x2='44' y2='30'/%3E%3Cline x1='28' y1='36' x2='44' y2='36'/%3E%3Cline x1='28' y1='42' x2='44' y2='42'/%3E%3C/g%3E%3C/svg%3E\")";
 
-// `laptop` and `phone` are the screen mockups; the preview routes pass
-// alternates so the same hero can be compared with different sites on it.
+// `laptop` and `phone` are the screen mockups, swappable so the same hero can
+// be previewed with different sites on it. `pinned` holds the hero in place
+// below the (then also pinned) nav while the rest of the page slides up over
+// it like a sheet; see HomePage.
 export function Hero({
   laptop = laptopDefault,
   phone = phoneDefault,
+  pinned = false,
 }: {
   laptop?: StaticImageData;
   phone?: StaticImageData;
+  pinned?: boolean;
 }) {
   return (
     // Only horizontal overflow is clipped: the table and plant bleed off the
     // right, while the plant is free to rise above the section and over the
-    // nav on wide screens.
-    <section className="relative flex min-h-[min(80svh,900px)] items-center overflow-x-clip">
+    // nav on wide screens. Pinned, it sits under the nav (72px on phones,
+    // 78px from sm); the stacked phone layout fits above the fold, so it
+    // pins there too.
+    <section
+      className={`flex min-h-[min(80svh,900px)] items-center overflow-x-clip ${
+        pinned ? "sticky top-[72px] sm:top-[78px]" : "relative"
+      }`}
+    >
       {/* The weave and wall layers reach 5rem above the section so they
           continue behind the translucent nav. */}
       <div aria-hidden className="pointer-events-none absolute inset-x-0 -top-20 bottom-0 overflow-hidden">
@@ -38,7 +48,7 @@ export function Hero({
       {/* Wall atmosphere: leafy sunlight shadows as a transparent layer over
           the paper (leaves left, window light right, clean middle). Covers
           and crops from the top so it never stretches. */}
-      <div aria-hidden className="pointer-events-none absolute inset-x-0 -top-20 bottom-0">
+      <div aria-hidden className="hero-wall pointer-events-none absolute inset-x-0 -top-20 bottom-0">
         <Image
           src={wallShadows}
           alt=""
@@ -125,7 +135,7 @@ export function Hero({
           {/* Below lg the group is nudged left by a few percent of its own
               width: the angled laptop and the phone both carry their visual
               weight on the right, so box-centered reads off-center. */}
-          <div className="hero-device hero-fade-graphic relative mx-auto w-[95%] max-w-[560px] -translate-x-[3%] lg:w-full lg:max-w-none lg:translate-x-0">
+          <div className="hero-device relative mx-auto w-[95%] max-w-[560px] -translate-x-[3%] lg:w-full lg:max-w-none lg:translate-x-0">
             {/* Round stone table behind the devices: the asset is the left
                 part of a large round top, so the laptop sits near its curved
                 left edge and the rest runs off the section (which clips it).
@@ -140,7 +150,7 @@ export function Hero({
               aria-hidden
               priority
               sizes="(min-width: 1024px) 110vw, 200vw"
-              className="hero-table pointer-events-none absolute left-[-30%] top-[37%] h-auto w-[200%] max-w-none lg:left-[-15%] xl:left-[-25%]"
+              className="hero-table hero-table-in pointer-events-none absolute left-[-30%] top-[37%] h-auto w-[200%] max-w-none lg:left-[-15%] xl:left-[-25%]"
             />
             {/* Contact shadow grounding the laptop on the stone. The shape is
                 the laptop's own footprint (its bottom contour, traced from
@@ -151,7 +161,7 @@ export function Hero({
             <svg
               aria-hidden
               viewBox="0 0 1455 989"
-              className="pointer-events-none absolute inset-0 h-full w-full overflow-visible"
+              className="hero-laptop-in pointer-events-none absolute inset-0 h-full w-full overflow-visible"
             >
               <defs>
                 <filter id="hero-laptop-shadow" x="-20%" y="-50%" width="140%" height="220%">
@@ -184,17 +194,21 @@ export function Hero({
                 background. */}
             <div
               aria-hidden
-              className="hero-plant pointer-events-none absolute bottom-[20%] hidden w-[70%] opacity-70 lg:block"
+              className="hero-plant hero-plant-in pointer-events-none absolute bottom-[20%] hidden w-[70%] opacity-70 lg:block"
             >
-              {/* Contact shadow under the pot (its foot spans 37-65% of the
-                  asset's width, bottom at 97% of its height). */}
-              <div className="absolute bottom-[2%] left-[35%] right-[33%] h-[3%] rounded-[50%] bg-[#3d2e24] opacity-45 blur-md" />
+              {/* Pot shadow (its foot spans 37-65% of the asset's width,
+                  bottom at 97% of its height): a soft cast trailing right and
+                  back, since the light comes from the upper left, plus a
+                  band under the foot. Kept light so the pot stays as quiet
+                  as the table. */}
+              <div className="absolute bottom-[1.2%] left-[42%] right-[-18%] h-[4.5%] rounded-[50%] bg-[#3d2e24] opacity-20 blur-lg" />
+              <div className="absolute bottom-[1.8%] left-[37%] right-[35%] h-[2.6%] rounded-[50%] bg-[#3d2e24] opacity-40 blur-sm" />
               <Image
                 src={plant}
                 alt=""
                 aria-hidden
                 sizes="20vw"
-                className="relative h-auto w-full"
+                className="hero-plant-img relative h-auto w-full"
               />
             </div>
             <Image
@@ -202,7 +216,7 @@ export function Hero({
               alt="A landscaping company's website shown on a laptop"
               priority
               sizes="(min-width: 1024px) 56vw, 100vw"
-              className="relative h-auto w-full"
+              className="hero-laptop-in relative h-auto w-full"
             />
 
             {/* Phone overlapping the laptop's lower-right. The note is
@@ -245,7 +259,7 @@ export function Hero({
           alt=""
           aria-hidden
           sizes="15vw"
-          className="absolute bottom-[-12%] left-[-2%] h-auto w-[15vw] max-w-[380px] opacity-80"
+          className="hero-foliage-in absolute bottom-[-12%] left-[-2%] h-auto w-[15vw] max-w-[380px] opacity-80"
         />
       </div>
 
