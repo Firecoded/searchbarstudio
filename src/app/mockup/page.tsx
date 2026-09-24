@@ -19,11 +19,12 @@ const build = [
   "Made to look sharp on phones, tablets, and full-size desktop screens",
   "Basic SEO optimization, with page titles and local keywords for your area",
   "Contact form that goes to your email",
+  "Easy to update your own text and photos, or just send a request",
 ];
 
 const monthly = [
   "Hosting, domain, SSL, backups, and security updates",
-  "Small text and photo changes, just text me",
+  "Small text and photo changes, just send a message",
   "Bigger changes or new features get a flat quote up front",
 ];
 
