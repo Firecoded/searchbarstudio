@@ -2,6 +2,8 @@
 
 import { and, eq, gt } from "drizzle-orm";
 import { sendEmail } from "@/lib/email";
+import { renderBrandedEmail } from "@/lib/branded-email";
+import { mockupRequestEmail } from "@/lib/email-content";
 import { db } from "@/db";
 import { user, verification } from "@/db/schema";
 import { createInvoiceCheckoutSecret } from "@/lib/invoice";
@@ -85,6 +87,93 @@ export async function submitContact(
   } catch {
     return { ok: false, error: "Something went wrong sending your message. Please try again or email directly." };
   }
+
+  return { ok: true };
+}
+
+export async function submitMockupRequest(
+  _prev: ContactState,
+  formData: FormData,
+): Promise<ContactState> {
+  if ((formData.get("company") as string)?.trim()) {
+    return { ok: true };
+  }
+
+  const field = (key: string) => (formData.get(key) as string)?.trim() ?? "";
+  const name = field("name");
+  const business = field("business");
+  const phone = field("phone");
+  const email = field("email");
+  const about = field("about");
+  const presence = field("presence");
+  const goal = field("goal");
+  const message = field("message");
+
+  if (!name) return { ok: false, error: "Please add your name." };
+  if (!business) {
+    return { ok: false, error: "Please add your business name." };
+  }
+  if (phone.replace(/\D/g, "").length < 10) {
+    return {
+      ok: false,
+      error: "Please add a phone number I can text, with area code.",
+    };
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return {
+      ok: false,
+      error: "Please enter a valid email address, like you@example.com.",
+    };
+  }
+  if (!about) {
+    return {
+      ok: false,
+      error: "Please tell me a little about what your business does.",
+    };
+  }
+
+  const html = [
+    row("Name", name),
+    row("Business", business),
+    row("Phone", phone),
+    row("Email", email),
+    row("What they do", about),
+    presence && row("Find them online", presence),
+    goal && row("Main goal", goal),
+    message && `<p style="margin:16px 0 6px"><strong>Anything else</strong></p>`,
+    message &&
+      `<p style="margin:0;white-space:pre-wrap">${escapeHtml(message)}</p>`,
+  ]
+    .filter(Boolean)
+    .join("");
+
+  try {
+    await sendEmail({
+      to: CONTACT_TO,
+      replyTo: email,
+      subject: `Free mockup request: ${business}`,
+      html,
+    });
+  } catch {
+    return {
+      ok: false,
+      error:
+        "Something went wrong sending your request. Please try again, or text me instead.",
+    };
+  }
+
+  // The lead is already in the inbox, so a failed confirmation is not worth
+  // telling the visitor about.
+  try {
+    const content = mockupRequestEmail(name, business);
+    const rendered = await renderBrandedEmail(content.props);
+    await sendEmail({
+      to: email,
+      subject: content.subject,
+      html: rendered.html,
+      text: rendered.text,
+    });
+  } catch {}
 
   return { ok: true };
 }

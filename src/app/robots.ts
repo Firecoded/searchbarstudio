@@ -21,6 +21,7 @@ export default function robots(): MetadataRoute.Robots {
         "/welcome",
         "/invoice",
         "/pay",
+        "/mockup",
       ],
     },
     sitemap: `${APP_URL}/sitemap.xml`,

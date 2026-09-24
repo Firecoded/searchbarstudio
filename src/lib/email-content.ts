@@ -127,6 +127,26 @@ export function resetPasswordEmail(name: string, url: string): EmailContent {
   };
 }
 
+export function mockupRequestEmail(
+  name: string,
+  business: string,
+): EmailContent {
+  const forWhat = business.trim() ? ` for **${business.trim()}**` : "";
+  return {
+    subject: "Got your mockup request",
+    props: {
+      preview: "Thanks for the details. I'm on your mockup.",
+      heading: "Your mockup is on my list",
+      paragraphs: [
+        `Hi ${firstName(name)}, **thanks for sending this over.** I've got your mockup request${forWhat}.`,
+        "I'll look through what you sent and design a homepage for you. When it's ready I'll text or email you a link to see it.",
+        "There's nothing to pay until you've seen it and want the full site built.",
+      ],
+      note: "Questions in the meantime? Just reply to this email.",
+    },
+  };
+}
+
 // The ordered set shown in the admin reference gallery.
 export const emailGallery: {
   key: string;
@@ -143,4 +163,9 @@ export const emailGallery: {
   { key: "billing", label: "Invoice (existing)", build: billingEmail },
   { key: "paid", label: "Payment received", build: paymentReceivedEmail },
   { key: "reset", label: "Password reset", build: resetPasswordEmail },
+  {
+    key: "mockup",
+    label: "Mockup request received",
+    build: (name) => mockupRequestEmail(name, "Desert Ridge Landscaping"),
+  },
 ];
