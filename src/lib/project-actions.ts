@@ -13,6 +13,7 @@ import {
   type ProjectStage,
 } from "@/db/schema";
 import { sendEmail } from "@/lib/email";
+import { externalUrl } from "@/lib/url";
 
 const APP_URL =
   process.env.NEXT_PUBLIC_APP_URL ??
@@ -101,9 +102,9 @@ export async function updateProjectFields(
       estimate: str(formData, "estimate") || null,
       brief: str(formData, "brief") || null,
       needsFromClient: str(formData, "needsFromClient") || null,
-      mocksUrl: str(formData, "mocksUrl") || null,
-      previewUrl: str(formData, "previewUrl") || null,
-      liveUrl: str(formData, "liveUrl") || null,
+      mocksUrl: externalUrl(str(formData, "mocksUrl")),
+      previewUrl: externalUrl(str(formData, "previewUrl")),
+      liveUrl: externalUrl(str(formData, "liveUrl")),
     })
     .where(eq(project.id, id));
 

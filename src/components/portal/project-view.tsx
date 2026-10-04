@@ -7,6 +7,7 @@ import {
 import { AcceptProposal } from "@/components/portal/accept-proposal";
 import { ProjectTimeline } from "@/components/portal/project-timeline";
 import type { Project, ProjectUpdateRow } from "@/lib/project";
+import { externalUrl } from "@/lib/url";
 
 type Row = NonNullable<Project>;
 
@@ -215,9 +216,9 @@ function Stepper({ current }: { current: string }) {
 
 function LinksRow({ project }: { project: Row }) {
   const links = [
-    { label: "View mocks", href: project.mocksUrl },
-    { label: "View preview", href: project.previewUrl },
-    { label: "Visit site", href: project.liveUrl },
+    { label: "View mocks", href: externalUrl(project.mocksUrl) },
+    { label: "View preview", href: externalUrl(project.previewUrl) },
+    { label: "Visit site", href: externalUrl(project.liveUrl) },
   ];
   return (
     <div className="mt-6 flex flex-wrap gap-3">
